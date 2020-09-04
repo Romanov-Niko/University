@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Group {
 
-    private Integer groupId;
     private String name;
     private List<Student> students;
 
@@ -15,14 +14,6 @@ public class Group {
     public Group(String name, List<Student> students) {
         this(name);
         this.students = students;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
     }
 
     public String getName() {

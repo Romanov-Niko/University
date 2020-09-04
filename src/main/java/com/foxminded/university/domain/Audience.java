@@ -3,7 +3,7 @@ package com.foxminded.university.domain;
 public class Audience {
 
     private Integer roomNumber;
-    private Integer capacity;
+    private int capacity;
 
     public Audience(Integer roomNumber, Integer capacity) {
         this.roomNumber = roomNumber;
