@@ -4,12 +4,16 @@ import java.time.LocalDate;
 
 public class Person {
 
+    private int id;
     private String name;
     private String surname;
     private LocalDate dateOfBirth;
     private String gender;
     private String email;
     private String phoneNumber;
+
+    public Person() {
+    }
 
     public Person(String name, String surname) {
         this.name = name;
@@ -23,6 +27,19 @@ public class Person {
         this.gender = gender;
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public Person(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber) {
+        this(name, surname, dateOfBirth, gender, email, phoneNumber);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -6,12 +6,34 @@ import java.util.Objects;
 
 public class DaySchedule {
 
+    private int id;
     private LocalDate day;
     private List<Lesson> lessons;
+
+    public DaySchedule() {
+    }
+
+    public DaySchedule(int id, LocalDate day) {
+        this.id = id;
+        this.day = day;
+    }
 
     public DaySchedule(LocalDate day, List<Lesson> lessons) {
         this.day = day;
         this.lessons = lessons;
+    }
+
+    public DaySchedule(int id, LocalDate day, List<Lesson> lessons) {
+        this(day, lessons);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public LocalDate getDay() {
@@ -35,12 +57,13 @@ public class DaySchedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DaySchedule that = (DaySchedule) o;
-        return day.equals(that.day) &&
+        return id == that.id &&
+                day.equals(that.day) &&
                 lessons.equals(that.lessons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(day, lessons);
+        return Objects.hash(id, day, lessons);
     }
 }

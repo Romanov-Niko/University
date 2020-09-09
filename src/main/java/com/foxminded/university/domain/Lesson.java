@@ -4,11 +4,15 @@ import java.util.List;
 
 public class Lesson {
 
+    private int id;
     private Subject subject;
     private Teacher teacher;
     private List<Group> groups;
     private Audience audience;
     private LessonTime lessonTime;
+
+    public Lesson() {
+    }
 
     public Lesson(Teacher teacher, List<Group> groups) {
         this.teacher = teacher;
@@ -21,6 +25,19 @@ public class Lesson {
         this.groups = groups;
         this.audience = audience;
         this.lessonTime = lessonTime;
+    }
+
+    public Lesson(int id, Subject subject, Teacher teacher, List<Group> groups, Audience audience, LessonTime lessonTime) {
+        this(subject, teacher, groups, audience, lessonTime);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Subject getSubject() {

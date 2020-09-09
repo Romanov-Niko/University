@@ -1,17 +1,36 @@
 package com.foxminded.university.domain;
 
+import java.util.Objects;
+
 public class Subject {
 
+    private int id;
     private String name;
     private Integer creditHours;
     private Integer course;
     private String specialty;
+
+    public Subject() {
+    }
 
     public Subject(String name, Integer creditHours, Integer course, String specialty) {
         this.name = name;
         this.creditHours = creditHours;
         this.course = course;
         this.specialty = specialty;
+    }
+
+    public Subject(int id, String name, Integer creditHours, Integer course, String specialty) {
+        this(name, creditHours, course, specialty);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -44,5 +63,22 @@ public class Subject {
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subject subject = (Subject) o;
+        return id == subject.id &&
+                name.equals(subject.name) &&
+                creditHours.equals(subject.creditHours) &&
+                course.equals(subject.course) &&
+                specialty.equals(subject.specialty);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, creditHours, course, specialty);
     }
 }
