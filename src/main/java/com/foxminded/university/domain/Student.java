@@ -1,12 +1,13 @@
 package com.foxminded.university.domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Student extends Person {
 
     private int id;
     private int personId;
-    private Group group;
+    private int groupId;
     private String specialty;
     private Integer course;
     private LocalDate admission;
@@ -15,15 +16,15 @@ public class Student extends Person {
     public Student() {
     }
 
-    public Student(String name, String surname, Group group) {
+    public Student(String name, String surname, int groupId) {
         super(name, surname);
-        this.group = group;
+        this.groupId = groupId;
     }
 
     public Student(String name, String surname, LocalDate dateOfBirth, String gender, String email,
-                   String phoneNumber, Group group, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   String phoneNumber, int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         super(name, surname, dateOfBirth, gender, email, phoneNumber);
-        this.group = group;
+        this.groupId = groupId;
         this.specialty = specialty;
         this.course = course;
         this.admission = admission;
@@ -33,10 +34,10 @@ public class Student extends Person {
 
 
     public Student(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
-                   Group group, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         super(id, name, surname, dateOfBirth, gender, email, phoneNumber);
         this.personId = id;
-        this.group = group;
+        this.groupId = groupId;
         this.specialty = specialty;
         this.course = course;
         this.admission = admission;
@@ -44,11 +45,11 @@ public class Student extends Person {
     }
 
     public Student(int personId, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
-                   int studentId, Group group, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   int studentId, int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         super(personId, name, surname, dateOfBirth, gender, email, phoneNumber);
         this.id = studentId;
         this.personId = personId;
-        this.group = group;
+        this.groupId = groupId;
         this.specialty = specialty;
         this.course = course;
         this.admission = admission;
@@ -73,12 +74,12 @@ public class Student extends Person {
         this.personId = personId;
     }
 
-    public Group getGroup() {
-        return group;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getSpecialty() {
@@ -111,5 +112,24 @@ public class Student extends Person {
 
     public void setGraduation(LocalDate graduation) {
         this.graduation = graduation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return id == student.id &&
+                personId == student.personId &&
+                groupId == student.groupId &&
+                specialty.equals(student.specialty) &&
+                course.equals(student.course) &&
+                admission.equals(student.admission) &&
+                graduation.equals(student.graduation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, personId, groupId, specialty, course, admission, graduation);
     }
 }

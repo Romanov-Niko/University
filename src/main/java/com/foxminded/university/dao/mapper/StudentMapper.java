@@ -2,7 +2,6 @@ package com.foxminded.university.dao.mapper;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.domain.Student;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,15 +11,12 @@ import java.sql.SQLException;
 @Component
 public class StudentMapper implements RowMapper<Student> {
 
-    @Autowired
-    private GroupDao groupDao;
-
     @Override
     public Student mapRow(ResultSet resultSet, int i) throws SQLException {
         Student student = new Student();
         student.setId(resultSet.getInt("student_id"));
         student.setPersonId(resultSet.getInt("person_id"));
-        student.setGroup(groupDao.getById(resultSet.getInt("group_id")));
+        student.setGroupId(resultSet.getInt("group_id"));
         student.setSpecialty(resultSet.getString("specialty"));
         student.setCourse(resultSet.getInt("course"));
         student.setAdmission(resultSet.getDate("admission").toLocalDate());

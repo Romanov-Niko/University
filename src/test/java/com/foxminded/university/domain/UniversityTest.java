@@ -24,9 +24,9 @@ class UniversityTest {
         groups.add(new Group("B"));
         groups.add(new Group("C"));
         students = new ArrayList<>();
-        students.add(new Student("FIRST", "STUDENT", groups.get(0)));
-        students.add(new Student("SECOND", "STUDENT", groups.get(1)));
-        students.add(new Student("THIRD", "STUDENT", groups.get(2)));
+        students.add(new Student("FIRST", "STUDENT", 1));
+        students.add(new Student("SECOND", "STUDENT", 2));
+        students.add(new Student("THIRD", "STUDENT", 3));
         teachers = new ArrayList<>();
         teachers.add(new Teacher("FIRST", "TEACHER"));
         teachers.add(new Teacher("SECOND", "TEACHER"));

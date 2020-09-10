@@ -23,5 +23,5 @@ public interface LessonDao extends Dao<Lesson> {
     @Override
     void delete(int id);
 
-    List<Lesson> getAllByDay(LocalDate day);
+    List<Lesson> getAllByDayId(int id);
 }

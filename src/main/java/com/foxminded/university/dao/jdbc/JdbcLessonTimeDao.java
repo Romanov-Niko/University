@@ -19,7 +19,7 @@ import java.sql.Time;
 @Component
 public class JdbcLessonTimeDao implements LessonTimeDao {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_LESSON_TIME_BY_ID = "SELECT * FROM lessons_times WHERE lesson_time_id = ?";
     private static final String SQL_GET_ALL_LESSONS_TIMES = "SELECT * FROM lessons_times";
@@ -51,7 +51,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
             statement.setTime(2, Time.valueOf(lessonTime.getEnd()));
             return statement;
         }, keyHolder);
-        lessonTime.setId((int)keyHolder.getKeys().get("lesson_time_id"));
+        lessonTime.setId((int) keyHolder.getKeys().get("lesson_time_id"));
     }
 
     @Override

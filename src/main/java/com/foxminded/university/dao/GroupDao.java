@@ -21,4 +21,6 @@ public interface GroupDao extends Dao<Group> {
 
     @Override
     void delete(int id);
+
+    List<Group> getAllByLessonId(int id);
 }

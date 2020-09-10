@@ -1,5 +1,6 @@
 package com.foxminded.university.dao.jdbc;
 
+import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
@@ -36,7 +37,7 @@ class JdbcAudienceDaoTest {
 
     @Test
     void getById() {
-        Audience expectedAudience = new Audience(1, 101, 100);
+        Audience expectedAudience = EntitiesForTests.audienceGetById;
         Audience actualAudience = audienceDao.getById(1);
         assertEquals(expectedAudience, actualAudience);
     }
@@ -51,14 +52,14 @@ class JdbcAudienceDaoTest {
     @Test
     void save() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "audiences") + 1;
-        audienceDao.save(new Audience(104, 100));
+        audienceDao.save(EntitiesForTests.audienceSave);
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "audiences");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
     void update() {
-        Audience audienceForUpdate = new Audience(1, 999, 999);
+        Audience audienceForUpdate = EntitiesForTests.audienceUpdate;
         audienceDao.update(audienceForUpdate);
         int updatedAudience = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "audiences", String.format(
                 "audience_id = %d AND room_number = %d AND capacity = %d",

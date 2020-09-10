@@ -69,8 +69,8 @@ public class Group {
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
         return id == group.id &&
-                name.equals(group.name);
-//                students.equals(group.students);
+                name.equals(group.name) &&
+                students.equals(group.students);
     }
 
     @Override

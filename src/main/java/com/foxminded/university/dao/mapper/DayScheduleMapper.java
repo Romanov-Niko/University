@@ -13,15 +13,18 @@ import java.sql.SQLException;
 @Component
 public class DayScheduleMapper implements RowMapper<DaySchedule> {
 
-    @Autowired
-    private LessonDao lessonDao;
+    private final LessonDao lessonDao;
+
+    public DayScheduleMapper(LessonDao lessonDao) {
+        this.lessonDao = lessonDao;
+    }
 
     @Override
     public DaySchedule mapRow(ResultSet resultSet, int i) throws SQLException {
         DaySchedule daySchedule = new DaySchedule();
         daySchedule.setId(resultSet.getInt("day_id"));
         daySchedule.setDay(resultSet.getDate("day").toLocalDate());
-        daySchedule.setLessons(lessonDao.getAllByDay(resultSet.getDate("day").toLocalDate()));
+        daySchedule.setLessons(lessonDao.getAllByDayId(daySchedule.getId()));
         return daySchedule;
     }
 }

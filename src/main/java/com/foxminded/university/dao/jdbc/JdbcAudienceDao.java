@@ -18,8 +18,8 @@ import java.util.List;
 @Component
 public class JdbcAudienceDao implements AudienceDao {
 
-    JdbcTemplate jdbcTemplate;
-    private AudienceMapper audienceMapper;
+    private final JdbcTemplate jdbcTemplate;
+    private final AudienceMapper audienceMapper;
 
     private static final String SQL_GET_AUDIENCE_BY_ID = "SELECT * FROM audiences WHERE audience_id = ?";
     private static final String SQL_GET_ALL_AUDIENCES = "SELECT * FROM audiences";
@@ -52,7 +52,7 @@ public class JdbcAudienceDao implements AudienceDao {
             statement.setInt(2, audience.getCapacity());
             return statement;
         }, keyHolder);
-        audience.setId((int)keyHolder.getKeys().get("audience_id"));
+        audience.setId((int) keyHolder.getKeys().get("audience_id"));
     }
 
     @Override

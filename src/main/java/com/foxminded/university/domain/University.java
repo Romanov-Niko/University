@@ -68,7 +68,7 @@ public class University {
 
     public List<Lesson> getScheduleByDay(Student student, LocalDate day) {
         return getLessonsByDay(day).stream()
-                .filter(lesson -> lesson.getGroups().contains(student.getGroup()))
+                .filter(lesson -> lesson.getGroups().contains(student.getGroupId()))
                 .collect(toList());
     }
 

@@ -1,6 +1,7 @@
 package com.foxminded.university.domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Person {
 
@@ -88,5 +89,24 @@ public class Person {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id &&
+                name.equals(person.name) &&
+                surname.equals(person.surname) &&
+                dateOfBirth.equals(person.dateOfBirth) &&
+                gender.equals(person.gender) &&
+                email.equals(person.email) &&
+                phoneNumber.equals(person.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, dateOfBirth, gender, email, phoneNumber);
     }
 }

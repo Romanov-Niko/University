@@ -21,4 +21,6 @@ public interface SubjectDao extends Dao<Subject> {
 
     @Override
     void delete(int id);
+
+    List<Subject> getAllByTeacherId(int id);
 }

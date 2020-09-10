@@ -1,6 +1,7 @@
 package com.foxminded.university.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Lesson {
 
@@ -78,5 +79,23 @@ public class Lesson {
 
     public void setLessonTime(LessonTime lessonTime) {
         this.lessonTime = lessonTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lesson lesson = (Lesson) o;
+        return id == lesson.id &&
+                subject.equals(lesson.subject) &&
+                teacher.equals(lesson.teacher) &&
+                groups.equals(lesson.groups) &&
+                audience.equals(lesson.audience) &&
+                lessonTime.equals(lesson.lessonTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, subject, teacher, groups, audience, lessonTime);
     }
 }

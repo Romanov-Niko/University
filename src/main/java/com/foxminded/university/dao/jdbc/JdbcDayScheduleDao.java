@@ -18,8 +18,8 @@ import java.util.List;
 @Component
 public class JdbcDayScheduleDao implements DayScheduleDao {
 
-    JdbcTemplate jdbcTemplate;
-    private DayScheduleMapper dayScheduleMapper;
+    private final JdbcTemplate jdbcTemplate;
+    private final DayScheduleMapper dayScheduleMapper;
 
     private static final String SQL_GET_DAY_SCHEDULE_BY_ID = "SELECT * FROM days WHERE day_id = ?";
     private static final String SQL_GET_ALL_DAY_SCHEDULES = "SELECT * FROM days";
@@ -51,7 +51,7 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
             statement.setObject(1, daySchedule.getDay());
             return statement;
         }, keyHolder);
-        daySchedule.setId((int)keyHolder.getKeys().get("day_id"));
+        daySchedule.setId((int) keyHolder.getKeys().get("day_id"));
     }
 
     @Override

@@ -19,13 +19,19 @@ import java.util.List;
 @Component
 public class JdbcSubjectDao implements SubjectDao {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_SUBJECT_BY_ID = "SELECT * FROM subjects WHERE subject_id = ?";
     private static final String SQL_GET_ALL_SUBJECTS = "SELECT * FROM subjects";
     private static final String SQL_SAVE_SUBJECT = "INSERT INTO subjects VALUES (DEFAULT, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_SUBJECT = "UPDATE subjects SET name = ?, credit_hours = ?, course = ?, specialty = ? WHERE subject_id = ?";
     private static final String SQL_DELETE_SUBJECT = "DELETE FROM subjects WHERE subject_id = ?";
+    private static final String SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID = "SELECT teachers_subjects.teacher_id, subjects.subject_id, subjects.name, " +
+            "subjects.credit_hours, subjects.course, subjects.specialty " +
+            "FROM teachers_subjects " +
+            "LEFT JOIN teachers ON teachers_subjects.teacher_id = teachers.teacher_id " +
+            "LEFT JOIN subjects ON teachers_subjects.subject_id = subjects.subject_id " +
+            "WHERE teachers.teacher_id = ?";
 
     @Autowired
     public JdbcSubjectDao(DataSource dataSource) {
@@ -53,7 +59,7 @@ public class JdbcSubjectDao implements SubjectDao {
             statement.setString(4, subject.getSpecialty());
             return statement;
         }, keyHolder);
-        subject.setId((int)keyHolder.getKeys().get("subject_id"));
+        subject.setId((int) keyHolder.getKeys().get("subject_id"));
     }
 
     @Override
@@ -64,5 +70,10 @@ public class JdbcSubjectDao implements SubjectDao {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(SQL_DELETE_SUBJECT, id);
+    }
+
+    @Override
+    public List<Subject> getAllByTeacherId(int id) {
+        return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID, new SubjectMapper(), id);
     }
 }

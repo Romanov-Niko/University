@@ -1,19 +1,20 @@
 package com.foxminded.university.dao.jdbc;
 
+import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.jdbc.JdbcTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +31,7 @@ class JdbcSubjectDaoTest {
 
     @Test
     void getById() {
-        Subject expectedSubject = new Subject(1, "Calculus", 120, 1, "math");
+        Subject expectedSubject = EntitiesForTests.subjectGetById;
         Subject actualSubject = subjectDao.getById(1);
         assertEquals(expectedSubject, actualSubject);
     }
@@ -45,20 +46,20 @@ class JdbcSubjectDaoTest {
     @Test
     void save() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects") + 1;
-        subjectDao.save(new Subject("NEW", 120, 1, "math"));
+        subjectDao.save(EntitiesForTests.subjectSave);
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
     void update() {
-        Subject subjectForUpdate = new Subject(1, "updated", 120, 1, "math");
+        Subject subjectForUpdate = EntitiesForTests.subjectUpdate;
         subjectDao.update(subjectForUpdate);
-        int updatedAudience = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "subjects", String.format(
+        int updatedSubject = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "subjects", String.format(
                 "subject_id = %d AND name = '%s' AND credit_hours = %d AND specialty = '%s'",
                 subjectForUpdate.getId(), subjectForUpdate.getName(), subjectForUpdate.getCreditHours(), subjectForUpdate.getSpecialty()
         ));
-        assertEquals(1, updatedAudience);
+        assertEquals(1, updatedSubject);
     }
 
     @Test
@@ -67,5 +68,13 @@ class JdbcSubjectDaoTest {
         subjectDao.delete(3);
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
         assertEquals(expectedRows, actualRows);
+    }
+
+    @Test
+    void getAllByTeacherId() {
+        List<Subject> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(EntitiesForTests.subjectGetById);
+        List<Subject> actualSubjects = subjectDao.getAllByTeacherId(1);
+        assertEquals(expectedSubjects, actualSubjects);
     }
 }

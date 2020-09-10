@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
+import com.foxminded.university.domain.Person;
 import com.foxminded.university.domain.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ import java.util.List;
 @Component
 public class JdbcTeacherDao implements TeacherDao {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_TEACHER_BY_ID = "SELECT * FROM teachers WHERE teacher_id = ?";
     private static final String SQL_GET_ALL_TEACHERS = "SELECT * FROM teachers";
@@ -33,23 +34,28 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public Teacher getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, new TeacherMapper(), id);
+        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource())), id);
     }
 
     @Override
     public List<Teacher> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, new TeacherMapper());
+        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource())));
     }
 
     @Override
     public void save(Teacher teacher) {
+        JdbcPersonDao jdbcPersonDao = new JdbcPersonDao(jdbcTemplate.getDataSource());
+        Person person = new Person(teacher.getName(), teacher.getSurname(), teacher.getDateOfBirth(), teacher.getGender(),
+                teacher.getEmail(), teacher.getPhoneNumber());
+        jdbcPersonDao.save(person);
+        teacher.setPersonId(person.getId());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SQL_SAVE_TEACHER, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, teacher.getPersonId());
             return statement;
         }, keyHolder);
-        teacher.setId((int)keyHolder.getKeys().get("teacher_id"));
+        teacher.setId((int) keyHolder.getKeys().get("teacher_id"));
     }
 
     @Override

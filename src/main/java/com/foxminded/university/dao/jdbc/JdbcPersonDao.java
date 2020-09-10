@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class JdbcPersonDao implements PersonDao {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_PERSON_BY_ID = "SELECT * FROM persons WHERE person_id = ?";
     private static final String SQL_GET_ALL_PERSONS = "SELECT * FROM persons";
@@ -56,7 +56,7 @@ public class JdbcPersonDao implements PersonDao {
             statement.setString(6, person.getPhoneNumber());
             return statement;
         }, keyHolder);
-        person.setId((int)keyHolder.getKeys().get("person_id"));
+        person.setId((int) keyHolder.getKeys().get("person_id"));
     }
 
     @Override
