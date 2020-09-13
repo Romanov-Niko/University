@@ -1,4 +1,6 @@
-package com.foxminded.university.domain;
+package com.foxminded.university.service;
+
+import com.foxminded.university.domain.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,16 +16,12 @@ public class University {
     private List<Group> groups;
     private List<DaySchedule> schedule;
 
-    public University(List<Student> students, List<Teacher> teachers, List<Group> groups, List<DaySchedule> schedule) {
+    public University(List<Student> students, List<Teacher> teachers, List<Audience> audiences, List<Group> groups, List<DaySchedule> schedule) {
         this.students = students;
         this.teachers = teachers;
+        this.audiences = audiences;
         this.groups = groups;
         this.schedule = schedule;
-    }
-
-    public University(List<Student> students, List<Teacher> teachers, List<Audience> audiences, List<Group> groups, List<DaySchedule> schedule) {
-        this(students, teachers, groups, schedule);
-        this.audiences = audiences;
     }
 
     public List<Student> getStudents() {

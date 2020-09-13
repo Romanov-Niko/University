@@ -5,7 +5,6 @@ import java.util.Objects;
 
 public class Person {
 
-    private int id;
     private String name;
     private String surname;
     private LocalDate dateOfBirth;
@@ -16,11 +15,6 @@ public class Person {
     public Person() {
     }
 
-    public Person(String name, String surname) {
-        this.name = name;
-        this.surname = surname;
-    }
-
     public Person(String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber) {
         this.name = name;
         this.surname = surname;
@@ -28,19 +22,6 @@ public class Person {
         this.gender = gender;
         this.email = email;
         this.phoneNumber = phoneNumber;
-    }
-
-    public Person(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber) {
-        this(name, surname, dateOfBirth, gender, email, phoneNumber);
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -96,8 +77,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return id == person.id &&
-                name.equals(person.name) &&
+        return name.equals(person.name) &&
                 surname.equals(person.surname) &&
                 dateOfBirth.equals(person.dateOfBirth) &&
                 gender.equals(person.gender) &&
@@ -107,6 +87,6 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, dateOfBirth, gender, email, phoneNumber);
+        return Objects.hash(name, surname, dateOfBirth, gender, email, phoneNumber);
     }
 }

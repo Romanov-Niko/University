@@ -1,10 +1,8 @@
 package com.foxminded.university.dao.jdbc;
 
-import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LessonDao;
-import com.foxminded.university.domain.*;
+import com.foxminded.university.domain.Lesson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +12,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import static java.util.Collections.singletonList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.foxminded.university.EntitiesForTests.*;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Sql({"/schema.sql", "/data.sql"})
 @ExtendWith(SpringExtension.class)
@@ -35,51 +30,57 @@ class JdbcLessonDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void getById() {
-        Lesson expectedLesson = EntitiesForTests.lessonGetById;
+    void givenId1_whenGetById_thenReturnedFirstGroup() {
         Lesson actualLesson = lessonDao.getById(1);
-        assertEquals(expectedLesson, actualLesson);
+
+        assertEquals(retrievedLesson, actualLesson);
     }
 
     @Test
-    void getAll() {
+    void givenNothing_whenGetAll_thenReturnedListOfAllLessons() {
         int expectedRows = lessonDao.getAll().size();
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void save() {
-        Lesson expectedLesson = EntitiesForTests.lessonSave;
+    void givenLesson_whenSave_thenAddedGivenLesson() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons") + 1;
-        lessonDao.save(expectedLesson);
+
+        lessonDao.save(createdLesson);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void update() {
-        Lesson lessonForUpdate = EntitiesForTests.lessonUpdate;
-        lessonDao.update(lessonForUpdate);
-        int updatedLesson = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons", String.format(
-                "lesson_id = %d AND subject_id = %d AND teacher_id = %d AND audience_id = %d AND lesson_time_id = %d",
-                lessonForUpdate.getId(), lessonForUpdate.getSubject().getId(), lessonForUpdate.getTeacher().getId(),
-                lessonForUpdate.getAudience().getId(), lessonForUpdate.getLessonTime().getId()));
-        assertEquals(1, updatedLesson);
+    void givenLesson_whenUpdate_thenUpdatedLessonWithEqualId() {
+        lessonDao.update(updatedLesson);
+
+        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons", String.format(
+                "id = %d AND subject_id = %d AND teacher_id = %d AND audience_id = %d AND lesson_time_id = %d",
+                updatedLesson.getId(), updatedLesson.getSubject().getId(), updatedLesson.getTeacher().getId(),
+                updatedLesson.getAudience().getId(), updatedLesson.getLessonTime().getId()));
+        assertEquals(1, actualNumber);
     }
 
     @Test
-    void delete() {
+    void givenId3_whenDelete_thenDeletedThirdLesson() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons") - 1;
+
         lessonDao.delete(3);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void getAllByDay() {
-        List<Lesson> expectedLessons = singletonList(EntitiesForTests.lessonGetById);
+    void givenId1_whenGetAllByDayId_thenReturnedAllLessonsOfFirstDay() {
+        List<Lesson> expectedLessons = singletonList(retrievedLesson);
+
         List<Lesson> actualLessons = lessonDao.getAllByDayId(1);
+
         assertEquals(expectedLessons, actualLessons);
     }
 }

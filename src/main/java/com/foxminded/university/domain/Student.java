@@ -6,7 +6,6 @@ import java.util.Objects;
 public class Student extends Person {
 
     private int id;
-    private int personId;
     private int groupId;
     private String specialty;
     private Integer course;
@@ -14,11 +13,6 @@ public class Student extends Person {
     private LocalDate graduation;
 
     public Student() {
-    }
-
-    public Student(String name, String surname, int groupId) {
-        super(name, surname);
-        this.groupId = groupId;
     }
 
     public Student(String name, String surname, LocalDate dateOfBirth, String gender, String email,
@@ -31,47 +25,18 @@ public class Student extends Person {
         this.graduation = graduation;
     }
 
-
-
     public Student(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
                    int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
-        super(id, name, surname, dateOfBirth, gender, email, phoneNumber);
-        this.personId = id;
-        this.groupId = groupId;
-        this.specialty = specialty;
-        this.course = course;
-        this.admission = admission;
-        this.graduation = graduation;
+        this(name, surname, dateOfBirth, gender, email, phoneNumber, groupId, specialty, course, admission, graduation);
+        this.id = id;
     }
 
-    public Student(int personId, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
-                   int studentId, int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
-        super(personId, name, surname, dateOfBirth, gender, email, phoneNumber);
-        this.id = studentId;
-        this.personId = personId;
-        this.groupId = groupId;
-        this.specialty = specialty;
-        this.course = course;
-        this.admission = admission;
-        this.graduation = graduation;
-    }
-
-    @Override
     public int getId() {
         return id;
     }
 
-    @Override
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(int personId) {
-        this.personId = personId;
     }
 
     public int getGroupId() {
@@ -120,7 +85,6 @@ public class Student extends Person {
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
         return id == student.id &&
-                personId == student.personId &&
                 groupId == student.groupId &&
                 specialty.equals(student.specialty) &&
                 course.equals(student.course) &&
@@ -130,6 +94,6 @@ public class Student extends Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personId, groupId, specialty, course, admission, graduation);
+        return Objects.hash(id, groupId, specialty, course, admission, graduation);
     }
 }

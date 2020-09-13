@@ -1,6 +1,5 @@
 package com.foxminded.university.dao.jdbc;
 
-import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.domain.Subject;
@@ -13,10 +12,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.foxminded.university.EntitiesForTests.*;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Sql({"/schema.sql", "/data.sql"})
 @ExtendWith(SpringExtension.class)
@@ -30,51 +30,57 @@ class JdbcSubjectDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void getById() {
-        Subject expectedSubject = EntitiesForTests.subjectGetById;
+    void givenId1_whenGetById_thenReturnedFirstSubject() {
         Subject actualSubject = subjectDao.getById(1);
-        assertEquals(expectedSubject, actualSubject);
+
+        assertEquals(retrievedSubject, actualSubject);
     }
 
     @Test
-    void getAll() {
+    void givenNothing_whenGetAll_thenReturnedListOfAllSubjects() {
         int expectedRows = subjectDao.getAll().size();
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void save() {
+    void givenSubject_whenSave_thenAddedGivenSubject() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects") + 1;
-        subjectDao.save(EntitiesForTests.subjectSave);
+
+        subjectDao.save(createdSubject);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void update() {
-        Subject subjectForUpdate = EntitiesForTests.subjectUpdate;
-        subjectDao.update(subjectForUpdate);
-        int updatedSubject = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "subjects", String.format(
-                "subject_id = %d AND name = '%s' AND credit_hours = %d AND specialty = '%s'",
-                subjectForUpdate.getId(), subjectForUpdate.getName(), subjectForUpdate.getCreditHours(), subjectForUpdate.getSpecialty()
+    void givenSubject_whenUpdate_thenUpdatedSubjectWithEqualId() {
+        subjectDao.update(updatedSubject);
+
+        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "subjects", String.format(
+                "id = %d AND name = '%s' AND credit_hours = %d AND specialty = '%s'",
+                updatedSubject.getId(), updatedSubject.getName(), updatedSubject.getCreditHours(), updatedSubject.getSpecialty()
         ));
-        assertEquals(1, updatedSubject);
+        assertEquals(1, actualNumber);
     }
 
     @Test
-    void delete() {
+    void givenId3_whenDelete_thenDeletedThirdSubject() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects") - 1;
+
         subjectDao.delete(3);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void getAllByTeacherId() {
-        List<Subject> expectedSubjects = new ArrayList<>();
-        expectedSubjects.add(EntitiesForTests.subjectGetById);
+    void givenId1_whenGetAllByTeacherId_thenReturnedAllSubjectsOfFirstTeacher() {
+        List<Subject> expectedSubjects = singletonList(retrievedSubject);
+
         List<Subject> actualSubjects = subjectDao.getAllByTeacherId(1);
+
         assertEquals(expectedSubjects, actualSubjects);
     }
 }

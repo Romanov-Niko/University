@@ -1,10 +1,8 @@
 package com.foxminded.university.dao.jdbc;
 
-import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.DayScheduleDao;
-import com.foxminded.university.domain.*;
+import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static com.foxminded.university.EntitiesForTests.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Sql({"/schema.sql", "/data.sql"})
 @ExtendWith(SpringExtension.class)
@@ -35,42 +27,47 @@ class JdbcDayScheduleDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void getById() {
-        DaySchedule expectedDaySchedule = EntitiesForTests.dayScheduleGetById;
+    void givenId1_whenGetById_thenReturnedFirstDaySchedule() {
         DaySchedule actualDaySchedule = dayScheduleDao.getById(1);
-        assertEquals(expectedDaySchedule, actualDaySchedule);
+
+        assertEquals(retrievedDaySchedule, actualDaySchedule);
     }
 
     @Test
-    void getAll() {
+    void givenNothing_whenGetAll_thenReturnedListOfAllDaysSchedules() {
         int expectedRows = dayScheduleDao.getAll().size();
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days");
+
+        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void save() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days") + 1;
-        dayScheduleDao.save(EntitiesForTests.dayScheduleSave);
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days");
+    void givenDayschedule_whenSave_thenAddedGivenDaySchedule() {
+        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules") + 1;
+
+        dayScheduleDao.save(createdDaySchedule);
+
+        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void update() {
-        DaySchedule dayScheduleForUpdate = EntitiesForTests.dayScheduleUpdate;
-        dayScheduleDao.update(dayScheduleForUpdate);
-        int updatedAudience = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "days", String.format(
-                "day_id = %d AND day = '%s'", dayScheduleForUpdate.getId(), dayScheduleForUpdate.getDay()
+    void givenDayschedule_whenUpdate_thenUpdatedDayscheduleWithEqualId() {
+        dayScheduleDao.update(updatedDaySchedule);
+
+        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "days_schedules", String.format(
+                "id = %d AND day = '%s'", updatedDaySchedule.getId(), updatedDaySchedule.getDay()
         ));
-        assertEquals(1, updatedAudience);
+        assertEquals(1, actualNumber);
     }
 
     @Test
-    void delete() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days") - 1;
+    void givenId3_whenDelete_thenDeletedThirdDaySchedule() {
+        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules") - 1;
+
         dayScheduleDao.delete(3);
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days");
+
+        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
         assertEquals(expectedRows, actualRows);
     }
 }

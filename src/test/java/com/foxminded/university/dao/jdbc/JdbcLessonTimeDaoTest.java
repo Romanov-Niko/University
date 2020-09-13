@@ -1,11 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
-import com.foxminded.university.EntitiesForTests;
 import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LessonTimeDao;
-import com.foxminded.university.domain.Group;
-import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.LessonTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import java.time.LocalTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-
+import static com.foxminded.university.EntitiesForTests.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 @Sql({"/schema.sql", "/data.sql"})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ApplicationTestConfig.class})
@@ -32,41 +26,46 @@ class JdbcLessonTimeDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void getById() {
-        LessonTime expectedLessonTime = EntitiesForTests.lessonTimeGetById;
+    void givenId1_whenGetById_thenReturnedFirstLessonTime() {
         LessonTime actualLessonTime = lessonTimeDao.getById(1);
-        assertEquals(expectedLessonTime, actualLessonTime);
+
+        assertEquals(retrievedLessonTime, actualLessonTime);
     }
 
     @Test
-    void getAll() {
+    void givenNothing_whenGetAll_thenReturnedListOfAllLessonsTimes() {
         int expectedRows = lessonTimeDao.getAll().size();
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void save() {
+    void givenLessonTime_whenSave_thenAddedGivenLessonTime() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times") + 1;
-        lessonTimeDao.save(EntitiesForTests.lessonTimeSave);
+
+        lessonTimeDao.save(createdLessonTime);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
         assertEquals(expectedRows, actualRows);
     }
 
     @Test
-    void update() {
-        LessonTime lessonTimeForUpdate = EntitiesForTests.lessonTimeUpdate;
-        lessonTimeDao.update(lessonTimeForUpdate);
-        int updatedLessonTime = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons_times", String.format(
-                "lesson_time_id = %d AND begin_time = '%s' AND end_time = '%s'", lessonTimeForUpdate.getId(),
-                lessonTimeForUpdate.getBegin(), lessonTimeForUpdate.getEnd()));
-        assertEquals(1, updatedLessonTime);
+    void givenLessonTime_whenUpdate_thenUpdatedLessonTimeWithEqualId() {
+        lessonTimeDao.update(updatedLessonTime);
+
+        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons_times", String.format(
+                "id = %d AND begin_time = '%s' AND end_time = '%s'", updatedLessonTime.getId(),
+                updatedLessonTime.getBegin(), updatedLessonTime.getEnd()));
+        assertEquals(1, actualNumber);
     }
 
     @Test
-    void delete() {
+    void givenId3_whenDelete_thenDeletedThirdLessonTime() {
         int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times") - 1;
+
         lessonTimeDao.delete(3);
+
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
         assertEquals(expectedRows, actualRows);
     }

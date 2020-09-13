@@ -1,17 +1,14 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.TeacherDao;
-import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
-import com.foxminded.university.domain.Person;
 import com.foxminded.university.domain.Teacher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -19,48 +16,50 @@ import java.util.List;
 @Component
 public class JdbcTeacherDao implements TeacherDao {
 
+    private static final String SQL_GET_TEACHER_BY_ID = "SELECT * FROM teachers WHERE id = ?";
+    private static final String SQL_GET_ALL_TEACHERS = "SELECT * FROM teachers";
+    private static final String SQL_SAVE_TEACHER = "INSERT INTO teachers VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE_TEACHER = "UPDATE teachers SET name = ?, surname = ?, date_of_birth = ?," +
+            " gender = ?, email = ?, phone_number = ? WHERE id = ?";
+    private static final String SQL_DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
+
     private final JdbcTemplate jdbcTemplate;
 
-    private static final String SQL_GET_TEACHER_BY_ID = "SELECT * FROM teachers WHERE teacher_id = ?";
-    private static final String SQL_GET_ALL_TEACHERS = "SELECT * FROM teachers";
-    private static final String SQL_SAVE_TEACHER = "INSERT INTO teachers VALUES (DEFAULT, ?)";
-    private static final String SQL_UPDATE_TEACHER = "UPDATE teachers SET person_id = ? WHERE teacher_id = ?";
-    private static final String SQL_DELETE_TEACHER = "DELETE FROM teachers WHERE teacher_id = ?";
-
-    @Autowired
-    public JdbcTeacherDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public JdbcTeacherDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Teacher getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource())), id);
+        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate)), id);
     }
 
     @Override
     public List<Teacher> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource())));
+        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate)));
     }
 
     @Override
     public void save(Teacher teacher) {
-        JdbcPersonDao jdbcPersonDao = new JdbcPersonDao(jdbcTemplate.getDataSource());
-        Person person = new Person(teacher.getName(), teacher.getSurname(), teacher.getDateOfBirth(), teacher.getGender(),
-                teacher.getEmail(), teacher.getPhoneNumber());
-        jdbcPersonDao.save(person);
-        teacher.setPersonId(person.getId());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SQL_SAVE_TEACHER, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, teacher.getPersonId());
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getSurname());
+            statement.setDate(3, Date.valueOf(teacher.getDateOfBirth()));
+            statement.setString(4, teacher.getGender());
+            statement.setString(5, teacher.getEmail());
+            statement.setString(6, teacher.getPhoneNumber());
             return statement;
         }, keyHolder);
-        teacher.setId((int) keyHolder.getKeys().get("teacher_id"));
+        teacher.setId((int) keyHolder.getKeys().get("id"));
+        teacher.setSubjects(new JdbcSubjectDao(jdbcTemplate).getAllByTeacherId(teacher.getId()));
     }
 
     @Override
     public void update(Teacher teacher) {
-        jdbcTemplate.update(SQL_UPDATE_TEACHER, teacher.getPersonId(), teacher.getId());
+        jdbcTemplate.update(SQL_UPDATE_TEACHER, teacher.getName(), teacher.getSurname(), teacher.getDateOfBirth(),
+                teacher.getGender(), teacher.getEmail(), teacher.getPhoneNumber(), teacher.getId());
     }
 
     @Override

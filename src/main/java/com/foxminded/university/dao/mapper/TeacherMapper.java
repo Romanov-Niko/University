@@ -20,8 +20,13 @@ public class TeacherMapper implements RowMapper<Teacher> {
     @Override
     public Teacher mapRow(ResultSet resultSet, int i) throws SQLException {
         Teacher teacher = new Teacher();
-        teacher.setId(resultSet.getInt("teacher_id"));
-        teacher.setPersonId(resultSet.getInt("person_id"));
+        teacher.setId(resultSet.getInt("id"));
+        teacher.setName(resultSet.getString("name"));
+        teacher.setSurname(resultSet.getString("surname"));
+        teacher.setDateOfBirth(resultSet.getDate("date_of_birth").toLocalDate());
+        teacher.setGender(resultSet.getString("gender"));
+        teacher.setEmail(resultSet.getString("email"));
+        teacher.setPhoneNumber(resultSet.getString("phone_number"));
         teacher.setSubjects(subjectDao.getAllByTeacherId(teacher.getId()));
         return teacher;
     }

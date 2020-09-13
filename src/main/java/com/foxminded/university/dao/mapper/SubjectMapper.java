@@ -13,7 +13,7 @@ public class SubjectMapper implements RowMapper<Subject> {
     @Override
     public Subject mapRow(ResultSet resultSet, int i) throws SQLException {
         Subject subject = new Subject();
-        subject.setId(resultSet.getInt("subject_id"));
+        subject.setId(resultSet.getInt("id"));
         subject.setName(resultSet.getString("name"));
         subject.setCreditHours(resultSet.getInt("credit_hours"));
         subject.setCourse(resultSet.getInt("course"));

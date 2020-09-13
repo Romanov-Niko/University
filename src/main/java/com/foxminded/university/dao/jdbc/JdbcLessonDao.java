@@ -2,57 +2,50 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.dao.mapper.AudienceMapper;
-import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dao.mapper.LessonMapper;
-import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.domain.Lesson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
-import java.sql.Date;
 
 @Component
 public class JdbcLessonDao implements LessonDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private static final String SQL_GET_LESSON_BY_ID = "SELECT * FROM lessons WHERE lesson_id = ?";
+    private static final String SQL_GET_LESSON_BY_ID = "SELECT * FROM lessons WHERE id = ?";
     private static final String SQL_GET_ALL_LESSONS = "SELECT * FROM lessons";
     private static final String SQL_SAVE_LESSON = "INSERT INTO lessons VALUES (DEFAULT, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE_LESSON = "UPDATE lessons SET subject_id = ?, teacher_id = ?, audience_id = ?, lesson_time_id = ? WHERE lesson_id = ?";
-    private static final String SQL_DELETE_LESSON = "DELETE FROM lessons WHERE lesson_id = ?";
-    private static final String SQL_GET_ALL_LESSONS_BY_DAY_ID = "SELECT days_lessons.lesson_id, lessons.subject_id, lessons.teacher_id, lessons.audience_id, lessons.lesson_time_id " +
+    private static final String SQL_UPDATE_LESSON = "UPDATE lessons SET subject_id = ?, teacher_id = ?, audience_id = ?, lesson_time_id = ? WHERE id = ?";
+    private static final String SQL_DELETE_LESSON = "DELETE FROM lessons WHERE id = ?";
+    private static final String SQL_GET_ALL_LESSONS_BY_DAY_ID = "SELECT days_lessons.lesson_id, lessons.id, lessons.subject_id, " +
+            "lessons.teacher_id, lessons.audience_id, lessons.lesson_time_id " +
             "FROM days_lessons " +
-            "LEFT JOIN days ON days_lessons.day_id = days.day_id " +
-            "LEFT JOIN lessons ON days_lessons.lesson_id = lessons.lesson_id " +
-            "WHERE days.day_id = ?";
+            "LEFT JOIN days_schedules ON days_lessons.day_id = days_schedules.id " +
+            "LEFT JOIN lessons ON days_lessons.lesson_id = lessons.id " +
+            "WHERE days_lessons.day_id = ?";
 
-    @Autowired
-    public JdbcLessonDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    private final JdbcTemplate jdbcTemplate;
+
+    public JdbcLessonDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Lesson getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource()),
-                new JdbcTeacherDao(jdbcTemplate.getDataSource()), new JdbcAudienceDao(jdbcTemplate.getDataSource(),
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate.getDataSource()), new JdbcGroupDao(jdbcTemplate.getDataSource())), id);
+        return jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
+                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
+                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)), id);
     }
 
     @Override
     public List<Lesson> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_LESSONS, new LessonMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource()),
-                new JdbcTeacherDao(jdbcTemplate.getDataSource()), new JdbcAudienceDao(jdbcTemplate.getDataSource(),
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate.getDataSource()), new JdbcGroupDao(jdbcTemplate.getDataSource())));
+        return jdbcTemplate.query(SQL_GET_ALL_LESSONS, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
+                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
+                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)));
     }
 
     @Override
@@ -66,7 +59,7 @@ public class JdbcLessonDao implements LessonDao {
             statement.setInt(4, lesson.getLessonTime().getId());
             return statement;
         }, keyHolder);
-        lesson.setId((int) keyHolder.getKeys().get("lesson_id"));
+        lesson.setId((int) keyHolder.getKeys().get("id"));
     }
 
     @Override
@@ -82,8 +75,8 @@ public class JdbcLessonDao implements LessonDao {
 
     @Override
     public List<Lesson> getAllByDayId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate.getDataSource()),
-                new JdbcTeacherDao(jdbcTemplate.getDataSource()), new JdbcAudienceDao(jdbcTemplate.getDataSource(),
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate.getDataSource()), new JdbcGroupDao(jdbcTemplate.getDataSource())), id);
+        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
+                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
+                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)), id);
     }
 }

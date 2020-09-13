@@ -2,7 +2,6 @@ package com.foxminded.university.dao.mapper;
 
 import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Lesson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +28,7 @@ public class LessonMapper implements RowMapper<Lesson> {
     @Override
     public Lesson mapRow(ResultSet resultSet, int i) throws SQLException {
         Lesson lesson = new Lesson();
-        lesson.setId(resultSet.getInt("lesson_id"));
+        lesson.setId(resultSet.getInt("id"));
         lesson.setSubject(subjectDao.getById(resultSet.getInt("subject_id")));
         lesson.setTeacher(teacherDao.getById(resultSet.getInt("teacher_id")));
         lesson.setGroups(groupDao.getAllByLessonId(lesson.getId()));
