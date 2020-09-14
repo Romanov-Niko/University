@@ -25,19 +25,21 @@ public class JdbcStudentDao implements StudentDao {
     private static final String SQL_GET_ALL_STUDENTS_BY_GROUP = "SELECT * FROM students WHERE group_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final StudentMapper studentMapper;
 
-    public JdbcStudentDao(JdbcTemplate jdbcTemplate) {
+    public JdbcStudentDao(JdbcTemplate jdbcTemplate, StudentMapper studentMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.studentMapper = studentMapper;
     }
 
     @Override
     public Student getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, new StudentMapper(), id);
+        return jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id);
     }
 
     @Override
     public List<Student> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS, new StudentMapper());
+        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS, studentMapper);
     }
 
     @Override
@@ -76,6 +78,6 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public List<Student> getAllByGroupId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS_BY_GROUP, new StudentMapper(), id);
+        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS_BY_GROUP, studentMapper, id);
     }
 }

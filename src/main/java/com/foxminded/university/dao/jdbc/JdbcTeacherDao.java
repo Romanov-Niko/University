@@ -1,6 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.domain.Teacher;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,19 +25,23 @@ public class JdbcTeacherDao implements TeacherDao {
     private static final String SQL_DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final TeacherMapper teacherMapper;
+    private final SubjectMapper subjectMapper;
 
-    public JdbcTeacherDao(JdbcTemplate jdbcTemplate) {
+    public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper, SubjectMapper subjectMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.teacherMapper = teacherMapper;
+        this.subjectMapper = subjectMapper;
     }
 
     @Override
     public Teacher getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate)), id);
+        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, teacherMapper, id);
     }
 
     @Override
     public List<Teacher> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, new TeacherMapper(new JdbcSubjectDao(jdbcTemplate)));
+        return jdbcTemplate.query(SQL_GET_ALL_TEACHERS, teacherMapper);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class JdbcTeacherDao implements TeacherDao {
             return statement;
         }, keyHolder);
         teacher.setId((int) keyHolder.getKeys().get("id"));
-        teacher.setSubjects(new JdbcSubjectDao(jdbcTemplate).getAllByTeacherId(teacher.getId()));
+        teacher.setSubjects(new JdbcSubjectDao(jdbcTemplate, subjectMapper).getAllByTeacherId(teacher.getId()));
     }
 
     @Override

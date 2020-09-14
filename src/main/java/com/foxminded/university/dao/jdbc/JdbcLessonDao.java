@@ -29,23 +29,21 @@ public class JdbcLessonDao implements LessonDao {
             "WHERE days_lessons.day_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final LessonMapper lessonMapper;
 
-    public JdbcLessonDao(JdbcTemplate jdbcTemplate) {
+    public JdbcLessonDao(JdbcTemplate jdbcTemplate, LessonMapper lessonMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.lessonMapper = lessonMapper;
     }
 
     @Override
     public Lesson getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
-                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)), id);
+        return jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, lessonMapper, id);
     }
 
     @Override
     public List<Lesson> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_LESSONS, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
-                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)));
+        return jdbcTemplate.query(SQL_GET_ALL_LESSONS, lessonMapper);
     }
 
     @Override
@@ -75,8 +73,6 @@ public class JdbcLessonDao implements LessonDao {
 
     @Override
     public List<Lesson> getAllByDayId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY_ID, new LessonMapper(new JdbcSubjectDao(jdbcTemplate),
-                new JdbcTeacherDao(jdbcTemplate), new JdbcAudienceDao(jdbcTemplate,
-                new AudienceMapper()), new JdbcLessonTimeDao(jdbcTemplate), new JdbcGroupDao(jdbcTemplate)), id);
+        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY_ID, lessonMapper, id);
     }
 }

@@ -4,20 +4,22 @@ import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.foxminded.university.EntitiesForTests.*;
+import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Sql({"/schema.sql", "/data.sql"})
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ApplicationTestConfig.class})
+@Transactional
+@SpringJUnitConfig(ApplicationTestConfig.class)
 class JdbcAudienceDaoTest {
 
     @Autowired

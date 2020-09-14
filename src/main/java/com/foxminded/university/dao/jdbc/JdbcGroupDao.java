@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.mapper.GroupMapper;
+import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.domain.Group;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,19 +28,23 @@ public class JdbcGroupDao implements GroupDao {
             "WHERE lessons.id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final GroupMapper groupMapper;
+    private final StudentMapper studentMapper;
 
-    public JdbcGroupDao(JdbcTemplate jdbcTemplate) {
+    public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper, StudentMapper studentMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.groupMapper = groupMapper;
+        this.studentMapper = studentMapper;
     }
 
     @Override
     public Group getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, new GroupMapper(new JdbcStudentDao(jdbcTemplate)), id);
+        return jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id);
     }
 
     @Override
     public List<Group> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_GROUPS, new GroupMapper(new JdbcStudentDao(jdbcTemplate)));
+        return jdbcTemplate.query(SQL_GET_ALL_GROUPS, groupMapper);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class JdbcGroupDao implements GroupDao {
             return statement;
         }, keyHolder);
         group.setId((int) keyHolder.getKeys().get("id"));
-        group.setStudents(new JdbcStudentDao(jdbcTemplate).getAllByGroupId(group.getId()));
+        group.setStudents(new JdbcStudentDao(jdbcTemplate, studentMapper).getAllByGroupId(group.getId()));
     }
 
     @Override
@@ -66,6 +71,6 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public List<Group> getAllByLessonId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_GROUPS_BY_LESSON_ID, new GroupMapper(new JdbcStudentDao(jdbcTemplate)), id);
+        return jdbcTemplate.query(SQL_GET_ALL_GROUPS_BY_LESSON_ID, groupMapper, id);
     }
 }

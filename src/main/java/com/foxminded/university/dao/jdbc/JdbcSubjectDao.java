@@ -28,19 +28,21 @@ public class JdbcSubjectDao implements SubjectDao {
             "WHERE teachers.id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final SubjectMapper subjectMapper;
 
-    public JdbcSubjectDao(JdbcTemplate jdbcTemplate) {
+    public JdbcSubjectDao(JdbcTemplate jdbcTemplate, SubjectMapper subjectMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.subjectMapper = subjectMapper;
     }
 
     @Override
     public Subject getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, new SubjectMapper(), id);
+        return jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id);
     }
 
     @Override
     public List<Subject> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS, new SubjectMapper());
+        return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS, subjectMapper);
     }
 
     @Override
@@ -69,6 +71,6 @@ public class JdbcSubjectDao implements SubjectDao {
 
     @Override
     public List<Subject> getAllByTeacherId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID, new SubjectMapper(), id);
+        return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID, subjectMapper, id);
     }
 }

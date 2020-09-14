@@ -10,13 +10,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.foxminded.university.EntitiesForTests.*;
+import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@Sql({"/schema.sql", "/data.sql"})
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ApplicationTestConfig.class})
+
+@Transactional
+@SpringJUnitConfig(ApplicationTestConfig.class)
 class JdbcLessonTimeDaoTest {
 
     @Autowired

@@ -8,7 +8,7 @@ import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 
-public class EntitiesForTests {
+public class TestData {
 
     public static Audience retrievedAudience = new Audience(1, 101, 100);
     public static Audience createdAudience = new Audience(104, 100);

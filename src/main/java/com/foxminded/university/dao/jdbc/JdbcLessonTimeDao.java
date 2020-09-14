@@ -23,19 +23,21 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     private static final String SQL_DELETE_LESSON_TIME = "DELETE FROM lessons_times WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+    private final LessonTimeMapper lessonTimeMapper;
 
-    public JdbcLessonTimeDao(JdbcTemplate jdbcTemplate) {
+    public JdbcLessonTimeDao(JdbcTemplate jdbcTemplate, LessonTimeMapper lessonTimeMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.lessonTimeMapper = lessonTimeMapper;
     }
 
     @Override
     public LessonTime getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, new LessonTimeMapper(), id);
+        return jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id);
     }
 
     @Override
     public List<LessonTime> getAll() {
-        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_TIMES, new LessonTimeMapper());
+        return jdbcTemplate.query(SQL_GET_ALL_LESSONS_TIMES, lessonTimeMapper);
     }
 
     @Override
