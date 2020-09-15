@@ -4,6 +4,7 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.domain.Group;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -29,12 +30,13 @@ public class JdbcGroupDao implements GroupDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final GroupMapper groupMapper;
-    private final StudentMapper studentMapper;
 
-    public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper, StudentMapper studentMapper) {
+    @Autowired
+    private JdbcStudentDao jdbcStudentDao;
+
+    public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.groupMapper = groupMapper;
-        this.studentMapper = studentMapper;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class JdbcGroupDao implements GroupDao {
             return statement;
         }, keyHolder);
         group.setId((int) keyHolder.getKeys().get("id"));
-        group.setStudents(new JdbcStudentDao(jdbcTemplate, studentMapper).getAllByGroupId(group.getId()));
+        group.setStudents(jdbcStudentDao.getAllByGroupId(group.getId()));
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalTime;
 
 @Component
 public class LessonTimeMapper implements RowMapper<LessonTime> {
@@ -14,8 +15,8 @@ public class LessonTimeMapper implements RowMapper<LessonTime> {
     public LessonTime mapRow(ResultSet resultSet, int i) throws SQLException {
         LessonTime lessonTime = new LessonTime();
         lessonTime.setId(resultSet.getInt("id"));
-        lessonTime.setBegin(resultSet.getTime("begin_time").toLocalTime());
-        lessonTime.setEnd(resultSet.getTime("end_time").toLocalTime());
+        lessonTime.setBegin(resultSet.getObject("begin_time", LocalTime.class));
+        lessonTime.setEnd(resultSet.getObject("end_time", LocalTime.class));
         return lessonTime;
     }
 }

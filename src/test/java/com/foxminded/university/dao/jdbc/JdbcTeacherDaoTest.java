@@ -60,6 +60,7 @@ class JdbcTeacherDaoTest {
                 "id = %d AND name = '%s' AND surname = '%s' AND date_of_birth = '%s' AND gender = '%s'" +
                         "AND email = '%s' AND phone_number = '%s'", updatedTeacher.getId(), updatedTeacher.getName(), updatedTeacher.getSurname(),
                 updatedTeacher.getDateOfBirth(), updatedTeacher.getGender(), updatedTeacher.getEmail(), updatedTeacher.getPhoneNumber()));
+
         assertEquals(1, actualNumber);
     }
 

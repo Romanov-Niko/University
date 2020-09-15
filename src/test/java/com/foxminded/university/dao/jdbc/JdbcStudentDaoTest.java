@@ -63,8 +63,8 @@ class JdbcStudentDaoTest {
                 "id = %d AND group_id = %d AND specialty = '%s' AND course = %d AND admission = '%s' " +
                         "AND graduation = '%s' AND name = '%s' AND surname = '%s' AND date_of_birth = '%s' AND gender = '%s' " +
                         "AND email = '%s' AND phone_number = '%s'", updatedStudent.getId(), updatedStudent.getGroupId(),
-                updatedStudent.getSpecialty(), updatedStudent.getCourse(), Date.valueOf(updatedStudent.getAdmission()),
-                Date.valueOf(updatedStudent.getGraduation()), updatedStudent.getName(), updatedStudent.getSurname(),
+                updatedStudent.getSpecialty(), updatedStudent.getCourse(), updatedStudent.getAdmission(),
+                updatedStudent.getGraduation(), updatedStudent.getName(), updatedStudent.getSurname(),
                 updatedStudent.getDateOfBirth(), updatedStudent.getGender(), updatedStudent.getEmail(), updatedStudent.getPhoneNumber()));
         assertEquals(1, actualNumber);
     }

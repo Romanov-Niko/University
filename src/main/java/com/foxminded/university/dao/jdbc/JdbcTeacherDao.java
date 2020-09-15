@@ -3,7 +3,9 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
+import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -23,15 +25,15 @@ public class JdbcTeacherDao implements TeacherDao {
     private static final String SQL_UPDATE_TEACHER = "UPDATE teachers SET name = ?, surname = ?, date_of_birth = ?," +
             " gender = ?, email = ?, phone_number = ? WHERE id = ?";
     private static final String SQL_DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
+    private static final String SQL_DELETE_TEACHER_SUBJECTS = "DELETE FROM teachers_subjects WHERE teacher_id = ?";
+    private static final String SQL_SAVE_TEACHER_SUBJECT = "INSERT INTO teachers_subjects VALUES (?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
     private final TeacherMapper teacherMapper;
-    private final SubjectMapper subjectMapper;
 
-    public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper, SubjectMapper subjectMapper) {
+    public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.teacherMapper = teacherMapper;
-        this.subjectMapper = subjectMapper;
     }
 
     @Override
@@ -51,24 +53,34 @@ public class JdbcTeacherDao implements TeacherDao {
             PreparedStatement statement = connection.prepareStatement(SQL_SAVE_TEACHER, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, teacher.getName());
             statement.setString(2, teacher.getSurname());
-            statement.setDate(3, Date.valueOf(teacher.getDateOfBirth()));
+            statement.setObject(3, teacher.getDateOfBirth());
             statement.setString(4, teacher.getGender());
             statement.setString(5, teacher.getEmail());
             statement.setString(6, teacher.getPhoneNumber());
             return statement;
         }, keyHolder);
         teacher.setId((int) keyHolder.getKeys().get("id"));
-        teacher.setSubjects(new JdbcSubjectDao(jdbcTemplate, subjectMapper).getAllByTeacherId(teacher.getId()));
+        saveSubjectsToTeacher(teacher.getId(), teacher.getSubjects());
     }
 
     @Override
     public void update(Teacher teacher) {
         jdbcTemplate.update(SQL_UPDATE_TEACHER, teacher.getName(), teacher.getSurname(), teacher.getDateOfBirth(),
                 teacher.getGender(), teacher.getEmail(), teacher.getPhoneNumber(), teacher.getId());
+        removeSubjectsByTeacherId(teacher.getId());
+        saveSubjectsToTeacher(teacher.getId(), teacher.getSubjects());
     }
 
     @Override
     public void delete(int id) {
         jdbcTemplate.update(SQL_DELETE_TEACHER, id);
+    }
+
+    private void removeSubjectsByTeacherId (int id) {
+        jdbcTemplate.update(SQL_DELETE_TEACHER_SUBJECTS, id);
+    }
+
+    private void saveSubjectsToTeacher (int teacherId, List<Subject> subjects) {
+        subjects.forEach(subject -> jdbcTemplate.update(SQL_SAVE_TEACHER_SUBJECT, teacherId, subject.getId()));
     }
 }

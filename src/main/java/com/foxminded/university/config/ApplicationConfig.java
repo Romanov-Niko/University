@@ -17,10 +17,10 @@ import javax.sql.DataSource;
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 
-    private final String URL = "url";
-    private final String USER = "dbuser";
-    private final String DRIVER = "driver";
-    private final String PASSWORD = "dbpassword";
+    private static final String URL = "url";
+    private static final String USER = "dbuser";
+    private static final String DRIVER = "driver";
+    private static final String PASSWORD = "dbpassword";
 
     @Bean
     DataSource dataSource(Environment environment) {

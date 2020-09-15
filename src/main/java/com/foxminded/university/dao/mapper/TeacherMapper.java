@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Component
 public class TeacherMapper implements RowMapper<Teacher> {
@@ -23,7 +24,7 @@ public class TeacherMapper implements RowMapper<Teacher> {
         teacher.setId(resultSet.getInt("id"));
         teacher.setName(resultSet.getString("name"));
         teacher.setSurname(resultSet.getString("surname"));
-        teacher.setDateOfBirth(resultSet.getDate("date_of_birth").toLocalDate());
+        teacher.setDateOfBirth(resultSet.getObject("date_of_birth", LocalDate.class));
         teacher.setGender(resultSet.getString("gender"));
         teacher.setEmail(resultSet.getString("email"));
         teacher.setPhoneNumber(resultSet.getString("phone_number"));

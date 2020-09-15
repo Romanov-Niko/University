@@ -45,8 +45,8 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SQL_SAVE_LESSON_TIME, Statement.RETURN_GENERATED_KEYS);
-            statement.setTime(1, Time.valueOf(lessonTime.getBegin()));
-            statement.setTime(2, Time.valueOf(lessonTime.getEnd()));
+            statement.setObject(1, lessonTime.getBegin());
+            statement.setObject(2, lessonTime.getEnd());
             return statement;
         }, keyHolder);
         lessonTime.setId((int) keyHolder.getKeys().get("id"));
@@ -54,7 +54,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
 
     @Override
     public void update(LessonTime lessonTime) {
-        jdbcTemplate.update(SQL_UPDATE_LESSON_TIME, Time.valueOf(lessonTime.getBegin()), Time.valueOf(lessonTime.getEnd()), lessonTime.getId());
+        jdbcTemplate.update(SQL_UPDATE_LESSON_TIME, lessonTime.getBegin(), lessonTime.getEnd(), lessonTime.getId());
     }
 
     @Override

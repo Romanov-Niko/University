@@ -50,11 +50,11 @@ public class JdbcStudentDao implements StudentDao {
             statement.setInt(1, student.getGroupId());
             statement.setString(2, student.getSpecialty());
             statement.setInt(3, student.getCourse());
-            statement.setDate(4, Date.valueOf(student.getAdmission()));
-            statement.setDate(5, Date.valueOf(student.getGraduation()));
+            statement.setObject(4, student.getAdmission());
+            statement.setObject(5, student.getGraduation());
             statement.setString(6, student.getName());
             statement.setString(7, student.getSurname());
-            statement.setDate(8, Date.valueOf(student.getDateOfBirth()));
+            statement.setObject(8, student.getDateOfBirth());
             statement.setString(9, student.getGender());
             statement.setString(10, student.getEmail());
             statement.setString(11, student.getPhoneNumber());
@@ -66,8 +66,8 @@ public class JdbcStudentDao implements StudentDao {
     @Override
     public void update(Student student) {
         jdbcTemplate.update(SQL_UPDATE_STUDENT, student.getGroupId(), student.getSpecialty(), student.getCourse(),
-                Date.valueOf(student.getAdmission()), Date.valueOf(student.getGraduation()), student.getName(),
-                student.getSurname(), Date.valueOf(student.getDateOfBirth()), student.getGender(), student.getEmail(),
+                student.getAdmission(), student.getGraduation(), student.getName(),
+                student.getSurname(), student.getDateOfBirth(), student.getGender(), student.getEmail(),
                 student.getPhoneNumber(), student.getId());
     }
 

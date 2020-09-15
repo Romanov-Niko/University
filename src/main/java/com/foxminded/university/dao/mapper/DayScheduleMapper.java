@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Component
 public class DayScheduleMapper implements RowMapper<DaySchedule> {
@@ -21,7 +22,7 @@ public class DayScheduleMapper implements RowMapper<DaySchedule> {
     public DaySchedule mapRow(ResultSet resultSet, int i) throws SQLException {
         DaySchedule daySchedule = new DaySchedule();
         daySchedule.setId(resultSet.getInt("id"));
-        daySchedule.setDay(resultSet.getDate("day").toLocalDate());
+        daySchedule.setDay(resultSet.getObject("day", LocalDate.class));
         daySchedule.setLessons(lessonDao.getAllByDayId(daySchedule.getId()));
         return daySchedule;
     }

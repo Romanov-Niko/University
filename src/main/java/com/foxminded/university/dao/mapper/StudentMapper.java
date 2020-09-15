@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Component
 public class StudentMapper implements RowMapper<Student> {
@@ -17,11 +18,11 @@ public class StudentMapper implements RowMapper<Student> {
         student.setGroupId(resultSet.getInt("group_id"));
         student.setSpecialty(resultSet.getString("specialty"));
         student.setCourse(resultSet.getInt("course"));
-        student.setAdmission(resultSet.getDate("admission").toLocalDate());
-        student.setGraduation(resultSet.getDate("graduation").toLocalDate());
+        student.setAdmission(resultSet.getObject("admission", LocalDate.class));
+        student.setGraduation(resultSet.getObject("graduation", LocalDate.class));
         student.setName(resultSet.getString("name"));
         student.setSurname(resultSet.getString("surname"));
-        student.setDateOfBirth(resultSet.getDate("date_of_birth").toLocalDate());
+        student.setDateOfBirth(resultSet.getObject("date_of_birth", LocalDate.class));
         student.setGender(resultSet.getString("gender"));
         student.setEmail(resultSet.getString("email"));
         student.setPhoneNumber(resultSet.getString("phone_number"));
