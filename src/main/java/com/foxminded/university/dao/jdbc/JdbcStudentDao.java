@@ -1,14 +1,13 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.mapper.StudentMapper;
+import com.foxminded.university.dao.jdbc.mapper.StudentMapper;
 import com.foxminded.university.domain.Student;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;

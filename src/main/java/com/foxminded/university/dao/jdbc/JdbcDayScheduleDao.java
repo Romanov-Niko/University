@@ -1,7 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.DayScheduleDao;
-import com.foxminded.university.dao.mapper.DayScheduleMapper;
+import com.foxminded.university.dao.jdbc.mapper.DayScheduleMapper;
 import com.foxminded.university.domain.DaySchedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

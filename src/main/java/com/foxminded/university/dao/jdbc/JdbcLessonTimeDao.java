@@ -1,7 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.LessonTimeDao;
-import com.foxminded.university.dao.mapper.LessonTimeMapper;
+import com.foxminded.university.dao.jdbc.mapper.LessonTimeMapper;
 import com.foxminded.university.domain.LessonTime;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.List;
 
 @Component

@@ -1,7 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.mapper.AudienceMapper;
+import com.foxminded.university.dao.jdbc.mapper.AudienceMapper;
 import com.foxminded.university.domain.Audience;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

@@ -1,14 +1,14 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.mapper.GroupMapper;
-import com.foxminded.university.dao.mapper.StudentMapper;
+import com.foxminded.university.dao.jdbc.mapper.GroupMapper;
 import com.foxminded.university.domain.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -27,6 +27,7 @@ public class JdbcGroupDao implements GroupDao {
             "LEFT JOIN lessons ON lessons_groups.lesson_id = lessons.id " +
             "LEFT JOIN groups ON lessons_groups.group_id = groups.id " +
             "WHERE lessons.id = ?";
+    private static final String SQL_UPDATE_STUDENT_GROUP = "UPDATE students SET group_id = ? WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GroupMapper groupMapper;
@@ -49,6 +50,7 @@ public class JdbcGroupDao implements GroupDao {
         return jdbcTemplate.query(SQL_GET_ALL_GROUPS, groupMapper);
     }
 
+    @Transactional
     @Override
     public void save(Group group) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -58,7 +60,10 @@ public class JdbcGroupDao implements GroupDao {
             return statement;
         }, keyHolder);
         group.setId((int) keyHolder.getKeys().get("id"));
-        group.setStudents(jdbcStudentDao.getAllByGroupId(group.getId()));
+        group.getStudents().forEach(student -> {
+            updateStudentGroup(student.getId(), group.getId());
+            student.setGroupId(group.getId());
+        });
     }
 
     @Override
@@ -74,5 +79,9 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public List<Group> getAllByLessonId(int id) {
         return jdbcTemplate.query(SQL_GET_ALL_GROUPS_BY_LESSON_ID, groupMapper, id);
+    }
+
+    private void updateStudentGroup(int studentId, int groupId) {
+        jdbcTemplate.update(SQL_UPDATE_STUDENT_GROUP, groupId, studentId);
     }
 }

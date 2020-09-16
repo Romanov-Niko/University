@@ -43,7 +43,9 @@ public class TestData {
             Collections.singletonList(new Subject(1, "Calculus", 120, 1, "math")));
 
     public static Group retrievedGroup = new Group(1, "AA-11", Collections.singletonList(retrievedStudent));
-    public static Group createdGroup = new Group("DD-44");
+    public static Group createdGroup = new Group("DD-44", Collections.singletonList(new Student(1, "first",
+            "student", LocalDate.parse("1990-01-01"), "male", "first@gmail.com", "11111",
+            1, "math", 1, LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"))));
     public static Group updatedGroup = new Group(1, "UPDATED");
 
     public static Lesson retrievedLesson = new Lesson(1, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);

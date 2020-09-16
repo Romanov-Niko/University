@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.mapper;
+package com.foxminded.university.dao.jdbc.mapper;
 
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
