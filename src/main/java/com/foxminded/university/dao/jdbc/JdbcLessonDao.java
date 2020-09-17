@@ -2,11 +2,15 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.dao.jdbc.mapper.LessonMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
+import com.foxminded.university.domain.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -26,9 +30,14 @@ public class JdbcLessonDao implements LessonDao {
             "LEFT JOIN days_schedules ON days_lessons.day_id = days_schedules.id " +
             "LEFT JOIN lessons ON days_lessons.lesson_id = lessons.id " +
             "WHERE days_lessons.day_id = ?";
+    private static final String SQL_DELETE_GROUP_FROM_LESSON = "DELETE FROM lessons_groups WHERE lesson_id = ? AND group_id = ?";
+    private static final String SQL_SAVE_GROUP_TO_LESSON = "INSERT INTO lessons_groups VALUES (?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
     private final LessonMapper lessonMapper;
+
+    @Autowired
+    private JdbcGroupDao jdbcGroupDao;
 
     public JdbcLessonDao(JdbcTemplate jdbcTemplate, LessonMapper lessonMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -45,6 +54,7 @@ public class JdbcLessonDao implements LessonDao {
         return jdbcTemplate.query(SQL_GET_ALL_LESSONS, lessonMapper);
     }
 
+    @Transactional
     @Override
     public void save(Lesson lesson) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -57,10 +67,21 @@ public class JdbcLessonDao implements LessonDao {
             return statement;
         }, keyHolder);
         lesson.setId((int) keyHolder.getKeys().get("id"));
+        lesson.getGroups().forEach(group -> saveGroupToLesson(lesson.getId(), group.getId()));
     }
 
+    @Transactional
     @Override
     public void update(Lesson lesson) {
+        List<Group> oldGroups = jdbcGroupDao.getAllByLessonId(lesson.getId());
+        oldGroups.stream()
+                .filter(group -> !lesson.getGroups().contains(group))
+                .forEach(group -> removeGroupFromLesson(lesson.getId(), group.getId()));
+
+        lesson.getGroups().stream()
+                .filter(group -> !oldGroups.contains(group))
+                .forEach(group -> saveGroupToLesson(lesson.getId(), group.getId()));
+
         jdbcTemplate.update(SQL_UPDATE_LESSON, lesson.getSubject().getId(), lesson.getTeacher().getId(), lesson.getAudience().getId(),
                 lesson.getLessonTime().getId(), lesson.getId());
     }
@@ -73,5 +94,13 @@ public class JdbcLessonDao implements LessonDao {
     @Override
     public List<Lesson> getAllByDayId(int id) {
         return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY_ID, lessonMapper, id);
+    }
+
+    private void removeGroupFromLesson (int lessonId, int groupId) {
+        jdbcTemplate.update(SQL_DELETE_GROUP_FROM_LESSON, lessonId, groupId);
+    }
+
+    private void saveGroupToLesson (int lessonId, int groupId) {
+        jdbcTemplate.update(SQL_SAVE_GROUP_TO_LESSON, lessonId, groupId);
     }
 }
