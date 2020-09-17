@@ -1,37 +1,50 @@
 package com.foxminded.university.domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Student extends Person {
 
-    private Group group;
+    private int id;
+    private int groupId;
     private String specialty;
     private Integer course;
     private LocalDate admission;
     private LocalDate graduation;
 
-    public Student(String name, String surname, Group group) {
-        super(name, surname);
-        this.group = group;
+    public Student() {
     }
 
     public Student(String name, String surname, LocalDate dateOfBirth, String gender, String email,
-                   String phoneNumber, Group group, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   String phoneNumber, int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         super(name, surname, dateOfBirth, gender, email, phoneNumber);
-        this.group = group;
+        this.groupId = groupId;
         this.specialty = specialty;
         this.course = course;
         this.admission = admission;
         this.graduation = graduation;
     }
 
-
-    public Group getGroup() {
-        return group;
+    public Student(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
+                   int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+        this(name, surname, dateOfBirth, gender, email, phoneNumber, groupId, specialty, course, admission, graduation);
+        this.id = id;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getSpecialty() {
@@ -64,5 +77,23 @@ public class Student extends Person {
 
     public void setGraduation(LocalDate graduation) {
         this.graduation = graduation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return id == student.id &&
+                groupId == student.groupId &&
+                specialty.equals(student.specialty) &&
+                course.equals(student.course) &&
+                admission.equals(student.admission) &&
+                graduation.equals(student.graduation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, groupId, specialty, course, admission, graduation);
     }
 }
