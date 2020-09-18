@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectMapper;
 import com.foxminded.university.domain.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -30,6 +31,7 @@ public class JdbcSubjectDao implements SubjectDao {
     private final JdbcTemplate jdbcTemplate;
     private final SubjectMapper subjectMapper;
 
+    @Autowired
     public JdbcSubjectDao(JdbcTemplate jdbcTemplate, SubjectMapper subjectMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.subjectMapper = subjectMapper;

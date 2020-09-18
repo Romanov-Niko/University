@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc.mapper;
 
 import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Lesson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class LessonMapper implements RowMapper<Lesson> {
     private final LessonTimeDao lessonTimeDao;
     private final GroupDao groupDao;
 
+    @Autowired
     public LessonMapper(SubjectDao subjectDao, TeacherDao teacherDao, AudienceDao audienceDao, LessonTimeDao lessonTimeDao, GroupDao groupDao) {
         this.subjectDao = subjectDao;
         this.teacherDao = teacherDao;

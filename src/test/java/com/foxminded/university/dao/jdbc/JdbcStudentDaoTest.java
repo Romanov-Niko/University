@@ -85,4 +85,11 @@ class JdbcStudentDaoTest {
 
         assertEquals(1, actualStudents.size());
     }
+
+    @Test
+    void givenFirstGroupName_whenGetAllByGroupName_thenReturnedAllStudentsOfFirstGroup() {
+        List<Student> actualStudents = studentDao.getAllByGroupName("AA-11");
+
+        assertEquals(1, actualStudents.size());
+    }
 }

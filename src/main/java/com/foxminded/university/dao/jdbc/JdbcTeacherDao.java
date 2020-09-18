@@ -1,5 +1,6 @@
 package com.foxminded.university.dao.jdbc;
 
+import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherMapper;
 import com.foxminded.university.domain.Subject;
@@ -29,13 +30,13 @@ public class JdbcTeacherDao implements TeacherDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final TeacherMapper teacherMapper;
+    private final SubjectDao subjectDao;
 
     @Autowired
-    private JdbcSubjectDao jdbcSubjectDao;
-
-    public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper) {
+    public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper, SubjectDao subjectDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.teacherMapper = teacherMapper;
+        this.subjectDao = subjectDao;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class JdbcTeacherDao implements TeacherDao {
     @Transactional
     @Override
     public void update(Teacher teacher) {
-        List<Subject> oldSubjects = jdbcSubjectDao.getAllByTeacherId(teacher.getId());
+        List<Subject> oldSubjects = subjectDao.getAllByTeacherId(teacher.getId());
         oldSubjects.stream()
                 .filter(subject -> !teacher.getSubjects().contains(subject))
                 .forEach(subject -> removeSubjectFromTeacher(teacher.getId(), subject.getId()));

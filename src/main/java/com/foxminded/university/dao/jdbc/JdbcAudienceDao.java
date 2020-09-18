@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.mapper.AudienceMapper;
 import com.foxminded.university.domain.Audience;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,6 +25,7 @@ public class JdbcAudienceDao implements AudienceDao {
     private final JdbcTemplate jdbcTemplate;
     private final AudienceMapper audienceMapper;
 
+    @Autowired
     public JdbcAudienceDao(JdbcTemplate jdbcTemplate, AudienceMapper audienceMapper) {
         this.audienceMapper = audienceMapper;
         this.jdbcTemplate = jdbcTemplate;

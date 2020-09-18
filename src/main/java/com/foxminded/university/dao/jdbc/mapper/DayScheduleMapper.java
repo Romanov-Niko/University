@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc.mapper;
 
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ public class DayScheduleMapper implements RowMapper<DaySchedule> {
 
     private final LessonDao lessonDao;
 
+    @Autowired
     public DayScheduleMapper(LessonDao lessonDao) {
         this.lessonDao = lessonDao;
     }

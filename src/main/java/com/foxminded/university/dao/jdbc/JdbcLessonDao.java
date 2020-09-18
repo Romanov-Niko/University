@@ -1,10 +1,10 @@
 package com.foxminded.university.dao.jdbc;
 
+import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.dao.jdbc.mapper.LessonMapper;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
-import com.foxminded.university.domain.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -35,13 +35,13 @@ public class JdbcLessonDao implements LessonDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final LessonMapper lessonMapper;
+    private final GroupDao groupDao;
 
     @Autowired
-    private JdbcGroupDao jdbcGroupDao;
-
-    public JdbcLessonDao(JdbcTemplate jdbcTemplate, LessonMapper lessonMapper) {
+    public JdbcLessonDao(JdbcTemplate jdbcTemplate, LessonMapper lessonMapper, GroupDao groupDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.lessonMapper = lessonMapper;
+        this.groupDao = groupDao;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class JdbcLessonDao implements LessonDao {
     @Transactional
     @Override
     public void update(Lesson lesson) {
-        List<Group> oldGroups = jdbcGroupDao.getAllByLessonId(lesson.getId());
+        List<Group> oldGroups = groupDao.getAllByLessonId(lesson.getId());
         oldGroups.stream()
                 .filter(group -> !lesson.getGroups().contains(group))
                 .forEach(group -> removeGroupFromLesson(lesson.getId(), group.getId()));

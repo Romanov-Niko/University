@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.StudentMapper;
 import com.foxminded.university.domain.Student;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,11 +22,15 @@ public class JdbcStudentDao implements StudentDao {
     private static final String SQL_UPDATE_STUDENT = "UPDATE students SET group_id = ?, specialty = ?, course = ?, admission = ?, " +
             "graduation = ?, name = ?, surname = ?, date_of_birth = ?, gender = ?, email = ?, phone_number = ? WHERE id = ?";
     private static final String SQL_DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
-    private static final String SQL_GET_ALL_STUDENTS_BY_GROUP = "SELECT * FROM students WHERE group_id = ?";
+    private static final String SQL_GET_ALL_STUDENTS_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ?";
+    private static final String SQL_GET_ALL_STUDENTS_BY_GROUP_NAME = "SELECT * FROM students " +
+            "LEFT JOIN groups ON students.group_id = groups.id " +
+            "WHERE groups.name = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final StudentMapper studentMapper;
 
+    @Autowired
     public JdbcStudentDao(JdbcTemplate jdbcTemplate, StudentMapper studentMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.studentMapper = studentMapper;
@@ -77,6 +82,11 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public List<Student> getAllByGroupId(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS_BY_GROUP, studentMapper, id);
+        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS_BY_GROUP_ID, studentMapper, id);
+    }
+
+    @Override
+    public List<Student> getAllByGroupName(String name) {
+        return jdbcTemplate.query(SQL_GET_ALL_STUDENTS_BY_GROUP_NAME, studentMapper, name);
     }
 }

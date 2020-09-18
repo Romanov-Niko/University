@@ -1,11 +1,8 @@
-package com.foxminded.university.dao;
-
-import org.springframework.stereotype.Component;
+package com.foxminded.university.service;
 
 import java.util.List;
 
-@Component
-public interface Dao<T> {
+public interface Service<T> {
 
     T getById(int id);
 

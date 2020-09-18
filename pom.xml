@@ -16,6 +16,8 @@
         <postgres.version>42.1.4</postgres.version>
         <h2.version>1.4.200</h2.version>
         <spring-test.version>5.2.2.RELEASE</spring-test.version>
+        <org.mockito.version>2.21.0</org.mockito.version>
+        <org.mockito.mockito-junit-jupiter.version>2.23.0</org.mockito.mockito-junit-jupiter.version>
     </properties>
 
     <dependencies>
@@ -55,6 +57,18 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${org.mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${org.mockito.mockito-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

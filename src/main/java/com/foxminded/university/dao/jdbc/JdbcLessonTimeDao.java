@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LessonTimeMapper;
 import com.foxminded.university.domain.LessonTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,6 +25,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     private final JdbcTemplate jdbcTemplate;
     private final LessonTimeMapper lessonTimeMapper;
 
+    @Autowired
     public JdbcLessonTimeDao(JdbcTemplate jdbcTemplate, LessonTimeMapper lessonTimeMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.lessonTimeMapper = lessonTimeMapper;

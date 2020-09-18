@@ -1,6 +1,7 @@
 package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupMapper;
 import com.foxminded.university.domain.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,6 @@ public class JdbcGroupDao implements GroupDao {
     private final GroupMapper groupMapper;
 
     @Autowired
-    private JdbcStudentDao jdbcStudentDao;
-
     public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.groupMapper = groupMapper;
