@@ -32,7 +32,7 @@ class JdbcGroupDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstGroup() {
-        Group actualGroup = groupDao.getById(1);
+        Group actualGroup = groupDao.getById(1).orElse(null);
 
         assertEquals(retrievedGroup, actualGroup);
     }

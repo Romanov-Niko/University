@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public interface SubjectDao extends Dao<Subject> {
 
     List<Subject> getAllByTeacherId(int id);

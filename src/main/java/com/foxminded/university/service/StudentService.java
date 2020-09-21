@@ -1,52 +1,60 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class StudentService implements Service<Student>{
+@Service
+public class StudentService {
 
     private final StudentDao studentDao;
+    private final GroupDao groupDao;
 
-    @Autowired
-    public StudentService(StudentDao studentDao) {
+    public StudentService(StudentDao studentDao, GroupDao groupDao) {
         this.studentDao = studentDao;
+        this.groupDao = groupDao;
     }
 
-    @Override
-    public Student getById(int id) {
-        return studentDao.getById(id);
-    }
-
-    @Override
     public List<Student> getAll() {
         return studentDao.getAll();
     }
 
-    @Override
     public void save(Student student) {
-        studentDao.save(student);
+        if (student.getCourse() < 7) {
+            studentDao.save(student);
+        }
     }
 
-    @Override
     public void update(Student student) {
-        studentDao.update(student);
+        if (isStudentPresent(student.getId()) && (student.getCourse() < 7)) {
+            studentDao.update(student);
+        }
     }
 
-    @Override
     public void delete(int id) {
         studentDao.delete(id);
     }
 
     public List<Student> getAllByGroupId(int id) {
-        return studentDao.getAllByGroupId(id);
+        if (isGroupPresent(id)) {
+            return studentDao.getAllByGroupId(id);
+        }
+        return new ArrayList<>();
     }
 
     public List<Student> getAllByGroupName(String name) {
         return studentDao.getAllByGroupName(name);
+    }
+
+    private boolean isStudentPresent(int id) {
+        return studentDao.getById(id).isPresent();
+    }
+
+    private boolean isGroupPresent(int id) {
+        return groupDao.getById(id).isPresent();
     }
 }

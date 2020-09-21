@@ -8,9 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import static com.foxminded.university.TestData.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -22,13 +26,6 @@ class LessonTimeServiceTest {
 
     @InjectMocks
     private LessonTimeService lessonTimeService;
-
-    @Test
-    void getById() {
-        lessonTimeService.getById(1);
-
-        verify(lessonTimeDao, times(1)).getById(1);
-    }
 
     @Test
     void getAll() {
@@ -46,6 +43,8 @@ class LessonTimeServiceTest {
 
     @Test
     void update() {
+        given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
+
         lessonTimeService.update(updatedLessonTime);
 
         verify(lessonTimeDao, times(1)).update(updatedLessonTime);

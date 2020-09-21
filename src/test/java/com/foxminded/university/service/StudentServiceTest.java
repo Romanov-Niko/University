@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.StudentDao;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static com.foxminded.university.TestData.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -20,15 +26,11 @@ class StudentServiceTest {
     @Mock
     private StudentDao studentDao;
 
+    @Mock
+    private GroupDao groupDao;
+
     @InjectMocks
     private StudentService studentService;
-
-    @Test
-    void getById() {
-        studentService.getById(1);
-
-        verify(studentDao, times(1)).getById(1);
-    }
 
     @Test
     void getAll() {
@@ -46,6 +48,8 @@ class StudentServiceTest {
 
     @Test
     void update() {
+        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+
         studentService.update(updatedStudent);
 
         verify(studentDao, times(1)).update(updatedStudent);
@@ -60,6 +64,8 @@ class StudentServiceTest {
 
     @Test
     void getAllByGroupId() {
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
+
         studentService.getAllByGroupId(1);
 
         verify(studentDao, times(1)).getAllByGroupId(1);

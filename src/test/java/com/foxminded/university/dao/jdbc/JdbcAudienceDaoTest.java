@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
@@ -30,7 +31,7 @@ class JdbcAudienceDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstAudience() {
-        Audience actualAudience = audienceDao.getById(1);
+        Audience actualAudience = audienceDao.getById(1).orElse(null);
 
         assertEquals(retrievedAudience, actualAudience);
     }

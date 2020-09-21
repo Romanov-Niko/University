@@ -29,7 +29,7 @@ class JdbcTeacherDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstTeacher() {
-        Teacher actualTeacher = teacherDao.getById(1);
+        Teacher actualTeacher = teacherDao.getById(1).orElse(null);
 
         assertEquals(retrievedTeacher, actualTeacher);
     }

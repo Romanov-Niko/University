@@ -4,7 +4,9 @@ import com.foxminded.university.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 
@@ -31,22 +33,24 @@ public class TestData {
     public static Subject retrievedSubject = new Subject(1, "Calculus", 120, 1, "math");
     public static Subject createdSubject = new Subject("NEW", 120, 1, "math");
     public static Subject updatedSubject = new Subject(1, "updated", 120, 1, "math");
+    public static List<Subject> allSubjects = Arrays.asList(retrievedSubject, new Subject(2,"Anatomy", 120, 2, "biology"),
+            new Subject(3,"The world history", 120, 3, "history"));
 
     public static Teacher retrievedTeacher = new Teacher(1, "first", "teacher", LocalDate.parse("1990-01-01"),
             "male", "first@gmail.com", "11111",
-            Collections.singletonList(new Subject(1, "Calculus", 120, 1, "math")));
+            singletonList(retrievedSubject));
     public static Teacher createdTeacher = new Teacher("first", "teacher", LocalDate.parse("1990-01-01"),
             "male", "first@gmail.com", "11111",
-            Collections.singletonList(new Subject(1, "Calculus", 120, 1, "math")));
+            singletonList(retrievedSubject));
     public static Teacher updatedTeacher = new Teacher(1, "UPDATED", "teacher", LocalDate.parse("1990-01-01"),
             "male", "first@gmail.com", "11111",
-            Collections.singletonList(new Subject(1, "Calculus", 120, 1, "math")));
+            singletonList(retrievedSubject));
 
-    public static Group retrievedGroup = new Group(1, "AA-11", Collections.singletonList(retrievedStudent));
-    public static Group createdGroup = new Group("DD-44", Collections.singletonList(new Student(1, "first",
+    public static Group retrievedGroup = new Group(1, "AA-11", singletonList(retrievedStudent));
+    public static Group createdGroup = new Group("DD-44", singletonList(new Student(1, "first",
             "student", LocalDate.parse("1990-01-01"), "male", "first@gmail.com", "11111",
             1, "math", 1, LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"))));
-    public static Group updatedGroup = new Group(1, "UPDATED");
+    public static Group updatedGroup = new Group(1, "UPDATED", singletonList(retrievedStudent));
 
     public static Lesson retrievedLesson = new Lesson(1, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);
     public static Lesson createdLesson = new Lesson(retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);

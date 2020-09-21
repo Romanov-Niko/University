@@ -1,48 +1,56 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Group;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.foxminded.university.domain.Student;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class GroupService implements Service<Group>{
+@Service
+public class GroupService {
 
     private final GroupDao groupDao;
+    private final StudentDao studentDao;
 
-    @Autowired
-    public GroupService (GroupDao groupDao) {
+    public GroupService(GroupDao groupDao, StudentDao studentDao) {
         this.groupDao = groupDao;
+        this.studentDao = studentDao;
     }
 
-    @Override
-    public Group getById(int id) {
-        return groupDao.getById(id);
-    }
-
-    @Override
     public List<Group> getAll() {
         return groupDao.getAll();
     }
 
-    @Override
     public void save(Group group) {
-        groupDao.save(group);
+        if ((group.getStudents().size() < 31) && isGroupUnique(group.getName())) {
+            groupDao.save(group);
+        }
     }
 
-    @Override
     public void update(Group group) {
-        groupDao.update(group);
+        if (isGroupPresent(group.getId()) && (group.getStudents().size() < 31) && areStudentsPresent(group.getStudents())) {
+            groupDao.update(group);
+        }
     }
 
-    @Override
     public void delete(int id) {
         groupDao.delete(id);
     }
 
     public List<Group> getAllByLessonId(int id) {
         return groupDao.getAllByLessonId(id);
+    }
+
+    private boolean isGroupPresent(int id) {
+        return groupDao.getById(id).isPresent();
+    }
+
+    private boolean isGroupUnique(String name) {
+        return groupDao.getAll().stream().noneMatch(group -> group.getName().equals(name));
+    }
+
+    private boolean areStudentsPresent(List<Student> students) {
+        return studentDao.getAll().containsAll(students);
     }
 }

@@ -32,7 +32,7 @@ class JdbcStudentDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstStudent() {
-        Student actualStudent = studentDao.getById(1);
+        Student actualStudent = studentDao.getById(1).orElse(null);
 
         assertEquals(retrievedStudent, actualStudent);
     }

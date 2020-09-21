@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public interface StudentDao extends Dao<Student> {
 
     List<Student> getAllByGroupId(int id);

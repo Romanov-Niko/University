@@ -2,18 +2,22 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.StudentMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcStudentDao implements StudentDao {
 
     private static final String SQL_GET_STUDENT_BY_ID = "SELECT * FROM students WHERE id = ?";
@@ -30,15 +34,18 @@ public class JdbcStudentDao implements StudentDao {
     private final JdbcTemplate jdbcTemplate;
     private final StudentMapper studentMapper;
 
-    @Autowired
     public JdbcStudentDao(JdbcTemplate jdbcTemplate, StudentMapper studentMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.studentMapper = studentMapper;
     }
 
     @Override
-    public Student getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id);
+    public Optional<Student> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

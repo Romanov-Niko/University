@@ -15,7 +15,6 @@ public class DayScheduleMapper implements RowMapper<DaySchedule> {
 
     private final LessonDao lessonDao;
 
-    @Autowired
     public DayScheduleMapper(LessonDao lessonDao) {
         this.lessonDao = lessonDao;
     }

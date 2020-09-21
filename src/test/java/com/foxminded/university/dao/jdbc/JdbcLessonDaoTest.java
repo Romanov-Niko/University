@@ -32,7 +32,7 @@ class JdbcLessonDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstGroup() {
-        Lesson actualLesson = lessonDao.getById(1);
+        Lesson actualLesson = lessonDao.getById(1).orElse(null);
 
         assertEquals(retrievedLesson, actualLesson);
     }

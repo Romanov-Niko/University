@@ -13,7 +13,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.foxminded.university.dao")
+@ComponentScan("com.foxminded.university")
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 

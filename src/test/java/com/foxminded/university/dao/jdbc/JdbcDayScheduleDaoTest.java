@@ -34,7 +34,7 @@ class JdbcDayScheduleDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstDaySchedule() {
-        DaySchedule actualDaySchedule = dayScheduleDao.getById(1);
+        DaySchedule actualDaySchedule = dayScheduleDao.getById(1).orElse(null);
 
         assertEquals(retrievedDaySchedule, actualDaySchedule);
     }

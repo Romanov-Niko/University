@@ -2,15 +2,22 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.domain.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static com.foxminded.university.TestData.createdStudent;
 import static com.foxminded.university.TestData.updatedStudent;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,13 +35,6 @@ class SubjectServiceTest {
     private SubjectService subjectService;
 
     @Test
-    void getById() {
-        subjectService.getById(1);
-
-        verify(subjectDao, times(1)).getById(1);
-    }
-
-    @Test
     void getAll() {
         subjectService.getAll();
 
@@ -50,6 +50,8 @@ class SubjectServiceTest {
 
     @Test
     void update() {
+        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
+
         subjectService.update(updatedSubject);
 
         verify(subjectDao, times(1)).update(updatedSubject);

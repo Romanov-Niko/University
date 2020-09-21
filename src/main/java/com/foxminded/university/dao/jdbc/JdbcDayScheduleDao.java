@@ -3,21 +3,25 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.DayScheduleDao;
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.dao.jdbc.mapper.DayScheduleMapper;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcDayScheduleDao implements DayScheduleDao {
 
     private static final String SQL_GET_DAY_SCHEDULE_BY_ID = "SELECT * FROM days_schedules WHERE id = ?";
@@ -50,7 +54,6 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
     private final DayScheduleMapper dayScheduleMapper;
     private final LessonDao lessonDao;
 
-    @Autowired
     public JdbcDayScheduleDao(JdbcTemplate jdbcTemplate, DayScheduleMapper dayScheduleMapper, LessonDao lessonDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.dayScheduleMapper = dayScheduleMapper;
@@ -58,8 +61,12 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
     }
 
     @Override
-    public DaySchedule getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_DAY_SCHEDULE_BY_ID, dayScheduleMapper, id);
+    public Optional<DaySchedule> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_DAY_SCHEDULE_BY_ID, dayScheduleMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -3,19 +3,23 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupMapper;
+import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Group;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcGroupDao implements GroupDao {
 
     private static final String SQL_GET_GROUP_BY_ID = "SELECT * FROM groups WHERE id = ?";
@@ -33,15 +37,18 @@ public class JdbcGroupDao implements GroupDao {
     private final JdbcTemplate jdbcTemplate;
     private final GroupMapper groupMapper;
 
-    @Autowired
     public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.groupMapper = groupMapper;
     }
 
     @Override
-    public Group getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id);
+    public Optional<Group> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

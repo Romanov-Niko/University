@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.DayScheduleDao;
+import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +11,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static com.foxminded.university.TestData.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
@@ -23,15 +27,11 @@ class DayScheduleServiceTest {
     @Mock
     private DayScheduleDao dayScheduleDao;
 
+    @Mock
+    private LessonDao lessonDao;
+
     @InjectMocks
     private DayScheduleService dayScheduleService;
-
-    @Test
-    void getById() {
-        dayScheduleService.getById(1);
-
-        verify(dayScheduleDao, times(1)).getById(1);
-    }
 
     @Test
     void getAll() {
@@ -49,6 +49,9 @@ class DayScheduleServiceTest {
 
     @Test
     void update() {
+        given(dayScheduleDao.getById(anyInt())).willReturn(Optional.of(retrievedDaySchedule));
+        given(lessonDao.getAll()).willReturn(singletonList(retrievedLesson));
+
         dayScheduleService.update(updatedDaySchedule);
 
         verify(dayScheduleDao, times(1)).update(updatedDaySchedule);

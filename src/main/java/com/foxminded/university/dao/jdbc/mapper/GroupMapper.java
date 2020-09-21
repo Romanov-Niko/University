@@ -14,7 +14,6 @@ public class GroupMapper implements RowMapper<Group> {
 
     private final StudentDao studentDao;
 
-    @Autowired
     public GroupMapper(StudentDao studentDao) {
         this.studentDao = studentDao;
     }

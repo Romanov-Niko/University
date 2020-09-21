@@ -1,46 +1,42 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.DayScheduleDao;
+import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-@Component
-public class DayScheduleService implements Service<DaySchedule> {
+@Service
+public class DayScheduleService {
 
     private final DayScheduleDao dayScheduleDao;
+    private final LessonDao lessonDao;
 
-    @Autowired
-    public DayScheduleService(DayScheduleDao dayScheduleDao) {
+    public DayScheduleService(DayScheduleDao dayScheduleDao, LessonDao lessonDao) {
         this.dayScheduleDao = dayScheduleDao;
+        this.lessonDao = lessonDao;
     }
 
-    @Override
-    public DaySchedule getById(int id) {
-        return dayScheduleDao.getById(id);
-    }
-
-    @Override
     public List<DaySchedule> getAll() {
         return dayScheduleDao.getAll();
     }
 
-    @Override
     public void save(DaySchedule daySchedule) {
-        dayScheduleDao.save(daySchedule);
+        if (!isWeekendDay(daySchedule.getDay())) {
+            dayScheduleDao.save(daySchedule);
+        }
     }
 
-    @Override
     public void update(DaySchedule daySchedule) {
-        dayScheduleDao.update(daySchedule);
+        if (isDaySchedulePresent(daySchedule.getId()) && !isWeekendDay(daySchedule.getDay()) && areLessonsPresent(daySchedule.getLessons())) {
+            dayScheduleDao.update(daySchedule);
+        }
     }
 
-    @Override
     public void delete(int id) {
         dayScheduleDao.delete(id);
     }
@@ -59,5 +55,17 @@ public class DayScheduleService implements Service<DaySchedule> {
 
     public List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDay) {
         return dayScheduleDao.getByMonthForTeacher(id, startDay);
+    }
+
+    private boolean isDaySchedulePresent(int id) {
+        return dayScheduleDao.getById(id).isPresent();
+    }
+
+    private boolean isWeekendDay(LocalDate day) {
+        return day.getDayOfWeek() == DayOfWeek.SATURDAY || day.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    private boolean areLessonsPresent(List<Lesson> lessons) {
+        return lessonDao.getAll().containsAll(lessons);
     }
 }

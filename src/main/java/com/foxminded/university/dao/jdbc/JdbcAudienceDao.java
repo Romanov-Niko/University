@@ -4,16 +4,19 @@ import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.mapper.AudienceMapper;
 import com.foxminded.university.domain.Audience;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcAudienceDao implements AudienceDao {
 
     private static final String SQL_GET_AUDIENCE_BY_ID = "SELECT * FROM audiences WHERE id = ?";
@@ -25,15 +28,18 @@ public class JdbcAudienceDao implements AudienceDao {
     private final JdbcTemplate jdbcTemplate;
     private final AudienceMapper audienceMapper;
 
-    @Autowired
     public JdbcAudienceDao(JdbcTemplate jdbcTemplate, AudienceMapper audienceMapper) {
         this.audienceMapper = audienceMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Audience getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id);
+    public Optional<Audience> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -2,18 +2,22 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcSubjectDao implements SubjectDao {
 
     private static final String SQL_GET_SUBJECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
@@ -31,15 +35,18 @@ public class JdbcSubjectDao implements SubjectDao {
     private final JdbcTemplate jdbcTemplate;
     private final SubjectMapper subjectMapper;
 
-    @Autowired
     public JdbcSubjectDao(JdbcTemplate jdbcTemplate, SubjectMapper subjectMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.subjectMapper = subjectMapper;
     }
 
     @Override
-    public Subject getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id);
+    public Optional<Subject> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

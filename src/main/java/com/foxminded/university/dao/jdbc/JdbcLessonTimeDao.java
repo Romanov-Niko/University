@@ -2,18 +2,22 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LessonTimeMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.LessonTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcLessonTimeDao implements LessonTimeDao {
 
     private static final String SQL_GET_LESSON_TIME_BY_ID = "SELECT * FROM lessons_times WHERE id = ?";
@@ -25,15 +29,18 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     private final JdbcTemplate jdbcTemplate;
     private final LessonTimeMapper lessonTimeMapper;
 
-    @Autowired
     public JdbcLessonTimeDao(JdbcTemplate jdbcTemplate, LessonTimeMapper lessonTimeMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.lessonTimeMapper = lessonTimeMapper;
     }
 
     @Override
-    public LessonTime getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id);
+    public Optional<LessonTime> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

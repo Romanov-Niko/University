@@ -3,20 +3,24 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcTeacherDao implements TeacherDao {
 
     private static final String SQL_GET_TEACHER_BY_ID = "SELECT * FROM teachers WHERE id = ?";
@@ -32,7 +36,6 @@ public class JdbcTeacherDao implements TeacherDao {
     private final TeacherMapper teacherMapper;
     private final SubjectDao subjectDao;
 
-    @Autowired
     public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherMapper teacherMapper, SubjectDao subjectDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.teacherMapper = teacherMapper;
@@ -40,8 +43,12 @@ public class JdbcTeacherDao implements TeacherDao {
     }
 
     @Override
-    public Teacher getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, teacherMapper, id);
+    public Optional<Teacher> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, teacherMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

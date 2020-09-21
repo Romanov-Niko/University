@@ -1,44 +1,49 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class TeacherService implements Service<Teacher>{
+@Service
+public class TeacherService {
 
     private final TeacherDao teacherDao;
+    private final SubjectDao subjectDao;
 
-    @Autowired
-    public TeacherService(TeacherDao teacherDao) {
+    public TeacherService(TeacherDao teacherDao, SubjectDao subjectDao) {
         this.teacherDao = teacherDao;
+        this.subjectDao = subjectDao;
     }
 
-    @Override
-    public Teacher getById(int id) {
-        return teacherDao.getById(id);
-    }
-
-    @Override
     public List<Teacher> getAll() {
         return teacherDao.getAll();
     }
 
-    @Override
     public void save(Teacher teacher) {
-        teacherDao.save(teacher);
+        if (areSubjectsPresent(teacher.getSubjects())) {
+            teacherDao.save(teacher);
+        }
     }
 
-    @Override
     public void update(Teacher teacher) {
-        teacherDao.update(teacher);
+        if(isTeacherPresent(teacher.getId()) && areSubjectsPresent(teacher.getSubjects())) {
+            teacherDao.update(teacher);
+        }
     }
 
-    @Override
     public void delete(int id) {
         teacherDao.delete(id);
+    }
+
+    private boolean isTeacherPresent(int id) {
+        return teacherDao.getById(id).isPresent();
+    }
+
+    private boolean areSubjectsPresent(List<Subject> subjects) {
+        return subjectDao.getAll().containsAll(subjects);
     }
 }

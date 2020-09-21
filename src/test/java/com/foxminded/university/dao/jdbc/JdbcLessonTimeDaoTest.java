@@ -29,7 +29,7 @@ class JdbcLessonTimeDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstLessonTime() {
-        LessonTime actualLessonTime = lessonTimeDao.getById(1);
+        LessonTime actualLessonTime = lessonTimeDao.getById(1).orElse(null);
 
         assertEquals(retrievedLessonTime, actualLessonTime);
     }

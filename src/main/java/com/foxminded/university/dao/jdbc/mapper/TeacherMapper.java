@@ -15,7 +15,6 @@ public class TeacherMapper implements RowMapper<Teacher> {
 
     private final SubjectDao subjectDao;
 
-    @Autowired
     public TeacherMapper(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
     }

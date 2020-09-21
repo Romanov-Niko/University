@@ -1,48 +1,100 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.LessonDao;
+import com.foxminded.university.dao.*;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class LessonService implements Service<Lesson>{
+@Service
+public class LessonService {
 
     private final LessonDao lessonDao;
+    private final TeacherDao teacherDao;
+    private final SubjectDao subjectDao;
+    private final GroupDao groupDao;
+    private final AudienceDao audienceDao;
+    private final LessonTimeDao lessonTimeDao;
 
-    @Autowired
-    public LessonService(LessonDao lessonDao) {
+    public LessonService(LessonDao lessonDao, TeacherDao teacherDao, SubjectDao subjectDao, GroupDao groupDao, AudienceDao audienceDao, LessonTimeDao lessonTimeDao) {
         this.lessonDao = lessonDao;
+        this.teacherDao = teacherDao;
+        this.subjectDao = subjectDao;
+        this.groupDao = groupDao;
+        this.audienceDao = audienceDao;
+        this.lessonTimeDao = lessonTimeDao;
     }
 
-    @Override
-    public Lesson getById(int id) {
-        return lessonDao.getById(id);
-    }
-
-    @Override
     public List<Lesson> getAll() {
         return lessonDao.getAll();
     }
 
-    @Override
-    public void save(Lesson lesson) {
-        lessonDao.save(lesson);
+    public void save(Lesson lesson, int dayScheduleId) {
+        if (isDataSuitable(lesson, dayScheduleId)) {
+            lessonDao.save(lesson);
+        }
     }
 
-    @Override
-    public void update(Lesson lesson) {
-        lessonDao.update(lesson);
+    public void update(Lesson lesson, int dayScheduleId) {
+        if (isLessonPresent(lesson.getId()) && isDataSuitable(lesson, dayScheduleId)) {
+            lessonDao.update(lesson);
+        }
     }
 
-    @Override
     public void delete(int id) {
         lessonDao.delete(id);
     }
 
     public List<Lesson> getAllByDayId(int id) {
         return lessonDao.getAllByDayId(id);
+    }
+
+    private boolean isLessonPresent(int id) {
+        return lessonDao.getById(id).isPresent();
+    }
+
+    private boolean isTeacherPresent(int id) {
+        return teacherDao.getById(id).isPresent();
+    }
+
+    private boolean isSubjectPresent(int id) {
+        return subjectDao.getById(id).isPresent();
+    }
+
+    private boolean areGroupsPresent(List<Group> groups) {
+        return groupDao.getAll().containsAll(groups);
+    }
+
+    private boolean isAudiencePresent(int id) {
+        return audienceDao.getById(id).isPresent();
+    }
+
+    private boolean isLessonTimePresent(int id) {
+        return lessonTimeDao.getById(id).isPresent();
+    }
+
+    private boolean isAudienceSuitable (Lesson lesson) {
+        int numberOfStudents = lesson.getGroups().stream().mapToInt(group -> group.getStudents().size()).sum();
+        return lesson.getAudience().getCapacity() >= numberOfStudents;
+    }
+
+    private boolean isTeacherSuitable(Lesson lesson) {
+        return lesson.getTeacher().getSubjects().contains(lesson.getSubject());
+    }
+
+    private boolean isTeacherFree (Lesson currentLesson, int dayScheduleId) {
+        return lessonDao.getAllByDayId(dayScheduleId).stream().noneMatch(lesson -> lesson.getTeacher().equals(currentLesson.getTeacher()));
+    }
+
+    private boolean isAudienceFree (Lesson currentLesson, int dayScheduleId) {
+        return lessonDao.getAllByDayId(dayScheduleId).stream().noneMatch(lesson -> lesson.getAudience().equals(currentLesson.getAudience()));
+    }
+
+    private boolean isDataSuitable(Lesson lesson, int dayScheduleId) {
+        return isSubjectPresent(lesson.getSubject().getId()) && isTeacherPresent(lesson.getTeacher().getId()) &&
+                areGroupsPresent(lesson.getGroups()) && isAudiencePresent(lesson.getAudience().getId()) &&
+                isLessonTimePresent(lesson.getLessonTime().getId()) && isAudienceSuitable(lesson) && isTeacherSuitable(lesson) &&
+                isTeacherFree(lesson, dayScheduleId) && isAudienceFree(lesson, dayScheduleId);
     }
 }

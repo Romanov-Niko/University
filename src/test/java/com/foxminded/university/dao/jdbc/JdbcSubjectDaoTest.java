@@ -3,6 +3,9 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.domain.Subject;
+import com.foxminded.university.domain.Teacher;
+import com.foxminded.university.service.SubjectService;
+import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +35,7 @@ class JdbcSubjectDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstSubject() {
-        Subject actualSubject = subjectDao.getById(1);
+        Subject actualSubject = subjectDao.getById(1).orElse(null);
 
         assertEquals(retrievedSubject, actualSubject);
     }

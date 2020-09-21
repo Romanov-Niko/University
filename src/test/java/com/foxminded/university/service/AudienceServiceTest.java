@@ -9,8 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static com.foxminded.university.TestData.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,13 +24,6 @@ class AudienceServiceTest {
 
     @InjectMocks
     private AudienceService audienceService;
-
-    @Test
-    void givenId1_whenGetById_thenAudienceDaoGetByIdCalledOnce() {
-        audienceService.getById(1);
-
-        verify(audienceDao, times(1)).getById(1);
-    }
 
     @Test
     void getAll() {
@@ -45,6 +41,8 @@ class AudienceServiceTest {
 
     @Test
     void update() {
+        given(audienceDao.getById(anyInt())).willReturn(Optional.of(retrievedAudience));
+
         audienceService.update(updatedAudience);
 
         verify(audienceDao, times(1)).update(updatedAudience);
