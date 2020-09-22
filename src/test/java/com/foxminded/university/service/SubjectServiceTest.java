@@ -15,10 +15,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.createdStudent;
 import static com.foxminded.university.TestData.updatedStudent;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -40,14 +42,17 @@ class SubjectServiceTest {
     private SubjectService subjectService;
 
     @Test
-    void getAll() {
-        subjectService.getAll();
+    void givenNothing_whenGetAll_thenCalledSubjectDaoGetAllAndReturnedAllSubjects() {
+        given(subjectDao.getAll()).willReturn(singletonList(retrievedSubject));
+
+        List<Subject> actualSubjects = subjectService.getAll();
 
         verify(subjectDao, times(1)).getAll();
+        assertEquals(singletonList(retrievedSubject), actualSubjects);
     }
 
     @Test
-    void save() {
+    void givenSubject_whenSave_thenCalledSubjectDaoSave() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
 
         subjectService.save(createdSubject);
@@ -56,7 +61,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void update() {
+    void givenSubject_whenUpdate_thenCalledSubjectDaoUpdate() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
         given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
 
@@ -66,16 +71,19 @@ class SubjectServiceTest {
     }
 
     @Test
-    void delete() {
+    void givenSubjectId_whenDelete_thenCalledSubjectDaoDelete() {
         subjectService.delete(1);
 
         verify(subjectDao, times(1)).delete(1);
     }
 
     @Test
-    void getAllByTeacherId() {
-        subjectService.getAllByTeacherId(1);
+    void givenTeacherId_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
+        given(subjectDao.getAllByTeacherId(anyInt())).willReturn(singletonList(retrievedSubject));
+
+        List<Subject> actualSubjects = subjectService.getAllByTeacherId(1);
 
         verify(subjectDao, times(1)).getAllByTeacherId(1);
+        assertEquals(singletonList(retrievedSubject), actualSubjects);
     }
 }

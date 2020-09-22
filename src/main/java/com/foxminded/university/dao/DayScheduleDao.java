@@ -1,18 +1,18 @@
 package com.foxminded.university.dao;
 
 import com.foxminded.university.domain.DaySchedule;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public interface DayScheduleDao extends Dao<DaySchedule> {
+public interface DayScheduleDao {
 
-    DaySchedule getByDayForStudent(int id, LocalDate day);
+    DaySchedule getByDateForStudent(int id, LocalDate date);
 
-    DaySchedule getByDayForTeacher(int id, LocalDate day);
+    DaySchedule getByDateForTeacher(int id, LocalDate date);
 
-    List<DaySchedule> getByMonthForStudent(int id, LocalDate startDay);
+    List<DaySchedule> getByMonthForStudent(int id, LocalDate startDate);
 
-    List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDay);
+    List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDate);
 }
+

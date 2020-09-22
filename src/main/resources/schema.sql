@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS lessons_groups;
-DROP TABLE IF EXISTS days_lessons;
 DROP TABLE IF EXISTS teachers_subjects;
 DROP TABLE IF EXISTS lessons;
 DROP TABLE IF EXISTS students;
@@ -7,7 +6,6 @@ DROP TABLE IF EXISTS teachers;
 DROP TABLE IF EXISTS groups;
 DROP TABLE IF EXISTS audiences;
 DROP TABLE IF EXISTS lessons_times;
-DROP TABLE IF EXISTS days_schedules;
 DROP TABLE IF EXISTS subjects;
 
 CREATE TABLE groups
@@ -44,12 +42,6 @@ CREATE TABLE teachers
     phone_number  VARCHAR(255)
 );
 
-CREATE TABLE days_schedules
-(
-    id  SERIAL PRIMARY KEY,
-    day DATE
-);
-
 CREATE TABLE lessons_times
 (
     id         SERIAL PRIMARY KEY,
@@ -80,6 +72,7 @@ CREATE TABLE lessons
     teacher_id     INT,
     audience_id    INT,
     lesson_time_id INT,
+    date           DATE,
     CONSTRAINT FK_lessons_to_subjects FOREIGN KEY (subject_id) REFERENCES subjects (id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_lessons_to_teachers FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK_lessons_to_audiences FOREIGN KEY (audience_id) REFERENCES audiences (id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -91,13 +84,6 @@ CREATE TABLE lessons_groups
     lesson_id INT REFERENCES lessons (id) ON UPDATE CASCADE ON DELETE CASCADE,
     group_id  INT REFERENCES groups (id) ON UPDATE CASCADE ON DELETE CASCADE,
     UNIQUE (lesson_id, group_id)
-);
-
-CREATE TABLE days_lessons
-(
-    day_id    INT REFERENCES days_schedules (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    lesson_id INT REFERENCES lessons (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    UNIQUE (day_id, lesson_id)
 );
 
 CREATE TABLE teachers_subjects

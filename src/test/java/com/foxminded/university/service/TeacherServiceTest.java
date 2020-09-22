@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.createdGroup;
@@ -47,14 +48,17 @@ class TeacherServiceTest {
     private TeacherService teacherService;
 
     @Test
-    void getAll() {
-        teacherService.getAll();
+    void givenNothing_whenGetAll_thenCalledTeacherDaoGetAllAndReturnedAllTeachers() {
+        given(teacherDao.getAll()).willReturn(singletonList(retrievedTeacher));
+
+        List<Teacher> actualTeachers = teacherService.getAll();
 
         verify(teacherDao, times(1)).getAll();
+        assertEquals(singletonList(retrievedTeacher), actualTeachers);
     }
 
     @Test
-    void save() {
+    void givenTeacher_whenSave_thenCalledTeacherDaoSave() {
         given(subjectDao.getAll()).willReturn(allSubjects);
 
         teacherService.save(createdTeacher);
@@ -63,7 +67,7 @@ class TeacherServiceTest {
     }
 
     @Test
-    void update() {
+    void givenTeacher_whenUpdate_thenCalledTeacherDaoUpdate() {
         given(subjectDao.getAll()).willReturn(allSubjects);
         given(teacherDao.getById(anyInt())).willReturn(Optional.of(updatedTeacher));
 
@@ -73,7 +77,7 @@ class TeacherServiceTest {
     }
 
     @Test
-    void delete() {
+    void givenTeacherId_whenDelete_thenCalledTeacherDaoDelete() {
         teacherService.delete(1);
 
         verify(teacherDao, times(1)).delete(1);

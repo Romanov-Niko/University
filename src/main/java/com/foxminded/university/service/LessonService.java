@@ -5,6 +5,7 @@ import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,14 +31,14 @@ public class LessonService {
         return lessonDao.getAll();
     }
 
-    public void save(Lesson lesson, int dayScheduleId) {
-        if (isDataConsistent(lesson, dayScheduleId)) {
+    public void save(Lesson lesson) {
+        if (isDataConsistent(lesson)) {
             lessonDao.save(lesson);
         }
     }
 
-    public void update(Lesson lesson, int dayScheduleId) {
-        if (isLessonPresent(lesson.getId()) && isDataConsistent(lesson, dayScheduleId)) {
+    public void update(Lesson lesson) {
+        if (isLessonPresent(lesson.getId()) && isDataConsistent(lesson)) {
             lessonDao.update(lesson);
         }
     }
@@ -46,8 +47,8 @@ public class LessonService {
         lessonDao.delete(id);
     }
 
-    public List<Lesson> getAllByDayId(int id) {
-        return lessonDao.getAllByDayId(id);
+    public List<Lesson> getAllByDate(LocalDate date) {
+        return lessonDao.getAllByDate(date);
     }
 
     private boolean isLessonPresent(int id) {
@@ -74,7 +75,7 @@ public class LessonService {
         return lessonTimeDao.getById(id).isPresent();
     }
 
-    private boolean isAudienceSuitable (Lesson lesson) {
+    private boolean isAudienceSuitable(Lesson lesson) {
         int numberOfStudents = lesson.getGroups().stream().mapToInt(group -> group.getStudents().size()).sum();
         return lesson.getAudience().getCapacity() >= numberOfStudents;
     }
@@ -83,18 +84,32 @@ public class LessonService {
         return lesson.getTeacher().getSubjects().contains(lesson.getSubject());
     }
 
-    private boolean isTeacherFree (Lesson currentLesson, int dayScheduleId) {
-        return lessonDao.getAllByDayId(dayScheduleId).stream().noneMatch(lesson -> lesson.getTeacher().equals(currentLesson.getTeacher()));
+    private boolean isTeacherFree(Lesson currentLesson) {
+        List<Lesson> lessons = lessonDao.getAllByDate(currentLesson.getDate());
+        for (Lesson lesson : lessons) {
+            if (lesson.getTeacher().equals(currentLesson.getTeacher()) && lesson.getLessonTime().equals(currentLesson.getLessonTime())
+                    && (lesson.getId() != currentLesson.getId())) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    private boolean isAudienceFree (Lesson currentLesson, int dayScheduleId) {
-        return lessonDao.getAllByDayId(dayScheduleId).stream().noneMatch(lesson -> lesson.getAudience().equals(currentLesson.getAudience()));
+    private boolean isAudienceFree(Lesson currentLesson) {
+        List<Lesson> lessons = lessonDao.getAllByDate(currentLesson.getDate());
+        for (Lesson lesson : lessons) {
+            if (lesson.getAudience().equals(currentLesson.getAudience()) && lesson.getLessonTime().equals(currentLesson.getLessonTime())
+                    && (lesson.getId() != currentLesson.getId())) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    private boolean isDataConsistent(Lesson lesson, int dayScheduleId) {
+    private boolean isDataConsistent(Lesson lesson) {
         return isSubjectPresent(lesson.getSubject().getId()) && isTeacherPresent(lesson.getTeacher().getId()) &&
                 areGroupsPresent(lesson.getGroups()) && isAudiencePresent(lesson.getAudience().getId()) &&
                 isLessonTimePresent(lesson.getLessonTime().getId()) && isAudienceSuitable(lesson) && isTeacherSuitable(lesson) &&
-                isTeacherFree(lesson, dayScheduleId) && isAudienceFree(lesson, dayScheduleId);
+                isTeacherFree(lesson) && isAudienceFree(lesson);
     }
 }

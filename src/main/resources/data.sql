@@ -17,11 +17,6 @@ VALUES ('first', 'teacher', '1990-01-01', 'male', 'first@gmail.com', '11111'),
        ('second', 'teacher', '1990-02-01', 'male', 'second@gmail.com', '22222'),
        ('third', 'teacher', '1990-03-01', 'male', 'third@gmail.com', '33333');
 
-INSERT INTO days_schedules (day)
-VALUES ('2017-06-01'),
-       ('2017-06-02'),
-       ('2017-06-03');
-
 INSERT INTO lessons_times (begin_time, end_time)
 VALUES ('08:00:00', '09:00:00'),
        ('09:00:00', '10:00:00'),
@@ -37,17 +32,12 @@ VALUES ('Calculus', 120, 1, 'math'),
        ('Anatomy', 120, 2, 'biology'),
        ('The world history', 120, 3, 'history');
 
-INSERT INTO lessons (subject_id, teacher_id, audience_id, lesson_time_id)
-VALUES (1, 1, 1, 1),
-       (2, 2, 2, 2),
-       (3, 3, 3, 3);
+INSERT INTO lessons (subject_id, teacher_id, audience_id, lesson_time_id, date)
+VALUES (1, 1, 1, 1, '2017-06-01'),
+       (2, 2, 2, 2, '2017-06-02'),
+       (3, 3, 3, 3, '2017-06-03');
 
 INSERT INTO lessons_groups (lesson_id, group_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 3);
-
-INSERT INTO days_lessons (day_id, lesson_id)
 VALUES (1, 1),
        (2, 2),
        (3, 3);

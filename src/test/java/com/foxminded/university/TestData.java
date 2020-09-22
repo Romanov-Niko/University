@@ -52,11 +52,14 @@ public class TestData {
             1, "math", 1, LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"))));
     public static Group updatedGroup = new Group(1, "UPDATED", singletonList(retrievedStudent));
 
-    public static Lesson retrievedLesson = new Lesson(1, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);
-    public static Lesson createdLesson = new Lesson(retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);
-    public static Lesson updatedLesson = new Lesson(2, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup), retrievedAudience, retrievedLessonTime);
+    public static Lesson retrievedLesson = new Lesson(1, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
+            retrievedAudience, retrievedLessonTime, LocalDate.parse("2017-06-01"));
+    public static Lesson createdLesson = new Lesson(retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
+            retrievedAudience, retrievedLessonTime, LocalDate.parse("2017-06-01"));
+    public static Lesson updatedLesson = new Lesson(2, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
+            retrievedAudience, retrievedLessonTime, LocalDate.parse("3000-01-01"));
 
-    public static DaySchedule retrievedDaySchedule = new DaySchedule(1, LocalDate.parse("2017-06-01"), singletonList(retrievedLesson));
+    public static DaySchedule retrievedDaySchedule = new DaySchedule(LocalDate.parse("2017-06-01"), singletonList(retrievedLesson));
     public static DaySchedule createdDaySchedule = new DaySchedule(LocalDate.parse("2017-06-01"), singletonList(retrievedLesson));
-    public static DaySchedule updatedDaySchedule = new DaySchedule(1, LocalDate.parse("3000-01-01"), singletonList(retrievedLesson));
+    public static DaySchedule updatedDaySchedule = new DaySchedule(LocalDate.parse("3000-01-01"), singletonList(retrievedLesson));
 }

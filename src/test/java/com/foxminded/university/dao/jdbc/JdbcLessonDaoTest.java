@@ -4,16 +4,13 @@ import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.Lesson;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.foxminded.university.TestData.*;
@@ -60,9 +57,9 @@ class JdbcLessonDaoTest {
         lessonDao.update(updatedLesson);
 
         int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons", String.format(
-                "id = %d AND subject_id = %d AND teacher_id = %d AND audience_id = %d AND lesson_time_id = %d",
+                "id = %d AND subject_id = %d AND teacher_id = %d AND audience_id = %d AND lesson_time_id = %d AND date = '%s'",
                 updatedLesson.getId(), updatedLesson.getSubject().getId(), updatedLesson.getTeacher().getId(),
-                updatedLesson.getAudience().getId(), updatedLesson.getLessonTime().getId()));
+                updatedLesson.getAudience().getId(), updatedLesson.getLessonTime().getId(), updatedLesson.getDate()));
         assertEquals(1, actualNumber);
     }
 
@@ -77,10 +74,10 @@ class JdbcLessonDaoTest {
     }
 
     @Test
-    void givenId1_whenGetAllByDayId_thenReturnedAllLessonsOfFirstDay() {
+    void givenId1_whenGetAllByDate_thenReturnedAllLessonsOfFirstDay() {
         List<Lesson> expectedLessons = singletonList(retrievedLesson);
 
-        List<Lesson> actualLessons = lessonDao.getAllByDayId(1);
+        List<Lesson> actualLessons = lessonDao.getAllByDate(LocalDate.parse("2017-06-01"));
 
         assertEquals(expectedLessons, actualLessons);
     }

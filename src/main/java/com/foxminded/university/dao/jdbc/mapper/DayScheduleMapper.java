@@ -22,9 +22,8 @@ public class DayScheduleMapper implements RowMapper<DaySchedule> {
     @Override
     public DaySchedule mapRow(ResultSet resultSet, int i) throws SQLException {
         DaySchedule daySchedule = new DaySchedule();
-        daySchedule.setId(resultSet.getInt("id"));
-        daySchedule.setDay(resultSet.getObject("day", LocalDate.class));
-        daySchedule.setLessons(lessonDao.getAllByDayId(daySchedule.getId()));
+        daySchedule.setDay(resultSet.getObject("date", LocalDate.class));
+        daySchedule.setLessons(lessonDao.getAllByDate(daySchedule.getDay()));
         return daySchedule;
     }
 }

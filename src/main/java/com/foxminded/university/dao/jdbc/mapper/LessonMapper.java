@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Component
 public class LessonMapper implements RowMapper<Lesson> {
@@ -35,6 +36,7 @@ public class LessonMapper implements RowMapper<Lesson> {
         lesson.setGroups(groupDao.getAllByLessonId(lesson.getId()));
         lesson.setAudience(audienceDao.getById(resultSet.getInt("audience_id")).orElse(null));
         lesson.setLessonTime(lessonTimeDao.getById(resultSet.getInt("lesson_time_id")).orElse(null));
+        lesson.setDate(resultSet.getObject("date", LocalDate.class));
         return lesson;
     }
 }

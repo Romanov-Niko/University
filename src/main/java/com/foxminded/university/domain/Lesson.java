@@ -1,5 +1,6 @@
 package com.foxminded.university.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,25 +12,22 @@ public class Lesson {
     private List<Group> groups;
     private Audience audience;
     private LessonTime lessonTime;
+    private LocalDate date;
 
     public Lesson() {
     }
 
-    public Lesson(Teacher teacher, List<Group> groups) {
-        this.teacher = teacher;
-        this.groups = groups;
-    }
-
-    public Lesson(Subject subject, Teacher teacher, List<Group> groups, Audience audience, LessonTime lessonTime) {
+    public Lesson(Subject subject, Teacher teacher, List<Group> groups, Audience audience, LessonTime lessonTime, LocalDate date) {
         this.subject = subject;
         this.teacher = teacher;
         this.groups = groups;
         this.audience = audience;
         this.lessonTime = lessonTime;
+        this.date = date;
     }
 
-    public Lesson(int id, Subject subject, Teacher teacher, List<Group> groups, Audience audience, LessonTime lessonTime) {
-        this(subject, teacher, groups, audience, lessonTime);
+    public Lesson(int id, Subject subject, Teacher teacher, List<Group> groups, Audience audience, LessonTime lessonTime, LocalDate date) {
+        this(subject, teacher, groups, audience, lessonTime, date);
         this.id = id;
     }
 
@@ -81,6 +79,14 @@ public class Lesson {
         this.lessonTime = lessonTime;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,11 +97,12 @@ public class Lesson {
                 teacher.equals(lesson.teacher) &&
                 groups.equals(lesson.groups) &&
                 audience.equals(lesson.audience) &&
-                lessonTime.equals(lesson.lessonTime);
+                lessonTime.equals(lesson.lessonTime) &&
+                date.equals(lesson.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subject, teacher, groups, audience, lessonTime);
+        return Objects.hash(id, subject, teacher, groups, audience, lessonTime, date);
     }
 }
