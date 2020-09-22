@@ -3,6 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.domain.LessonTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,9 @@ import java.util.List;
 
 @Service
 public class LessonTimeService {
+
+    @Value("${maxLessonDuration}")
+    private int maxLessonDuration;
 
     private final LessonTimeDao lessonTimeDao;
 
@@ -44,6 +48,6 @@ public class LessonTimeService {
     }
 
     private boolean isDurationCorrect (LessonTime lessonTime) {
-        return Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < 90;
+        return Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < maxLessonDuration;
     }
 }

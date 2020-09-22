@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -43,6 +48,8 @@ class SubjectServiceTest {
 
     @Test
     void save() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
+
         subjectService.save(createdSubject);
 
         verify(subjectDao, times(1)).save(createdSubject);
@@ -50,6 +57,7 @@ class SubjectServiceTest {
 
     @Test
     void update() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
         given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
 
         subjectService.update(updatedSubject);

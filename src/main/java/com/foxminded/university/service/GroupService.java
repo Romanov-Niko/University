@@ -3,12 +3,16 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class GroupService {
+
+    @Value("${maxGroupCapacity}")
+    private int maxGroupCapacity;
 
     private final GroupDao groupDao;
     private final StudentDao studentDao;
@@ -23,13 +27,13 @@ public class GroupService {
     }
 
     public void save(Group group) {
-        if ((group.getStudents().size() < 31) && isGroupUnique(group.getName())) {
+        if ((group.getStudents().size() <= maxGroupCapacity) && isGroupUnique(group.getName())) {
             groupDao.save(group);
         }
     }
 
     public void update(Group group) {
-        if (isGroupPresent(group.getId()) && (group.getStudents().size() < 31) && areStudentsPresent(group.getStudents())) {
+        if (isGroupPresent(group.getId()) && (group.getStudents().size() <= maxGroupCapacity) && areStudentsPresent(group.getStudents())) {
             groupDao.update(group);
         }
     }

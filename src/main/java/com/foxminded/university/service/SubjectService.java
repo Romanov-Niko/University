@@ -3,6 +3,11 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,12 +16,13 @@ import java.util.List;
 @Service
 public class SubjectService {
 
-    private final SubjectDao subjectDao;
-    private final TeacherDao teacherDao;
+    @Value("${maxCourse}")
+    private int maxCourse;
 
-    public SubjectService(SubjectDao subjectDao, TeacherDao teacherDao) {
+    private final SubjectDao subjectDao;
+
+    public SubjectService(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
-        this.teacherDao = teacherDao;
     }
 
     public List<Subject> getAll() {
@@ -24,13 +30,14 @@ public class SubjectService {
     }
 
     public void save(Subject subject) {
-        if ((subject.getCourse() < 7) && isSubjectUnique(subject.getName())) {
+        System.out.println(maxCourse);
+        if ((subject.getCourse() <= maxCourse) && isSubjectUnique(subject.getName())) {
             subjectDao.save(subject);
         }
     }
 
     public void update(Subject subject) {
-        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() < 7)) {
+        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() <= maxCourse)) {
             subjectDao.update(subject);
         }
     }
@@ -48,6 +55,8 @@ public class SubjectService {
     }
 
     private boolean isSubjectUnique(String name) {
-        return subjectDao.getAll().stream().noneMatch(subject -> subject.getName().equals(name));
+        return subjectDao.getAll().stream()
+                .map(Subject::getName)
+                .noneMatch(name::equals);
     }
 }

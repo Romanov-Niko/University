@@ -3,6 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,12 +12,13 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    private final StudentDao studentDao;
-    private final GroupDao groupDao;
+    @Value("${maxCourse}")
+    private int maxCourse;
 
-    public StudentService(StudentDao studentDao, GroupDao groupDao) {
+    private final StudentDao studentDao;
+
+    public StudentService(StudentDao studentDao) {
         this.studentDao = studentDao;
-        this.groupDao = groupDao;
     }
 
     public List<Student> getAll() {
@@ -24,13 +26,13 @@ public class StudentService {
     }
 
     public void save(Student student) {
-        if (student.getCourse() < 7) {
+        if (student.getCourse() <= maxCourse) {
             studentDao.save(student);
         }
     }
 
     public void update(Student student) {
-        if (isStudentPresent(student.getId()) && (student.getCourse() < 7)) {
+        if (isStudentPresent(student.getId()) && (student.getCourse() <= maxCourse)) {
             studentDao.update(student);
         }
     }
@@ -40,10 +42,7 @@ public class StudentService {
     }
 
     public List<Student> getAllByGroupId(int id) {
-        if (isGroupPresent(id)) {
-            return studentDao.getAllByGroupId(id);
-        }
-        return new ArrayList<>();
+        return studentDao.getAllByGroupId(id);
     }
 
     public List<Student> getAllByGroupName(String name) {
@@ -52,9 +51,5 @@ public class StudentService {
 
     private boolean isStudentPresent(int id) {
         return studentDao.getById(id).isPresent();
-    }
-
-    private boolean isGroupPresent(int id) {
-        return groupDao.getById(id).isPresent();
     }
 }

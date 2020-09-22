@@ -31,13 +31,13 @@ public class LessonService {
     }
 
     public void save(Lesson lesson, int dayScheduleId) {
-        if (isDataSuitable(lesson, dayScheduleId)) {
+        if (isDataConsistent(lesson, dayScheduleId)) {
             lessonDao.save(lesson);
         }
     }
 
     public void update(Lesson lesson, int dayScheduleId) {
-        if (isLessonPresent(lesson.getId()) && isDataSuitable(lesson, dayScheduleId)) {
+        if (isLessonPresent(lesson.getId()) && isDataConsistent(lesson, dayScheduleId)) {
             lessonDao.update(lesson);
         }
     }
@@ -91,7 +91,7 @@ public class LessonService {
         return lessonDao.getAllByDayId(dayScheduleId).stream().noneMatch(lesson -> lesson.getAudience().equals(currentLesson.getAudience()));
     }
 
-    private boolean isDataSuitable(Lesson lesson, int dayScheduleId) {
+    private boolean isDataConsistent(Lesson lesson, int dayScheduleId) {
         return isSubjectPresent(lesson.getSubject().getId()) && isTeacherPresent(lesson.getTeacher().getId()) &&
                 areGroupsPresent(lesson.getGroups()) && isAudiencePresent(lesson.getAudience().getId()) &&
                 isLessonTimePresent(lesson.getLessonTime().getId()) && isAudienceSuitable(lesson) && isTeacherSuitable(lesson) &&

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -40,6 +41,8 @@ class GroupServiceTest {
 
     @Test
     void save() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+
         groupService.save(createdGroup);
 
         verify(groupDao, times(1)).save(createdGroup);
@@ -47,6 +50,7 @@ class GroupServiceTest {
 
     @Test
     void update() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
         given(studentDao.getAll()).willReturn(singletonList(retrievedStudent));
 

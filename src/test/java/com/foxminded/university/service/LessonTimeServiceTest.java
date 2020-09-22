@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -36,6 +37,8 @@ class LessonTimeServiceTest {
 
     @Test
     void save() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
+
         lessonTimeService.save(createdLessonTime);
 
         verify(lessonTimeDao, times(1)).save(createdLessonTime);
@@ -43,6 +46,7 @@ class LessonTimeServiceTest {
 
     @Test
     void update() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
 
         lessonTimeService.update(updatedLessonTime);

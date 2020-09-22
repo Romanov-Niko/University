@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -41,6 +42,8 @@ class StudentServiceTest {
 
     @Test
     void save() {
+        ReflectionTestUtils.setField(studentService, "maxCourse", 6);
+
         studentService.save(createdStudent);
 
         verify(studentDao, times(1)).save(createdStudent);
@@ -48,6 +51,7 @@ class StudentServiceTest {
 
     @Test
     void update() {
+        ReflectionTestUtils.setField(studentService, "maxCourse", 6);
         given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
 
         studentService.update(updatedStudent);
@@ -64,8 +68,6 @@ class StudentServiceTest {
 
     @Test
     void getAllByGroupId() {
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
-
         studentService.getAllByGroupId(1);
 
         verify(studentDao, times(1)).getAllByGroupId(1);
