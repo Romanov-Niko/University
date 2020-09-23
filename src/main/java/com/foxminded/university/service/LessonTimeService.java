@@ -28,7 +28,7 @@ public class LessonTimeService {
     }
 
     public void save(LessonTime lessonTime) {
-        if (isDurationCorrect(lessonTime) && lessonTime.getBegin().isBefore(lessonTime.getEnd())) {
+        if (isDurationCorrect(lessonTime) && isLessonTimeUnique(lessonTime)) {
             lessonTimeDao.save(lessonTime);
         }
     }
@@ -48,6 +48,11 @@ public class LessonTimeService {
     }
 
     private boolean isDurationCorrect (LessonTime lessonTime) {
-        return Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < maxLessonDuration;
+        return Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < maxLessonDuration
+                && Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() > 0;
+    }
+
+    private boolean isLessonTimeUnique(LessonTime lessonTime) {
+        return !lessonTimeDao.getByStartAndEndTime(lessonTime.getBegin(), lessonTime.getEnd()).isPresent();
     }
 }

@@ -42,8 +42,6 @@ public class AudienceService {
     }
 
     private boolean isAudienceUnique(int roomNumber) {
-        return audienceDao.getAll().stream()
-                .mapToInt(Audience::getRoomNumber)
-                .noneMatch(currentRoomNumber -> currentRoomNumber==roomNumber);
+        return !audienceDao.getByRoomNumber(roomNumber).isPresent();
     }
 }

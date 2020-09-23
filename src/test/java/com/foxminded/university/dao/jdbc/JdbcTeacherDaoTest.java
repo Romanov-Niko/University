@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Teacher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 import static com.foxminded.university.TestData.*;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
@@ -72,5 +77,21 @@ class JdbcTeacherDaoTest {
 
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers");
         assertEquals(expectedRows, actualRows);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetById_thenReturnedOptionalEmpty() {
+        Optional<Teacher> actualTeacher = teacherDao.getById(4);
+
+        assertEquals(Optional.empty(), actualTeacher);
+    }
+
+    @Test
+    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
+
+        List<Teacher> actualTeachers = teacherDao.getAll();
+
+        assertEquals(emptyList(), actualTeachers);
     }
 }

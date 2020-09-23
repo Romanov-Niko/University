@@ -2,6 +2,8 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.domain.Audience;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.service.SubjectService;
@@ -18,8 +20,10 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -89,5 +93,42 @@ class JdbcSubjectDaoTest {
         List<Subject> actualSubjects = subjectDao.getAllByTeacherId(1);
 
         assertEquals(expectedSubjects, actualSubjects);
+    }
+
+    @Test
+    void givenNameOfFirstSubject_whenGetByName_thenReturnedFirstSubject() {
+        Subject actualSubject = subjectDao.getByName("Calculus").orElse(null);
+
+        assertEquals(retrievedSubject, actualSubject);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetById_thenReturnedOptionalEmpty() {
+        Optional<Subject> actualSubject = subjectDao.getById(4);
+
+        assertEquals(Optional.empty(), actualSubject);
+    }
+
+    @Test
+    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+
+        List<Subject> actualSubjects = subjectDao.getAll();
+
+        assertEquals(emptyList(), actualSubjects);
+    }
+
+    @Test
+    void givenNonExistentTeacherId_whenGetAllByTeacherId_thenReturnedEmptyList() {
+        List<Subject> actualSubjects = subjectDao.getAllByTeacherId(0);
+
+        assertEquals(emptyList(), actualSubjects);
+    }
+
+    @Test
+    void givenNonExistentName_whenGetByName_thenReturnedOptionalEmpty() {
+        Optional<Subject> actualSubject = subjectDao.getByName("INCORRECT");
+
+        assertEquals(Optional.empty(), actualSubject);
     }
 }

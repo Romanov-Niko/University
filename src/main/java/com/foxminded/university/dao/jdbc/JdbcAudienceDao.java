@@ -24,6 +24,7 @@ public class JdbcAudienceDao implements AudienceDao {
     private static final String SQL_SAVE_AUDIENCE = "INSERT INTO audiences VALUES (DEFAULT, ?, ?)";
     private static final String SQL_UPDATE_AUDIENCE = "UPDATE audiences SET room_number = ?, capacity = ? WHERE id = ?";
     private static final String SQL_DELETE_AUDIENCE = "DELETE FROM audiences WHERE id = ?";
+    private static final String SQL_AUDIENCE_BY_ROOM_NUMBER = "SELECT * FROM audiences WHERE room_number = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final AudienceMapper audienceMapper;
@@ -67,5 +68,14 @@ public class JdbcAudienceDao implements AudienceDao {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(SQL_DELETE_AUDIENCE, id);
+    }
+
+    @Override
+    public Optional<Audience> getByRoomNumber(int roomNumber) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_AUDIENCE_BY_ROOM_NUMBER, audienceMapper, roomNumber));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }

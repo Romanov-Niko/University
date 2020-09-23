@@ -30,14 +30,13 @@ public class SubjectService {
     }
 
     public void save(Subject subject) {
-        System.out.println(maxCourse);
-        if ((subject.getCourse() <= maxCourse) && isSubjectUnique(subject.getName())) {
+        if ((subject.getCourse() <= maxCourse) && (subject.getCourse() > 0) && isSubjectUnique(subject.getName())) {
             subjectDao.save(subject);
         }
     }
 
     public void update(Subject subject) {
-        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() <= maxCourse)) {
+        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() <= maxCourse) && (subject.getCourse() > 0)) {
             subjectDao.update(subject);
         }
     }
@@ -55,8 +54,6 @@ public class SubjectService {
     }
 
     private boolean isSubjectUnique(String name) {
-        return subjectDao.getAll().stream()
-                .map(Subject::getName)
-                .noneMatch(name::equals);
+        return !subjectDao.getByName(name).isPresent();
     }
 }

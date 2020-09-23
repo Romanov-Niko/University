@@ -23,17 +23,15 @@ import java.util.Optional;
 
 import static com.foxminded.university.TestData.createdGroup;
 import static com.foxminded.university.TestData.updatedGroup;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import static com.foxminded.university.TestData.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TeacherServiceTest {
@@ -59,7 +57,7 @@ class TeacherServiceTest {
 
     @Test
     void givenTeacher_whenSave_thenCalledTeacherDaoSave() {
-        given(subjectDao.getAll()).willReturn(allSubjects);
+        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
 
         teacherService.save(createdTeacher);
 
@@ -68,7 +66,7 @@ class TeacherServiceTest {
 
     @Test
     void givenTeacher_whenUpdate_thenCalledTeacherDaoUpdate() {
-        given(subjectDao.getAll()).willReturn(allSubjects);
+        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
         given(teacherDao.getById(anyInt())).willReturn(Optional.of(updatedTeacher));
 
         teacherService.update(updatedTeacher);
@@ -81,5 +79,40 @@ class TeacherServiceTest {
         teacherService.delete(1);
 
         verify(teacherDao, times(1)).delete(1);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledTeacherDaoGetAllAndReturnedEmptyList() {
+        given(teacherDao.getAll()).willReturn(emptyList());
+
+        List<Teacher> actualTeachers = teacherService.getAll();
+
+        verify(teacherDao, times(1)).getAll();
+        assertEquals(emptyList(), actualTeachers);
+    }
+
+    @Test
+    void givenNonExistentSubjectId_whenSave_thenWasNotCalledTeacherDaoSave() {
+        given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
+
+        teacherService.save(createdTeacher);
+
+        verify(teacherDao, never()).save(createdTeacher);
+    }
+
+    @Test
+    void givenNonExistentTeacherId_whenUpdate_thenWasNotCalledTeacherDaoUpdate() {
+        given(teacherDao.getById(anyInt())).willReturn(Optional.empty());
+
+        teacherService.update(updatedTeacher);
+
+        verify(teacherDao, never()).update(updatedTeacher);
+    }
+
+    @Test
+    void givenNonExistentSubjectId_whenUpdate_thenWasNotCalledTeacherDaoUpdate() {
+        teacherService.update(updatedTeacher);
+
+        verify(teacherDao, never()).update(updatedTeacher);
     }
 }

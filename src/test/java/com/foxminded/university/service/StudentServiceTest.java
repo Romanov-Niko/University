@@ -14,6 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,8 +22,7 @@ import static com.foxminded.university.TestData.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -87,5 +87,63 @@ class StudentServiceTest {
 
         verify(studentDao, times(1)).getAllByGroupName(retrievedGroup.getName());
         assertEquals(singletonList(retrievedStudent), actualStudents);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledStudentDaoGetAllAndReturnedEmptyList() {
+        given(studentDao.getAll()).willReturn(emptyList());
+
+        List<Student> actualStudents = studentService.getAll();
+
+        verify(studentDao, times(1)).getAll();
+        assertEquals(emptyList(), actualStudents);
+    }
+
+    @Test
+    void givenStudentWithIncorrectCourse_whenSave_thenWasNotCalledStudentDaoSave() {
+        ReflectionTestUtils.setField(studentService, "maxCourse", 0);
+
+        studentService.save(createdStudent);
+
+        verify(studentDao, never()).save(createdStudent);
+    }
+
+    @Test
+    void givenStudentWithNonExistentId_whenUpdate_thenWasNotCalledStudentDaoUpdate() {
+        ReflectionTestUtils.setField(studentService, "maxCourse", 6);
+        given(studentDao.getById(anyInt())).willReturn(Optional.empty());
+
+        studentService.update(updatedStudent);
+
+        verify(studentDao, never()).update(updatedStudent);
+    }
+
+    @Test
+    void givenStudentWithIncorrectCourse_whenUpdate_thenWasNotCalledStudentDaoUpdate() {
+        ReflectionTestUtils.setField(studentService, "maxCourse", 0);
+
+        studentService.update(updatedStudent);
+
+        verify(studentDao, never()).update(updatedStudent);
+    }
+
+    @Test
+    void givenDataThatProducesEmptyReturn_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedEmptyList() {
+        given(studentDao.getAllByGroupId(anyInt())).willReturn(emptyList());
+
+        List<Student> actualStudents = studentService.getAllByGroupId(1);
+
+        verify(studentDao, times(1)).getAllByGroupId(1);
+        assertEquals(emptyList(), actualStudents);
+    }
+
+    @Test
+    void givenDataThatProducesEmptyReturn_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedEmptyList() {
+        given(studentDao.getAllByGroupName(anyString())).willReturn(emptyList());
+
+        List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
+
+        verify(studentDao, times(1)).getAllByGroupName(retrievedGroup.getName());
+        assertEquals(emptyList(), actualStudents);
     }
 }

@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static com.foxminded.university.TestData.*;
@@ -40,6 +41,8 @@ class AudienceServiceTest {
 
     @Test
     void givenAudience_whenSave_thenCalledAudienceDaoSave() {
+        given(audienceDao.getByRoomNumber(anyInt())).willReturn(Optional.empty());
+
         audienceService.save(createdAudience);
 
         verify(audienceDao, times(1)).save(createdAudience);
@@ -59,5 +62,33 @@ class AudienceServiceTest {
         audienceService.delete(1);
 
         verify(audienceDao, times(1)).delete(1);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledAudienceDaoGetAllAndReturnedEmptyList() {
+        given(audienceDao.getAll()).willReturn(emptyList());
+
+        List<Audience> actualAudiences = audienceService.getAll();
+
+        verify(audienceDao, times(1)).getAll();
+        assertEquals(emptyList(), actualAudiences);
+    }
+
+    @Test
+    void givenExistingRoomNumber_whenSave_thenWasNotCalledAudienceDaoSave() {
+        given(audienceDao.getByRoomNumber(anyInt())).willReturn(Optional.of(retrievedAudience));
+
+        audienceService.save(createdAudience);
+
+        verify(audienceDao, never()).save(any());
+    }
+
+    @Test
+    void givenAudienceWithNonExistentId_whenUpdate_thenWasNotCalledAudienceDaoUpdate() {
+        given(audienceDao.getById(anyInt())).willReturn(Optional.empty());
+
+        audienceService.update(updatedAudience);
+
+        verify(audienceDao, never()).update(any());
     }
 }

@@ -20,17 +20,14 @@ import java.util.Optional;
 
 import static com.foxminded.university.TestData.createdStudent;
 import static com.foxminded.university.TestData.updatedStudent;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import static com.foxminded.university.TestData.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SubjectServiceTest {
@@ -54,6 +51,7 @@ class SubjectServiceTest {
     @Test
     void givenSubject_whenSave_thenCalledSubjectDaoSave() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
+        given(subjectDao.getByName(anyString())).willReturn(Optional.empty());
 
         subjectService.save(createdSubject);
 
@@ -85,5 +83,64 @@ class SubjectServiceTest {
 
         verify(subjectDao, times(1)).getAllByTeacherId(1);
         assertEquals(singletonList(retrievedSubject), actualSubjects);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledSubjectDaoGetAllAndReturnedEmptyList() {
+        given(subjectDao.getAll()).willReturn(emptyList());
+
+        List<Subject> actualSubjects = subjectService.getAll();
+
+        verify(subjectDao, times(1)).getAll();
+        assertEquals(emptyList(), actualSubjects);
+    }
+
+    @Test
+    void givenSubjectWithExistingName_whenSave_thenWasNotCalledSubjectDaoSave() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
+        given(subjectDao.getByName(anyString())).willReturn(Optional.of(retrievedSubject));
+
+        subjectService.save(createdSubject);
+
+        verify(subjectDao, never()).save(createdSubject);
+    }
+
+    @Test
+    void givenSubjectWithIncorrectCourse_whenSave_thenWasNotCalledSubjectDaoSave() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 0);
+
+        subjectService.save(createdSubject);
+
+        verify(subjectDao, never()).save(createdSubject);
+    }
+
+    @Test
+    void givenSubjectWithNonExistentId_whenUpdate_thenWasNotCalledSubjectDaoUpdate() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
+        given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
+
+        subjectService.update(updatedSubject);
+
+        verify(subjectDao, never()).update(updatedSubject);
+    }
+
+    @Test
+    void givenSubjectWithIncorrectCourse_whenUpdate_thenWasNotCalledSubjectDaoUpdate() {
+        ReflectionTestUtils.setField(subjectService, "maxCourse", 0);
+        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
+
+        subjectService.update(updatedSubject);
+
+        verify(subjectDao, never()).update(updatedSubject);
+    }
+
+    @Test
+    void givenDataThatProducesEmptyReturn_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
+        given(subjectDao.getAllByTeacherId(anyInt())).willReturn(emptyList());
+
+        List<Subject> actualSubjects = subjectService.getAllByTeacherId(1);
+
+        verify(subjectDao, times(1)).getAllByTeacherId(1);
+        assertEquals(emptyList(), actualSubjects);
     }
 }

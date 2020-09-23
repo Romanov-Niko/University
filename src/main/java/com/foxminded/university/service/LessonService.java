@@ -85,10 +85,10 @@ public class LessonService {
     }
 
     private boolean isTeacherFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonDao.getAllByDate(currentLesson.getDate());
+        List<Lesson> lessons = lessonDao.getAllByTeacherIdDateAndLessonTimeId(currentLesson.getTeacher().getId(),
+                currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
-            if (lesson.getTeacher().equals(currentLesson.getTeacher()) && lesson.getLessonTime().equals(currentLesson.getLessonTime())
-                    && (lesson.getId() != currentLesson.getId())) {
+            if (lesson.getId() != currentLesson.getId()) {
                 return false;
             }
         }
@@ -96,10 +96,10 @@ public class LessonService {
     }
 
     private boolean isAudienceFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonDao.getAllByDate(currentLesson.getDate());
+        List<Lesson> lessons = lessonDao.getAllByAudienceIdDateAndLessonTimeId(currentLesson.getAudience().getId(),
+                currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
-            if (lesson.getAudience().equals(currentLesson.getAudience()) && lesson.getLessonTime().equals(currentLesson.getLessonTime())
-                    && (lesson.getId() != currentLesson.getId())) {
+            if (lesson.getId() != currentLesson.getId()) {
                 return false;
             }
         }

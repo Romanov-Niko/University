@@ -31,6 +31,7 @@ public class JdbcSubjectDao implements SubjectDao {
             "LEFT JOIN teachers ON teachers_subjects.teacher_id = teachers.id " +
             "LEFT JOIN subjects ON teachers_subjects.subject_id = subjects.id " +
             "WHERE teachers.id = ?";
+    private static final String SQL_GET_SUBJECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final SubjectMapper subjectMapper;
@@ -81,5 +82,14 @@ public class JdbcSubjectDao implements SubjectDao {
     @Override
     public List<Subject> getAllByTeacherId(int id) {
         return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID, subjectMapper, id);
+    }
+
+    @Override
+    public Optional<Subject> getByName(String name) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_NAME, subjectMapper, name));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }

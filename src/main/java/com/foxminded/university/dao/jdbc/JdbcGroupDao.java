@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupMapper;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class JdbcGroupDao implements GroupDao {
             "LEFT JOIN groups ON lessons_groups.group_id = groups.id " +
             "WHERE lessons.id = ?";
     private static final String SQL_UPDATE_STUDENT_GROUP = "UPDATE students SET group_id = ? WHERE id = ?";
+    private static final String SQL_GET_GROUP_BY_NAME = "SELECT * FROM groups WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GroupMapper groupMapper;
@@ -85,6 +87,15 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public List<Group> getAllByLessonId(int id) {
         return jdbcTemplate.query(SQL_GET_ALL_GROUPS_BY_LESSON_ID, groupMapper, id);
+    }
+
+    @Override
+    public Optional<Group> getByName(String name) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_NAME, groupMapper, name));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     private void updateStudentGroup(int studentId, int groupId) {

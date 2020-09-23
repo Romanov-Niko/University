@@ -26,13 +26,13 @@ public class StudentService {
     }
 
     public void save(Student student) {
-        if (student.getCourse() <= maxCourse) {
+        if ((student.getCourse() <= maxCourse) && (student.getCourse() > 0)) {
             studentDao.save(student);
         }
     }
 
     public void update(Student student) {
-        if (isStudentPresent(student.getId()) && (student.getCourse() <= maxCourse)) {
+        if (isStudentPresent(student.getId()) && (student.getCourse() > 0) && (student.getCourse() <= maxCourse)) {
             studentDao.update(student);
         }
     }

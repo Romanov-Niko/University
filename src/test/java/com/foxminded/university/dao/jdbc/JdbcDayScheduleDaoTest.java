@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,16 +32,16 @@ class JdbcDayScheduleDaoTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForStudent_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
-        DaySchedule actualDaySchedule = dayScheduleDao.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
-        assertEquals(retrievedDaySchedule, actualDaySchedule);
+        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
     }
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForTeacher_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
-        DaySchedule actualDaySchedule = dayScheduleDao.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        assertEquals(retrievedDaySchedule, actualDaySchedule);
+        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
     }
 
     @Test
@@ -55,6 +56,34 @@ class JdbcDayScheduleDaoTest {
         List<DaySchedule> actualDaysSchedules = dayScheduleDao.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
         assertEquals(singletonList(retrievedDaySchedule), actualDaysSchedules);
+    }
+
+    @Test
+    void givenWrongData_whenGetByDayForStudent_thenReturnedOptionalEmpty() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForStudent(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(Optional.empty(), actualDaySchedule);
+    }
+
+    @Test
+    void givenWrongData_whenGetByDayForTeacher_thenReturnedOptionalEmpty() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForTeacher(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(Optional.empty(), actualDaySchedule);
+    }
+
+    @Test
+    void givenWrongData_whenGetByMonthForStudent_thenReturnedEmptyList() {
+        List<DaySchedule> actualDaySchedule = dayScheduleDao.getByMonthForStudent(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(emptyList(), actualDaySchedule);
+    }
+
+    @Test
+    void givenWrongData_whenGetByMonthForTeacher_thenReturnedEmptyList() {
+        List<DaySchedule> actualDaySchedule = dayScheduleDao.getByMonthForStudent(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(emptyList(), actualDaySchedule);
     }
 }
 

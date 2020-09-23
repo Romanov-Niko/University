@@ -19,6 +19,7 @@ public class TestData {
     public static LessonTime retrievedLessonTime = new LessonTime(1, LocalTime.parse("08:00:00"), LocalTime.parse("09:00:00"));
     public static LessonTime createdLessonTime = new LessonTime(LocalTime.parse("12:00:00"), LocalTime.parse("13:00:00"));
     public static LessonTime updatedLessonTime = new LessonTime(1, LocalTime.parse("22:00:00"), LocalTime.parse("23:00:00"));
+    public static LessonTime lessonTimeWithWrongTime = new LessonTime(LocalTime.parse("13:00:00"), LocalTime.parse("12:00:00"));
 
     public static Student retrievedStudent = new Student(1, "first", "student", LocalDate.parse("1990-01-01"),
             "male", "first@gmail.com", "11111", 1, "math", 1,

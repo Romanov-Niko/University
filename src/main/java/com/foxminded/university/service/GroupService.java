@@ -27,7 +27,7 @@ public class GroupService {
     }
 
     public void save(Group group) {
-        if ((group.getStudents().size() <= maxGroupCapacity) && isGroupUnique(group.getName())) {
+        if ((group.getStudents().size() <= maxGroupCapacity) && isGroupUnique(group.getName()) && areStudentsPresent(group.getStudents())) {
             groupDao.save(group);
         }
     }
@@ -51,10 +51,10 @@ public class GroupService {
     }
 
     private boolean isGroupUnique(String name) {
-        return groupDao.getAll().stream().noneMatch(group -> group.getName().equals(name));
+        return !groupDao.getByName(name).isPresent();
     }
 
     private boolean areStudentsPresent(List<Student> students) {
-        return studentDao.getAll().containsAll(students);
+        return students.stream().allMatch(student -> studentDao.getById(student.getId()).isPresent());
     }
 }

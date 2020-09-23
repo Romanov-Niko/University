@@ -3,11 +3,13 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.DayScheduleDao;
 import com.foxminded.university.dao.jdbc.mapper.DayScheduleMapper;
 import com.foxminded.university.domain.DaySchedule;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcDayScheduleDao implements DayScheduleDao {
@@ -35,13 +37,21 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
 
 
     @Override
-    public DaySchedule getByDateForStudent(int id, LocalDate day) {
-        return jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_STUDENT, dayScheduleMapper, id, day);
+    public Optional<DaySchedule> getByDateForStudent(int id, LocalDate day) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_STUDENT, dayScheduleMapper, id, day));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public DaySchedule getByDateForTeacher(int id, LocalDate day) {
-        return jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_TEACHER, dayScheduleMapper, id, day);
+    public Optional<DaySchedule> getByDateForTeacher(int id, LocalDate day) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_TEACHER, dayScheduleMapper, id, day));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -13,14 +13,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static com.foxminded.university.TestData.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LessonTimeServiceTest {
@@ -44,6 +45,7 @@ class LessonTimeServiceTest {
     @Test
     void givenLessonTime_whenSave_thenCalledLessonTimeDaoSave() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
+        given(lessonTimeDao.getByStartAndEndTime(any(), any())).willReturn(Optional.empty());
 
         lessonTimeService.save(createdLessonTime);
 
@@ -65,5 +67,53 @@ class LessonTimeServiceTest {
         lessonTimeService.delete(1);
 
         verify(lessonTimeDao, times(1)).delete(1);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledLessonTimeDaoGetAllAndReturnedEmptyList() {
+        given(lessonTimeDao.getAll()).willReturn(emptyList());
+
+        List<LessonTime> actualLessonsTimes =  lessonTimeService.getAll();
+
+        verify(lessonTimeDao, times(1)).getAll();
+        assertEquals(emptyList(), actualLessonsTimes);
+    }
+
+    @Test
+    void givenLessonTimeWithIncorrectDuration_whenSave_thenWasNotCalledLessonTimeDaoSave() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
+
+        lessonTimeService.save(createdLessonTime);
+
+        verify(lessonTimeDao, never()).save(createdLessonTime);
+    }
+
+    @Test
+    void givenLessonTimeWithExistingBeginAndEnd_whenSave_thenWasNotCalledLessonTimeDaoSave() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
+        given(lessonTimeDao.getByStartAndEndTime(any(), any())).willReturn(Optional.of(retrievedLessonTime));
+
+        lessonTimeService.save(createdLessonTime);
+
+        verify(lessonTimeDao, never()).save(createdLessonTime);
+    }
+
+    @Test
+    void givenLessonTimeWithNonExistentId_whenUpdate_thenWasNotCalledLessonTimeDaoUpdate() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
+        given(lessonTimeDao.getById(anyInt())).willReturn(Optional.empty());
+
+        lessonTimeService.update(updatedLessonTime);
+
+        verify(lessonTimeDao, never()).update(updatedLessonTime);
+    }
+
+    @Test
+    void givenLessonTimeWithIncorrectDuration_whenUpdate_thenWasNotCalledLessonTimeDaoUpdate() {
+        ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
+
+        lessonTimeService.update(updatedLessonTime);
+
+        verify(lessonTimeDao, never()).update(updatedLessonTime);
     }
 }

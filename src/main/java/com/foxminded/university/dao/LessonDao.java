@@ -10,4 +10,8 @@ import java.util.List;
 public interface LessonDao extends Dao<Lesson> {
 
     List<Lesson> getAllByDate(LocalDate date);
+
+    List<Lesson> getAllByTeacherIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
+
+    List<Lesson> getAllByAudienceIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
 }

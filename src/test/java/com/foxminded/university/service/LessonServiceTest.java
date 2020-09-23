@@ -14,14 +14,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
@@ -65,6 +66,8 @@ class LessonServiceTest {
         given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
         given(groupDao.getAll()).willReturn(singletonList(retrievedGroup));
+        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
+        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
 
         lessonService.save(createdLesson);
 
@@ -80,6 +83,8 @@ class LessonServiceTest {
         given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
         given(groupDao.getAll()).willReturn(singletonList(retrievedGroup));
+        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
+        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
 
         lessonService.update(updatedLesson);
 
@@ -101,5 +106,39 @@ class LessonServiceTest {
 
         verify(lessonDao, times(1)).getAllByDate(LocalDate.parse("2017-06-01"));
         assertEquals(singletonList(retrievedLesson), actualLessons);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledLessonDaoGetAllAndReturnedEmptyList() {
+        given(lessonDao.getAll()).willReturn(emptyList());
+
+        List<Lesson> actualLessons = lessonService.getAll();
+
+        verify(lessonDao, times(1)).getAll();
+        assertEquals(emptyList(), actualLessons);
+    }
+
+    @Test
+    void givenLessonWithConflictingData_whenSave_thenWasNotCalledLessonDaoSave() {
+        lessonService.save(createdLesson);
+
+        verify(lessonDao, never()).save(createdLesson);
+    }
+
+    @Test
+    void givenLessonWithConflictingData_whenUpdate_thenWasNotCalledLessonDaoUpdate() {
+        lessonService.update(updatedLesson);
+
+        verify(lessonDao, never()).update(updatedLesson);
+    }
+
+    @Test
+    void givenDataThatProducesEmptyReturn_whenGetAllByDate_thenCalledLessonDaoGetAllByDateAndReturnedEmptyList() {
+        given(lessonDao.getAllByDate(LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+
+        List<Lesson> actualLessons = lessonService.getAllByDate(LocalDate.parse("2017-06-01"));
+
+        verify(lessonDao, times(1)).getAllByDate(LocalDate.parse("2017-06-01"));
+        assertEquals(emptyList(), actualLessons);
     }
 }

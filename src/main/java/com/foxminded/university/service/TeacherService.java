@@ -44,6 +44,6 @@ public class TeacherService {
     }
 
     private boolean areSubjectsPresent(List<Subject> subjects) {
-        return subjectDao.getAll().containsAll(subjects);
+        return subjects.stream().allMatch(subject -> subjectDao.getById(subject.getId()).isPresent());
     }
 }

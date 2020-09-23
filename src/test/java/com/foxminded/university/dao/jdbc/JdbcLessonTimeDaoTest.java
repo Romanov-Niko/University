@@ -2,7 +2,10 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.LessonTimeDao;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.LessonTime;
+import com.foxminded.university.domain.Student;
+import com.foxminded.university.domain.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+
 import static com.foxminded.university.TestData.*;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
@@ -70,5 +79,35 @@ class JdbcLessonTimeDaoTest {
 
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
         assertEquals(expectedRows, actualRows);
+    }
+
+    @Test
+    void given8AMAnd9AM_whenGetByStartAndEndTime_thenReturnedFirstLessonTime() {
+        LessonTime actualLessonTime = lessonTimeDao.getByStartAndEndTime(LocalTime.parse("08:00:00"), LocalTime.parse("09:00:00")).orElse(null);
+
+        assertEquals(retrievedLessonTime, actualLessonTime);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetById_thenReturnedOptionalEmpty() {
+        Optional<LessonTime> actualLessonTime = lessonTimeDao.getById(4);
+
+        assertEquals(Optional.empty(), actualLessonTime);
+    }
+
+    @Test
+    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "lessons_times");
+
+        List<LessonTime> actualLessonsTimes = lessonTimeDao.getAll();
+
+        assertEquals(emptyList(), actualLessonsTimes);
+    }
+
+    @Test
+    void givenWrongTime_whenGetByStartAndEndTime_thenReturnedOptionalEmpty() {
+        Optional<LessonTime> actualLessonTime = lessonTimeDao.getByStartAndEndTime(LocalTime.parse("01:00:00"), LocalTime.parse("02:00:00"));
+
+        assertEquals(Optional.empty(), actualLessonTime);
     }
 }

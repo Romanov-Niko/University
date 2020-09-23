@@ -31,6 +31,10 @@ public class JdbcLessonDao implements LessonDao {
     private static final String SQL_GET_ALL_LESSONS_BY_DAY = "SELECT * FROM lessons WHERE date = ?";
     private static final String SQL_DELETE_GROUP_FROM_LESSON = "DELETE FROM lessons_groups WHERE lesson_id = ? AND group_id = ?";
     private static final String SQL_SAVE_GROUP_TO_LESSON = "INSERT INTO lessons_groups VALUES (?, ?)";
+    private static final String SQL_GET_ALL_BY_TEACHER_ID_DATE_AND_TIME_ID = "SELECT * FROM lessons " +
+            "WHERE teacher_id = ? AND date = ? AND lesson_time_id = ?";
+    private static final String SQL_GET_ALL_BY_AUDIENCE_ID_DATE_AND_TIME_ID = "SELECT * FROM lessons " +
+            "WHERE audience_id = ? AND date = ? AND lesson_time_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final LessonMapper lessonMapper;
@@ -97,6 +101,16 @@ public class JdbcLessonDao implements LessonDao {
     @Override
     public List<Lesson> getAllByDate(LocalDate date) {
         return jdbcTemplate.query(SQL_GET_ALL_LESSONS_BY_DAY, lessonMapper, date);
+    }
+
+    @Override
+    public List<Lesson> getAllByTeacherIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId) {
+        return jdbcTemplate.query(SQL_GET_ALL_BY_TEACHER_ID_DATE_AND_TIME_ID, lessonMapper, id, date, lessonTimeId);
+    }
+
+    @Override
+    public List<Lesson> getAllByAudienceIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId) {
+        return jdbcTemplate.query(SQL_GET_ALL_BY_AUDIENCE_ID_DATE_AND_TIME_ID, lessonMapper, id, date, lessonTimeId);
     }
 
     private void removeGroupFromLesson (int lessonId, int groupId) {

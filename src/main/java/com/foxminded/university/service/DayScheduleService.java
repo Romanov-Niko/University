@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DayScheduleService {
@@ -16,11 +17,11 @@ public class DayScheduleService {
         this.dayScheduleDao = dayScheduleDao;
     }
 
-    public DaySchedule getByDateForStudent(int id, LocalDate day) {
+    public Optional<DaySchedule> getByDateForStudent(int id, LocalDate day) {
         return dayScheduleDao.getByDateForStudent(id, day);
     }
 
-    public DaySchedule getByDateForTeacher(int id, LocalDate day) {
+    public Optional<DaySchedule> getByDateForTeacher(int id, LocalDate day) {
         return dayScheduleDao.getByDateForTeacher(id, day);
     }
 
@@ -31,5 +32,6 @@ public class DayScheduleService {
     public List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDay) {
         return dayScheduleDao.getByMonthForTeacher(id, startDay);
     }
+
 
 }

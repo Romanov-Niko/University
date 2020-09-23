@@ -13,6 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +46,8 @@ class GroupServiceTest {
     @Test
     void givenGroup_whenSave_thenCalledGroupDaoSave() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+        given(groupDao.getByName(anyString())).willReturn(Optional.empty());
+        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
 
         groupService.save(createdGroup);
 
@@ -55,7 +58,7 @@ class GroupServiceTest {
     void givenGroup_whenUpdate_thenCalledGroupDaoUpdate() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
-        given(studentDao.getAll()).willReturn(singletonList(retrievedStudent));
+        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
 
         groupService.update(updatedGroup);
 
@@ -77,5 +80,75 @@ class GroupServiceTest {
 
         verify(groupDao, times(1)).getAllByLessonId(1);
         assertEquals(singletonList(retrievedGroup), actualGroups);
+    }
+
+    @Test
+    void givenEmptyTable_whenGetAll_thenCalledGroupDaoGetAllAndReturnedEmptyList() {
+        given(groupDao.getAll()).willReturn(emptyList());
+
+        List<Group> actualGroups = groupService.getAll();
+
+        verify(groupDao, times(1)).getAll();
+        assertEquals(emptyList(), actualGroups);
+    }
+
+    @Test
+    void givenGroupWithExistingName_whenSave_thenWasNotCalledGroupDaoSave() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+        given(groupDao.getByName(anyString())).willReturn(Optional.of(retrievedGroup));
+
+        groupService.save(createdGroup);
+
+        verify(groupDao, never()).save(createdGroup);
+    }
+
+    @Test
+    void givenNonExistentStudentId_whenSave_thenWasNotCalledGroupDaoSave() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+        given(studentDao.getById(anyInt())).willReturn(Optional.empty());
+
+        groupService.save(createdGroup);
+
+        verify(groupDao, never()).save(createdGroup);
+    }
+
+    @Test
+    void givenNonExistentId_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+        given(groupDao.getById(anyInt())).willReturn(Optional.empty());
+
+        groupService.update(updatedGroup);
+
+        verify(groupDao, never()).update(updatedGroup);
+    }
+
+    @Test
+    void givenNonExistentStudentId_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
+        given(groupDao.getById(anyInt())).willReturn(Optional.empty());
+
+        groupService.update(updatedGroup);
+
+        verify(groupDao, never()).update(updatedGroup);
+    }
+
+    @Test
+    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+        ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 0);
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
+
+        groupService.update(updatedGroup);
+
+        verify(groupDao, never()).update(updatedGroup);
+    }
+
+    @Test
+    void givenDataThatProducesEmptyResult_whenGetAllByLessonId_thenCalledGroupDaoGetAllByLessonIdAndReturnedEmptyList() {
+        given(groupDao.getAllByLessonId(anyInt())).willReturn(emptyList());
+
+        List<Group> actualGroups = groupService.getAllByLessonId(1);
+
+        verify(groupDao, times(1)).getAllByLessonId(1);
+        assertEquals(emptyList(), actualGroups);
     }
 }
