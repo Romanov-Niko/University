@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc.mapper;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

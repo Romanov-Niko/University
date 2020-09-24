@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
+import com.foxminded.university.domain.Lesson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +16,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 import static com.foxminded.university.TestData.*;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
@@ -30,7 +36,7 @@ class JdbcAudienceDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstAudience() {
-        Audience actualAudience = audienceDao.getById(1);
+        Audience actualAudience = audienceDao.getById(1).orElse(null);
 
         assertEquals(retrievedAudience, actualAudience);
     }
@@ -73,5 +79,35 @@ class JdbcAudienceDaoTest {
 
         int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "audiences");
         assertEquals(expectedRows, actualRows);
+    }
+
+    @Test
+    void givenRoomNumber101_whenGetByRoomNumber_thenReturnedFirstAudience() {
+        Audience actualAudience = audienceDao.getByRoomNumber(101).orElse(null);
+
+        assertEquals(retrievedAudience, actualAudience);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetById_thenReturnedOptionalEmpty() {
+        Optional<Audience> actualAudience = audienceDao.getById(4);
+
+        assertEquals(Optional.empty(), actualAudience);
+    }
+
+    @Test
+    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "audiences");
+
+        List<Audience> actualAudiences = audienceDao.getAll();
+
+        assertEquals(emptyList(), actualAudiences);
+    }
+
+    @Test
+    void givenNonExistentRoomNumber_whenGetByRoomNumber_thenReturnedOptionalEmpty() {
+        Optional<Audience> actualAudience = audienceDao.getByRoomNumber(0);
+
+        assertEquals(Optional.empty(), actualAudience);
     }
 }

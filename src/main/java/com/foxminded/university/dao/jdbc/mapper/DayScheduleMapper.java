@@ -2,6 +2,7 @@ package com.foxminded.university.dao.jdbc.mapper;
 
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +22,8 @@ public class DayScheduleMapper implements RowMapper<DaySchedule> {
     @Override
     public DaySchedule mapRow(ResultSet resultSet, int i) throws SQLException {
         DaySchedule daySchedule = new DaySchedule();
-        daySchedule.setId(resultSet.getInt("id"));
-        daySchedule.setDay(resultSet.getObject("day", LocalDate.class));
-        daySchedule.setLessons(lessonDao.getAllByDayId(daySchedule.getId()));
+        daySchedule.setDay(resultSet.getObject("date", LocalDate.class));
+        daySchedule.setLessons(lessonDao.getAllByDate(daySchedule.getDay()));
         return daySchedule;
     }
 }

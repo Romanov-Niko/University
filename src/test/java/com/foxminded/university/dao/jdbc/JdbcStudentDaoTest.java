@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
+import com.foxminded.university.domain.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
@@ -32,7 +35,7 @@ class JdbcStudentDaoTest {
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstStudent() {
-        Student actualStudent = studentDao.getById(1);
+        Student actualStudent = studentDao.getById(1).orElse(null);
 
         assertEquals(retrievedStudent, actualStudent);
     }
@@ -84,5 +87,42 @@ class JdbcStudentDaoTest {
         List<Student> actualStudents = studentDao.getAllByGroupId(1);
 
         assertEquals(1, actualStudents.size());
+    }
+
+    @Test
+    void givenFirstGroupName_whenGetAllByGroupName_thenReturnedAllStudentsOfFirstGroup() {
+        List<Student> actualStudents = studentDao.getAllByGroupName("AA-11");
+
+        assertEquals(1, actualStudents.size());
+    }
+
+    @Test
+    void givenNonExistentId_whenGetById_thenReturnedOptionalEmpty() {
+        Optional<Student> actualStudent = studentDao.getById(4);
+
+        assertEquals(Optional.empty(), actualStudent);
+    }
+
+    @Test
+    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "students");
+
+        List<Student> actualStudents = studentDao.getAll();
+
+        assertEquals(emptyList(), actualStudents);
+    }
+
+    @Test
+    void givenNonExistentGroupId_whenGetAllByGroupId_thenReturnedEmptyList() {
+        List<Student> actualStudents = studentDao.getAllByGroupId(0);
+
+        assertEquals(emptyList(), actualStudents);
+    }
+
+    @Test
+    void givenNonExistentName_whenGetAllByGroupName_thenReturnedEmptyList() {
+        List<Student> actualStudents = studentDao.getAllByGroupName("INCORRECT");
+
+        assertEquals(emptyList(), actualStudents);
     }
 }

@@ -2,17 +2,23 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LessonTimeMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.LessonTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcLessonTimeDao implements LessonTimeDao {
 
     private static final String SQL_GET_LESSON_TIME_BY_ID = "SELECT * FROM lessons_times WHERE id = ?";
@@ -20,6 +26,8 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     private static final String SQL_SAVE_LESSON_TIME = "INSERT INTO lessons_times VALUES (DEFAULT, ?, ?)";
     private static final String SQL_UPDATE_LESSON_TIME = "UPDATE lessons_times SET begin_time = ?, end_time = ? WHERE id = ?";
     private static final String SQL_DELETE_LESSON_TIME = "DELETE FROM lessons_times WHERE id = ?";
+    private static final String SQL_GET_LESSON_TIME_BY_START_AND_END_TIME = "SELECT * FROM lessons_times WHERE begin_time = ? AND end_time = ?";
+
 
     private final JdbcTemplate jdbcTemplate;
     private final LessonTimeMapper lessonTimeMapper;
@@ -30,8 +38,12 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     }
 
     @Override
-    public LessonTime getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id);
+    public Optional<LessonTime> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -59,5 +71,14 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(SQL_DELETE_LESSON_TIME, id);
+    }
+
+    @Override
+    public Optional<LessonTime> getByStartAndEndTime(LocalTime start, LocalTime end) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_START_AND_END_TIME, lessonTimeMapper, start, end));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }

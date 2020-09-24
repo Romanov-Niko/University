@@ -14,8 +14,14 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.util.Collections.*;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
@@ -24,51 +30,60 @@ class JdbcDayScheduleDaoTest {
     @Autowired
     private DayScheduleDao dayScheduleDao;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @Test
-    void givenId1_whenGetById_thenReturnedFirstDaySchedule() {
-        DaySchedule actualDaySchedule = dayScheduleDao.getById(1);
+    void givenId1AndFirstDay_whenGetByDayForStudent_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
-        assertEquals(retrievedDaySchedule, actualDaySchedule);
+        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
     }
 
     @Test
-    void givenNothing_whenGetAll_thenReturnedListOfAllDaysSchedules() {
-        int expectedRows = dayScheduleDao.getAll().size();
+    void givenId1AndFirstDay_whenGetByDayForTeacher_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
-        assertEquals(expectedRows, actualRows);
+        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
     }
 
     @Test
-    void givenDayschedule_whenSave_thenAddedGivenDaySchedule() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules") + 1;
+    void givenId1AndFirstDay_whenGetByMonthForStudent_thenReturnedListOfDaysSchedulesWithFirstDayAndFirstLesson() {
+        List<DaySchedule> actualDaysSchedules = dayScheduleDao.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        dayScheduleDao.save(createdDaySchedule);
-
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
-        assertEquals(expectedRows, actualRows);
+        assertEquals(singletonList(retrievedDaySchedule), actualDaysSchedules);
     }
 
     @Test
-    void givenDayschedule_whenUpdate_thenUpdatedDayscheduleWithEqualId() {
-        dayScheduleDao.update(updatedDaySchedule);
+    void givenId1AndFirstDay_whenGetByMonthForTeacher_thenReturnedListOfDaysSchedulesWithFirstDayAndFirstLesson() {
+        List<DaySchedule> actualDaysSchedules = dayScheduleDao.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "days_schedules", String.format(
-                "id = %d AND day = '%s'", updatedDaySchedule.getId(), updatedDaySchedule.getDay()
-        ));
-        assertEquals(1, actualNumber);
+        assertEquals(singletonList(retrievedDaySchedule), actualDaysSchedules);
     }
 
     @Test
-    void givenId3_whenDelete_thenDeletedThirdDaySchedule() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules") - 1;
+    void givenWrongData_whenGetByDayForStudent_thenReturnedOptionalEmpty() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForStudent(5, LocalDate.parse("2017-06-01"));
 
-        dayScheduleDao.delete(3);
+        assertEquals(Optional.empty(), actualDaySchedule);
+    }
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "days_schedules");
-        assertEquals(expectedRows, actualRows);
+    @Test
+    void givenWrongData_whenGetByDayForTeacher_thenReturnedOptionalEmpty() {
+        Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForTeacher(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(Optional.empty(), actualDaySchedule);
+    }
+
+    @Test
+    void givenWrongData_whenGetByMonthForStudent_thenReturnedEmptyList() {
+        List<DaySchedule> actualDaySchedule = dayScheduleDao.getByMonthForStudent(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(emptyList(), actualDaySchedule);
+    }
+
+    @Test
+    void givenWrongData_whenGetByMonthForTeacher_thenReturnedEmptyList() {
+        List<DaySchedule> actualDaySchedule = dayScheduleDao.getByMonthForStudent(5, LocalDate.parse("2017-06-01"));
+
+        assertEquals(emptyList(), actualDaySchedule);
     }
 }
+

@@ -1,10 +1,13 @@
 package com.foxminded.university.dao;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface Dao<T> {
 
-    T getById(int id);
+    Optional<T> getById(int id);
 
     List<T> getAll();
 

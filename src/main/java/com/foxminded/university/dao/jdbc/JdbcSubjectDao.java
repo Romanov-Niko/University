@@ -2,17 +2,22 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectMapper;
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
-@Component
+@Repository
 public class JdbcSubjectDao implements SubjectDao {
 
     private static final String SQL_GET_SUBJECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
@@ -26,6 +31,7 @@ public class JdbcSubjectDao implements SubjectDao {
             "LEFT JOIN teachers ON teachers_subjects.teacher_id = teachers.id " +
             "LEFT JOIN subjects ON teachers_subjects.subject_id = subjects.id " +
             "WHERE teachers.id = ?";
+    private static final String SQL_GET_SUBJECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final SubjectMapper subjectMapper;
@@ -36,8 +42,12 @@ public class JdbcSubjectDao implements SubjectDao {
     }
 
     @Override
-    public Subject getById(int id) {
-        return jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id);
+    public Optional<Subject> getById(int id) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -72,5 +82,14 @@ public class JdbcSubjectDao implements SubjectDao {
     @Override
     public List<Subject> getAllByTeacherId(int id) {
         return jdbcTemplate.query(SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID, subjectMapper, id);
+    }
+
+    @Override
+    public Optional<Subject> getByName(String name) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_NAME, subjectMapper, name));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }
