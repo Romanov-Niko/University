@@ -4,6 +4,8 @@ import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.Teacher;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityOutOfBoundsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +21,7 @@ import static java.util.Collections.singletonList;
 
 import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -65,7 +68,7 @@ class LessonServiceTest {
         given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
         given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getAll()).willReturn(singletonList(retrievedGroup));
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
         given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
         given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
 
@@ -82,7 +85,7 @@ class LessonServiceTest {
         given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
         given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getAll()).willReturn(singletonList(retrievedGroup));
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
         given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
         given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
 
@@ -119,16 +122,14 @@ class LessonServiceTest {
     }
 
     @Test
-    void givenLessonWithConflictingData_whenSave_thenWasNotCalledLessonDaoSave() {
-        lessonService.save(createdLesson);
-
+    void givenLessonWithConflictingData_whenSave_thenWasThrownEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> lessonService.save(createdLesson), "Lesson is not present");
         verify(lessonDao, never()).save(createdLesson);
     }
 
     @Test
-    void givenLessonWithConflictingData_whenUpdate_thenWasNotCalledLessonDaoUpdate() {
-        lessonService.update(updatedLesson);
-
+    void givenLessonWithConflictingData_whenUpdate_thenWasThrownEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> lessonService.update(updatedLesson), "Lesson is not present");
         verify(lessonDao, never()).update(updatedLesson);
     }
 

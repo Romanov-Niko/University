@@ -2,6 +2,8 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.DayScheduleDao;
 import com.foxminded.university.domain.DaySchedule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,6 +34,4 @@ public class DayScheduleService {
     public List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDay) {
         return dayScheduleDao.getByMonthForTeacher(id, startDay);
     }
-
-
 }

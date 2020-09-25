@@ -4,6 +4,8 @@ import com.foxminded.university.TestData;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Group;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -75,20 +77,16 @@ class AudienceServiceTest {
     }
 
     @Test
-    void givenExistingRoomNumber_whenSave_thenWasNotCalledAudienceDaoSave() {
+    void givenExistingRoomNumber_whenSave_thenWasThrownEntityNotUniqueException() {
         given(audienceDao.getByRoomNumber(anyInt())).willReturn(Optional.of(retrievedAudience));
-
-        audienceService.save(createdAudience);
-
-        verify(audienceDao, never()).save(any());
+        assertThrows(EntityNotUniqueException.class, () -> audienceService.save(createdAudience), "Audience with room number 104 already exist");
+        verify(audienceDao, never()).save(createdAudience);
     }
 
     @Test
-    void givenAudienceWithNonExistentId_whenUpdate_thenWasNotCalledAudienceDaoUpdate() {
+    void givenAudienceWithNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
         given(audienceDao.getById(anyInt())).willReturn(Optional.empty());
-
-        audienceService.update(updatedAudience);
-
-        verify(audienceDao, never()).update(any());
+        assertThrows(EntityNotFoundException.class, () -> audienceService.update(updatedAudience), "Audience with id 1 is not present");
+        verify(audienceDao, never()).update(updatedAudience);
     }
 }

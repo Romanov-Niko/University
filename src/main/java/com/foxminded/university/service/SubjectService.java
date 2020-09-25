@@ -1,20 +1,21 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SubjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SubjectService.class);
 
     @Value("${maxCourse}")
     private int maxCourse;
@@ -30,13 +31,15 @@ public class SubjectService {
     }
 
     public void save(Subject subject) {
-        if ((subject.getCourse() <= maxCourse) && (subject.getCourse() > 0) && isSubjectUnique(subject.getName())) {
+        logger.debug("Check consistency of subject with id {} before saving", subject.getId());
+        if (isCourseConsistent(subject.getCourse()) && isSubjectUnique(subject.getName())) {
             subjectDao.save(subject);
         }
     }
 
     public void update(Subject subject) {
-        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() <= maxCourse) && (subject.getCourse() > 0)) {
+        logger.debug("Check consistency of subject with id {} before updating", subject.getId());
+        if ((isSubjectPresent(subject.getId())) && isCourseConsistent(subject.getCourse())) {
             subjectDao.update(subject);
         }
     }
@@ -50,10 +53,29 @@ public class SubjectService {
     }
 
     private boolean isSubjectPresent(int id) {
-        return subjectDao.getById(id).isPresent();
+        if (subjectDao.getById(id).isPresent()) {
+            logger.debug("Subject is present");
+            return true;
+        } else {
+            throw new EntityNotFoundException("Subject is not present");
+        }
     }
 
     private boolean isSubjectUnique(String name) {
-        return !subjectDao.getByName(name).isPresent();
+        if (!subjectDao.getByName(name).isPresent()) {
+            logger.debug("Subject is unique");
+            return true;
+        } else {
+            throw new EntityNotUniqueException(String.format("Subject with name %s already exist", name));
+        }
+    }
+
+    private boolean isCourseConsistent(int course) {
+        if ((course <= maxCourse) && (course > 0)) {
+            logger.debug("Course is consistent");
+            return true;
+        } else {
+            throw new EntityOutOfBoundsException("Course out of bounds");
+        }
     }
 }

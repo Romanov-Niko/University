@@ -7,6 +7,7 @@ import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.domain.Teacher;
+import com.foxminded.university.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,27 +94,24 @@ class TeacherServiceTest {
     }
 
     @Test
-    void givenNonExistentSubjectId_whenSave_thenWasNotCalledTeacherDaoSave() {
+    void givenNonExistentSubjectId_whenSave_thenWasThrownEntityNotFoundException() {
         given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
 
-        teacherService.save(createdTeacher);
-
+        assertThrows(EntityNotFoundException.class, () -> teacherService.save(createdTeacher), "Teacher is not present");
         verify(teacherDao, never()).save(createdTeacher);
     }
 
     @Test
-    void givenNonExistentTeacherId_whenUpdate_thenWasNotCalledTeacherDaoUpdate() {
+    void givenNonExistentTeacherId_whenUpdate_thenWasThrownEntityNotFoundException() {
         given(teacherDao.getById(anyInt())).willReturn(Optional.empty());
 
-        teacherService.update(updatedTeacher);
-
+        assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher), "Teacher is not present");
         verify(teacherDao, never()).update(updatedTeacher);
     }
 
     @Test
-    void givenNonExistentSubjectId_whenUpdate_thenWasNotCalledTeacherDaoUpdate() {
-        teacherService.update(updatedTeacher);
-
+    void givenNonExistentSubjectId_whenUpdate_thenWasThrownEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher), "Teacher is not present");
         verify(teacherDao, never()).update(updatedTeacher);
     }
 }

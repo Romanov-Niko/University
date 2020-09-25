@@ -4,6 +4,9 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.EntityOutOfBoundsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -100,30 +103,28 @@ class StudentServiceTest {
     }
 
     @Test
-    void givenStudentWithIncorrectCourse_whenSave_thenWasNotCalledStudentDaoSave() {
+    void givenStudentWithIncorrectCourse_whenSave_thenWasThrownEntityOutOfBoundsException() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
 
-        studentService.save(createdStudent);
-
+        assertThrows(EntityOutOfBoundsException.class, () -> studentService.save(createdStudent), "Course out of bounds");
         verify(studentDao, never()).save(createdStudent);
     }
 
     @Test
-    void givenStudentWithNonExistentId_whenUpdate_thenWasNotCalledStudentDaoUpdate() {
+    void givenStudentWithNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
         given(studentDao.getById(anyInt())).willReturn(Optional.empty());
 
-        studentService.update(updatedStudent);
-
+        assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent), "Student is not present");
         verify(studentDao, never()).update(updatedStudent);
     }
 
     @Test
-    void givenStudentWithIncorrectCourse_whenUpdate_thenWasNotCalledStudentDaoUpdate() {
+    void givenStudentWithIncorrectCourse_whenUpdate_thenWasThrownEntityOutOfBoundsException() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
+        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
 
-        studentService.update(updatedStudent);
-
+        assertThrows(EntityOutOfBoundsException.class, () -> studentService.update(updatedStudent), "Course out of bounds");
         verify(studentDao, never()).update(updatedStudent);
     }
 

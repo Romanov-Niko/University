@@ -1,16 +1,20 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
+import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StudentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     @Value("${maxCourse}")
     private int maxCourse;
@@ -26,13 +30,15 @@ public class StudentService {
     }
 
     public void save(Student student) {
-        if ((student.getCourse() <= maxCourse) && (student.getCourse() > 0)) {
+        logger.debug("Check consistency of student with id {} before saving", student.getId());
+        if (isCourseConsistent(student.getCourse())) {
             studentDao.save(student);
         }
     }
 
     public void update(Student student) {
-        if (isStudentPresent(student.getId()) && (student.getCourse() > 0) && (student.getCourse() <= maxCourse)) {
+        logger.debug("Check consistency of student with id {} before updating", student.getId());
+        if (isStudentPresent(student.getId()) && isCourseConsistent(student.getCourse())) {
             studentDao.update(student);
         }
     }
@@ -50,6 +56,20 @@ public class StudentService {
     }
 
     private boolean isStudentPresent(int id) {
-        return studentDao.getById(id).isPresent();
+        if (studentDao.getById(id).isPresent()) {
+            logger.debug("Student is present");
+            return true;
+        } else {
+            throw new EntityNotFoundException("Student is not present");
+        }
+    }
+
+    private boolean isCourseConsistent(int course) {
+        if ((course <= maxCourse) && (course > 0)) {
+            logger.debug("Course is consistent");
+            return true;
+        } else {
+            throw new EntityOutOfBoundsException("Course out of bounds");
+        }
     }
 }

@@ -3,6 +3,9 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.EntityOutOfBoundsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +20,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static com.foxminded.university.TestData.*;
@@ -93,52 +97,46 @@ class GroupServiceTest {
     }
 
     @Test
-    void givenGroupWithExistingName_whenSave_thenWasNotCalledGroupDaoSave() {
+    void givenGroupWithExistingName_whenSave_thenWasThrownEntityNotUniqueException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getByName(anyString())).willReturn(Optional.of(retrievedGroup));
 
-        groupService.save(createdGroup);
-
+        assertThrows(EntityNotUniqueException.class, () -> groupService.save(createdGroup), "Group with name DD-44 already exist");
         verify(groupDao, never()).save(createdGroup);
     }
 
     @Test
-    void givenNonExistentStudentId_whenSave_thenWasNotCalledGroupDaoSave() {
+    void givenNonExistentStudentId_whenSave_thenWasThrownEntityNotFoundException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(studentDao.getById(anyInt())).willReturn(Optional.empty());
 
-        groupService.save(createdGroup);
-
+        assertThrows(EntityNotFoundException.class, () -> groupService.save(createdGroup), "There are students who are not present");
         verify(groupDao, never()).save(createdGroup);
     }
 
     @Test
-    void givenNonExistentId_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+    void givenNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.empty());
 
-        groupService.update(updatedGroup);
-
+        assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup), "Group is not present");
         verify(groupDao, never()).update(updatedGroup);
     }
 
     @Test
-    void givenNonExistentStudentId_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+    void givenNonExistentStudentId_whenUpdate_thenWasThrownEntityNotFoundException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.empty());
 
-        groupService.update(updatedGroup);
-
+        assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup), "There are students who are not present");
         verify(groupDao, never()).update(updatedGroup);
     }
 
     @Test
-    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasNotCalledGroupDaoUpdate() {
+    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasThrownEntityOutOfBoundsException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 0);
         given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
 
-        groupService.update(updatedGroup);
-
+        assertThrows(EntityOutOfBoundsException.class, () -> groupService.update(updatedGroup), "Too many students in the group");
         verify(groupDao, never()).update(updatedGroup);
     }
 
