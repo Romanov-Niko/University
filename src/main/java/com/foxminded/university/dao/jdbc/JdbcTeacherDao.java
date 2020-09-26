@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -52,11 +53,9 @@ public class JdbcTeacherDao implements TeacherDao {
     public Optional<Teacher> getById(int id) {
         logger.debug("Retrieving teacher with id {}", id);
         try {
-            Optional<Teacher> teacher = Optional.of(jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, teacherMapper, id));
-            logger.debug("Teacher was retrieved");
-            return teacher;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_TEACHER_BY_ID, teacherMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Teacher is not present");
+            logger.error("Teacher with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -83,11 +82,9 @@ public class JdbcTeacherDao implements TeacherDao {
             return statement;
         }, keyHolder) == 0) {
             throw new EntityNotSavedException("Teacher was not saved");
-        } else {
-            teacher.setId((int) keyHolder.getKeys().get("id"));
-            teacher.getSubjects().forEach(subject -> saveSubjectToTeacher(teacher.getId(), subject.getId()));
-            logger.debug("Teacher was saved");
         }
+        teacher.setId((int) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
+        teacher.getSubjects().forEach(subject -> saveSubjectToTeacher(teacher.getId(), subject.getId()));
     }
 
     @Transactional
@@ -115,9 +112,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
             return statement;
         }) == 0) {
-            throw new EntityNotUpdatedException("Teacher was not updated");
-        } else {
-            logger.debug("Teacher was updated");
+            throw new EntityNotUpdatedException(String.format("Teacher with id %d was not updated", teacher.getId()));
         }
     }
 
@@ -125,27 +120,21 @@ public class JdbcTeacherDao implements TeacherDao {
     public void delete(int id) {
         logger.debug("Deleting teacher with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_TEACHER, id) == 0) {
-            throw new EntityNotDeletedException("Teacher was not deleted");
-        } else {
-            logger.debug("Teacher was deleted");
+            throw new EntityNotDeletedException(String.format("Teacher with id %d was not deleted", id));
         }
     }
 
-    private void removeSubjectFromTeacher (int teacherId, int subjectId) {
+    private void removeSubjectFromTeacher(int teacherId, int subjectId) {
         logger.debug("Removing subject with id {} form teacher with id {}", subjectId, teacherId);
         if (jdbcTemplate.update(SQL_DELETE_TEACHER_SUBJECT, teacherId, subjectId) == 0) {
-            throw new SubjectNotRemovedFromTeacherException("Subject was not removed");
-        } else {
-            logger.debug("Subject was removed");
+            throw new SubjectNotRemovedFromTeacherException(String.format("Subject with id %d was not removed from teacher with id %d", subjectId, teacherId));
         }
     }
 
-    private void saveSubjectToTeacher (int teacherId, int subjectId) {
+    private void saveSubjectToTeacher(int teacherId, int subjectId) {
         logger.debug("Adding subject with id {} to teacher with id {}", subjectId, teacherId);
         if (jdbcTemplate.update(SQL_SAVE_TEACHER_SUBJECT, teacherId, subjectId) == 0) {
-            throw new SubjectNotAddedToTeacherException("Subject was not added");
-        } else {
-            logger.debug("Subject was added");
+            throw new SubjectNotAddedToTeacherException(String.format("Subject with id %d was not added to teacher with id %d", subjectId, teacherId));
         }
     }
 }

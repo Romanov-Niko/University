@@ -4,8 +4,9 @@ import com.foxminded.university.TestData;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Group;
+import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -77,9 +78,9 @@ class AudienceServiceTest {
     }
 
     @Test
-    void givenExistingRoomNumber_whenSave_thenWasThrownEntityNotUniqueException() {
+    void givenExistingRoomNumber_whenSave_thenWasThrownAudienceRoomNumberNotUniqueException() {
         given(audienceDao.getByRoomNumber(anyInt())).willReturn(Optional.of(retrievedAudience));
-        assertThrows(EntityNotUniqueException.class, () -> audienceService.save(createdAudience), "Audience with room number 104 already exist");
+        assertThrows(AudienceRoomNumberNotUniqueException.class, () -> audienceService.save(createdAudience), "Audience with room number 104 already exist");
         verify(audienceDao, never()).save(createdAudience);
     }
 

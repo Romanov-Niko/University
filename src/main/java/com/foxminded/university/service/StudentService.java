@@ -2,7 +2,7 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,20 +56,14 @@ public class StudentService {
     }
 
     private boolean isStudentPresent(int id) {
-        if (studentDao.getById(id).isPresent()) {
-            logger.debug("Student is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Student is not present");
-        }
+        return studentDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
     }
 
     private boolean isCourseConsistent(int course) {
         if ((course <= maxCourse) && (course > 0)) {
-            logger.debug("Course is consistent");
             return true;
         } else {
-            throw new EntityOutOfBoundsException("Course out of bounds");
+            throw new CourseNumberOutOfBoundsException("Course number is out of bounds");
         }
     }
 }

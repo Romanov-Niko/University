@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -50,11 +51,9 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     public Optional<LessonTime> getById(int id) {
         logger.debug("Retrieving lesson time with id {}", id);
         try {
-            Optional<LessonTime> lessonTime = Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
-            logger.debug("Lesson time was retrieved");
-            return lessonTime;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Lesson time is not present");
+            logger.error("Lesson time with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -76,19 +75,15 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
             return statement;
         }, keyHolder) == 0) {
             throw new EntityNotSavedException("Lesson time was not saved");
-        } else {
-            lessonTime.setId((int) keyHolder.getKeys().get("id"));
-            logger.debug("Lesson time was saved");
         }
+        lessonTime.setId((int) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
     }
 
     @Override
     public void update(LessonTime lessonTime) {
-        logger.debug("Updating lesson  time with id {}", lessonTime.getId());
+        logger.debug("Updating lesson time with id {}", lessonTime.getId());
         if (jdbcTemplate.update(SQL_UPDATE_LESSON_TIME, lessonTime.getBegin(), lessonTime.getEnd(), lessonTime.getId()) == 0) {
-            throw new EntityNotUpdatedException("Lesson time was not updated");
-        } else {
-            logger.debug("Lesson time was updated");
+            throw new EntityNotUpdatedException(String.format("Lesson time with id %d was not updated", lessonTime.getId()));
         }
     }
 
@@ -96,9 +91,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     public void delete(int id) {
         logger.debug("Deleting lesson time with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_LESSON_TIME, id) == 0) {
-            throw new EntityNotDeletedException("Lesson time was not deleted");
-        } else {
-            logger.debug("Lesson time was deleted");
+            throw new EntityNotDeletedException(String.format("Lesson time with id %d was not deleted", id));
         }
     }
 
@@ -106,11 +99,8 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     public Optional<LessonTime> getByStartAndEndTime(LocalTime start, LocalTime end) {
         logger.debug("Retrieving lesson time with start {} and end {}", start, end);
         try {
-            Optional<LessonTime> lessonTime = Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_START_AND_END_TIME, lessonTimeMapper, start, end));
-            logger.debug("Lesson time was retrieved");
-            return lessonTime;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_START_AND_END_TIME, lessonTimeMapper, start, end));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Lesson time is not present");
             return Optional.empty();
         }
     }

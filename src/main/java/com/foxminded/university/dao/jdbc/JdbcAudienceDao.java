@@ -47,11 +47,9 @@ public class JdbcAudienceDao implements AudienceDao {
     public Optional<Audience> getById(int id) {
         logger.debug("Retrieving audience with id {}", id);
         try {
-            Optional<Audience> audience = Optional.of(jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id));
-            logger.debug("Audience was retrieved");
-            return audience;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Audience is not present");
+            logger.error("Audience with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -73,19 +71,15 @@ public class JdbcAudienceDao implements AudienceDao {
             return statement;
         }, keyHolder) == 0) {
             throw new EntityNotSavedException("Audience was not saved");
-        } else {
-            audience.setId((int) keyHolder.getKeys().get("id"));
-            logger.debug("Audience was saved");
         }
+        audience.setId((int) keyHolder.getKeys().get("id"));
     }
 
     @Override
     public void update(Audience audience) {
         logger.debug("Updating audience with id {}", audience.getId());
         if (jdbcTemplate.update(SQL_UPDATE_AUDIENCE, audience.getRoomNumber(), audience.getCapacity(), audience.getId()) == 0) {
-            throw new EntityNotUpdatedException("Audience was not updated");
-        } else {
-            logger.debug("Audience was updated");
+            throw new EntityNotUpdatedException(String.format("Audience with id %d was not updated", audience.getId()));
         }
     }
 
@@ -93,9 +87,7 @@ public class JdbcAudienceDao implements AudienceDao {
     public void delete(int id) {
         logger.debug("Deleting audience with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_AUDIENCE, id) == 0) {
-            throw new EntityNotDeletedException("Audience was not deleted");
-        } else {
-            logger.debug("Audience was deleted");
+            throw new EntityNotDeletedException(String.format("Audience with id %d was not deleted", id));
         }
     }
 
@@ -103,11 +95,8 @@ public class JdbcAudienceDao implements AudienceDao {
     public Optional<Audience> getByRoomNumber(int roomNumber) {
         logger.debug("Retrieving audience with room number {}", roomNumber);
         try {
-            Optional<Audience> audience = Optional.of(jdbcTemplate.queryForObject(SQL_AUDIENCE_BY_ROOM_NUMBER, audienceMapper, roomNumber));
-            logger.debug("Audience was retrieved");
-            return audience;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_AUDIENCE_BY_ROOM_NUMBER, audienceMapper, roomNumber));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Audience is not present");
             return Optional.empty();
         }
     }

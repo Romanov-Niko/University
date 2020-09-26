@@ -3,9 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -97,11 +95,11 @@ class GroupServiceTest {
     }
 
     @Test
-    void givenGroupWithExistingName_whenSave_thenWasThrownEntityNotUniqueException() {
+    void givenGroupWithExistingName_whenSave_thenWasThrownGroupNameNotUniqueException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getByName(anyString())).willReturn(Optional.of(retrievedGroup));
 
-        assertThrows(EntityNotUniqueException.class, () -> groupService.save(createdGroup), "Group with name DD-44 already exist");
+        assertThrows(GroupNameNotUniqueException.class, () -> groupService.save(createdGroup), "Group with name DD-44 already exist");
         verify(groupDao, never()).save(createdGroup);
     }
 
@@ -132,11 +130,11 @@ class GroupServiceTest {
     }
 
     @Test
-    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasThrownEntityOutOfBoundsException() {
+    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasThrownGroupSizeTooLargeException() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 0);
         given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
 
-        assertThrows(EntityOutOfBoundsException.class, () -> groupService.update(updatedGroup), "Too many students in the group");
+        assertThrows(GroupSizeTooLargeException.class, () -> groupService.update(updatedGroup), "Too many students in the group");
         verify(groupDao, never()).update(updatedGroup);
     }
 

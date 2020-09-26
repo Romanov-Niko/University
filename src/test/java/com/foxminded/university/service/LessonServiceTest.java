@@ -5,7 +5,7 @@ import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

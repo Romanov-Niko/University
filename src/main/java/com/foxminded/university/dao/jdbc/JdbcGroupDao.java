@@ -57,11 +57,9 @@ public class JdbcGroupDao implements GroupDao {
     public Optional<Group> getById(int id) {
         logger.debug("Retrieving group with id {}", id);
         try {
-            Optional<Group> group = Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id));
-            logger.debug("Group was retrieved");
-            return group;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Group is not present");
+            logger.error("Group with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -77,29 +75,25 @@ public class JdbcGroupDao implements GroupDao {
     public void save(Group group) {
         logger.debug("Saving group");
         KeyHolder keyHolder = new GeneratedKeyHolder();
-         if (jdbcTemplate.update(connection -> {
+        if (jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SQL_SAVE_GROUP, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, group.getName());
             return statement;
         }, keyHolder) == 0) {
-             throw new EntityNotSavedException("Group was not saved");
-         } else {
-             group.setId((int) keyHolder.getKeys().get("id"));
-             group.getStudents().forEach(student -> {
-                 updateStudentGroup(student.getId(), group.getId());
-                 student.setGroupId(group.getId());
-             });
-             logger.debug("Group was saved");
-         }
+            throw new EntityNotSavedException("Group was not saved");
+        }
+        group.setId((int) keyHolder.getKeys().get("id"));
+        group.getStudents().forEach(student -> {
+            updateStudentGroup(student.getId(), group.getId());
+            student.setGroupId(group.getId());
+        });
     }
 
     @Override
     public void update(Group group) {
         logger.debug("Updating group with id {}", group.getId());
         if (jdbcTemplate.update(SQL_UPDATE_GROUP, group.getName(), group.getId()) == 0) {
-            throw new EntityNotUpdatedException("Group was not updated");
-        } else {
-            logger.debug("Group was updated");
+            throw new EntityNotUpdatedException(String.format("Group with id %d was not updated", group.getId()));
         }
     }
 
@@ -107,9 +101,7 @@ public class JdbcGroupDao implements GroupDao {
     public void delete(int id) {
         logger.debug("Deleting group with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_GROUP, id) == 0) {
-            throw new EntityNotDeletedException("Group was not deleted");
-        } else {
-            logger.debug("Group was deleted");
+            throw new EntityNotDeletedException(String.format("Group with id %d was not deleted", id));
         }
     }
 
@@ -123,11 +115,8 @@ public class JdbcGroupDao implements GroupDao {
     public Optional<Group> getByName(String name) {
         logger.debug("Retrieving group with name {}", name);
         try {
-            Optional<Group> group = Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_NAME, groupMapper, name));
-            logger.debug("Group was retrieved");
-            return group;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_NAME, groupMapper, name));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Group is not present");
             return Optional.empty();
         }
     }
@@ -135,9 +124,7 @@ public class JdbcGroupDao implements GroupDao {
     private void updateStudentGroup(int studentId, int groupId) {
         logger.debug("Updating group id to {} for student with id {}", groupId, studentId);
         if (jdbcTemplate.update(SQL_UPDATE_STUDENT_GROUP, groupId, studentId) == 0) {
-            throw new GroupIdNotUpdatedInStudentException("Group id was not updated");
-        } else {
-            logger.debug("Group id was deleted");
+            throw new GroupIdNotUpdatedInStudentException(String.format("Group id to %d for student with id %d was not updated", groupId, studentId));
         }
     }
 }

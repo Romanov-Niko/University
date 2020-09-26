@@ -3,9 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,14 +33,14 @@ public class GroupService {
 
     public void save(Group group) {
         logger.debug("Check consistency of group before saving");
-        if (isGroupSizeConsistent(group.getStudents().size()) && isGroupUnique(group.getName()) && areStudentsPresent(group.getStudents())) {
+        if (isGroupSizeConsistent(group) && isGroupUnique(group.getName()) && areStudentsPresent(group.getStudents())) {
             groupDao.save(group);
         }
     }
 
     public void update(Group group) {
         logger.debug("Check consistency of group with id {} before updating", group.getId());
-        if (isGroupPresent(group.getId()) && isGroupSizeConsistent(group.getStudents().size()) && areStudentsPresent(group.getStudents())) {
+        if (isGroupPresent(group.getId()) && isGroupSizeConsistent(group) && areStudentsPresent(group.getStudents())) {
             groupDao.update(group);
         }
     }
@@ -56,38 +54,28 @@ public class GroupService {
     }
 
     private boolean isGroupPresent(int id) {
-        if (groupDao.getById(id).isPresent()) {
-            logger.debug("Group is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Group is not present");
-        }
+        return groupDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
     }
 
     private boolean isGroupUnique(String name) {
-         if (!groupDao.getByName(name).isPresent()) {
-             logger.debug("Group is unique");
-             return true;
-         } else {
-             throw new EntityNotUniqueException(String.format("Group with name %s already exist", name));
-         }
+        groupDao.getByName(name).ifPresent(obj -> {
+            throw new GroupNameNotUniqueException(String.format("Group with name %s already exist", name));
+        });
+        return true;
     }
 
     private boolean areStudentsPresent(List<Student> students) {
-        if(students.stream().allMatch(student -> studentDao.getById(student.getId()).isPresent())) {
-            logger.debug("All students are present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("There are students who are not present");
-        }
+        students.forEach(student -> studentDao.getById(student.getId())
+                .map(obj -> true)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", student.getId()))));
+        return true;
     }
 
-    private boolean isGroupSizeConsistent(int size) {
-        if (size<=maxGroupCapacity) {
-            logger.debug("Group capacity is consistent");
+    private boolean isGroupSizeConsistent(Group group) {
+        if (group.getStudents().size() <= maxGroupCapacity) {
             return true;
         } else {
-            throw new EntityOutOfBoundsException("Too many students in the group");
+            throw new GroupSizeTooLargeException(String.format("Group with id %d have too many students", group.getId()));
         }
     }
 }

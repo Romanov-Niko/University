@@ -3,10 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
-import com.foxminded.university.exception.EntityBusyException;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
-import com.foxminded.university.exception.TeacherNotEnoughKnowledgesException;
+import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -62,75 +59,46 @@ public class LessonService {
     }
 
     private boolean isLessonPresent(int id) {
-        if (lessonDao.getById(id).isPresent()) {
-            logger.debug("Lesson is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Lesson is not present");
-        }
+        return lessonDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson with id %d is not present", id)));
     }
 
     private boolean isTeacherPresent(int id) {
-        if (teacherDao.getById(id).isPresent()) {
-            logger.debug("Teacher is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Teacher is not present");
-        }
+        return teacherDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
     private boolean isSubjectPresent(int id) {
-        if (subjectDao.getById(id).isPresent()) {
-            logger.debug("Subject is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Subject is not present");
-        }
+        return subjectDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
     private boolean areGroupsPresent(List<Group> groups) {
-        if (groups.stream().allMatch(group -> groupDao.getById(group.getId()).isPresent())) {
-            logger.debug("All groups are present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("There are groups which are not present");
-        }
+        groups.forEach(group -> groupDao.getById(group.getId())
+                .map(obj -> true)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", group.getId()))));
+        return true;
     }
 
     private boolean isAudiencePresent(int id) {
-        if (audienceDao.getById(id).isPresent()) {
-            logger.debug("Audience is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Audience is not present");
-        }
+        return audienceDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Audience with id %d is not present", id)));
     }
 
     private boolean isLessonTimePresent(int id) {
-        if (lessonTimeDao.getById(id).isPresent()) {
-            logger.debug("Lesson time is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Lesson time is not present");
-        }
+        return lessonTimeDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
     private boolean isAudienceSuitable(Lesson lesson) {
         int numberOfStudents = lesson.getGroups().stream().mapToInt(group -> group.getStudents().size()).sum();
         if (lesson.getAudience().getCapacity() >= numberOfStudents) {
-            logger.debug("Audience is spacious enough");
             return true;
         } else {
-            throw new EntityOutOfBoundsException("Audience is too small");
+            throw new AudienceSizeToSmallException(String.format("Audience with id %d is too small", lesson.getAudience().getId()));
         }
     }
 
     private boolean isTeacherSuitable(Lesson lesson) {
         if (lesson.getTeacher().getSubjects().contains(lesson.getSubject())) {
-            logger.debug("Teacher can teach");
             return true;
         } else {
-            throw new TeacherNotEnoughKnowledgesException(String.format("Teacher can not teach %s", lesson.getSubject()));
+            throw new TeacherNotEnoughKnowledgesException(String.format("Teacher with id %d can not teach %s", lesson.getTeacher().getId(), lesson.getSubject().getName()));
         }
     }
 
@@ -139,10 +107,9 @@ public class LessonService {
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
-                throw new EntityBusyException("Teacher is busy");
+                throw new TeacherLessonOverlapException(String.format("Teacher with id %d is busy", currentLesson.getTeacher().getId()));
             }
         }
-        logger.debug("Teacher is free");
         return true;
     }
 
@@ -151,10 +118,9 @@ public class LessonService {
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
-                throw new EntityBusyException("Audience is busy");
+                throw new AudienceLessonOverlapException(String.format("Audience with id %d is busy", currentLesson.getAudience().getId()));
             }
         }
-        logger.debug("Audience is free");
         return true;
     }
 

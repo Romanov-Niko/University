@@ -3,9 +3,7 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.domain.LessonTime;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
+import com.foxminded.university.exception.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -83,19 +81,19 @@ class LessonTimeServiceTest {
     }
 
     @Test
-    void givenLessonTimeWithIncorrectDuration_whenSave_thenWasThrownEntityOutOfBoundsException() {
+    void givenLessonTimeWithIncorrectDuration_whenSave_thenWasThrownLessonDurationOutOfBoundsException() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
 
-        assertThrows(EntityOutOfBoundsException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time duration is out of bounds");
+        assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time duration is out of bounds");
         verify(lessonTimeDao, never()).save(createdLessonTime);
     }
 
     @Test
-    void givenLessonTimeWithExistingBeginAndEnd_whenSave_thenWasThrownEntityNotUniqueException() {
+    void givenLessonTimeWithExistingBeginAndEnd_whenSave_thenWasThrownLessonTimeNotUniqueException() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
         given(lessonTimeDao.getByStartAndEndTime(any(), any())).willReturn(Optional.of(retrievedLessonTime));
 
-        assertThrows(EntityNotUniqueException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time with begin 12:00 and end 13:00 already exist");
+        assertThrows(LessonTimeNotUniqueException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time with begin 12:00 and end 13:00 already exist");
         verify(lessonTimeDao, never()).save(createdLessonTime);
     }
 
@@ -109,11 +107,11 @@ class LessonTimeServiceTest {
     }
 
     @Test
-    void givenLessonTimeWithIncorrectDuration_whenUpdate_thenWasThrownEntityOutOfBoundsException() {
+    void givenLessonTimeWithIncorrectDuration_whenUpdate_thenWasThrownLessonDurationOutOfBoundsException() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
 
-        assertThrows(EntityOutOfBoundsException.class, () -> lessonTimeService.update(updatedLessonTime), "Lesson time duration is out of bounds");
+        assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.update(updatedLessonTime), "Lesson time duration is out of bounds");
         verify(lessonTimeDao, never()).update(updatedLessonTime);
     }
 }

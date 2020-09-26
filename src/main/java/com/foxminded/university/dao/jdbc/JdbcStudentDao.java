@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -51,11 +52,9 @@ public class JdbcStudentDao implements StudentDao {
     public Optional<Student> getById(int id) {
         logger.debug("Retrieving student with id {}", id);
         try {
-            Optional<Student> student = Optional.of(jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id));
-            logger.debug("Student was retrieved");
-            return student;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Student is not present");
+            logger.error("Student with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -86,10 +85,8 @@ public class JdbcStudentDao implements StudentDao {
             return statement;
         }, keyHolder) == 0) {
             throw new EntityNotSavedException("Student was not saved");
-        } else {
-            student.setId((int) keyHolder.getKeys().get("id"));
-            logger.debug("Student was saved");
         }
+        student.setId((int) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
     }
 
     @Override
@@ -99,9 +96,7 @@ public class JdbcStudentDao implements StudentDao {
                 student.getAdmission(), student.getGraduation(), student.getName(),
                 student.getSurname(), student.getDateOfBirth(), student.getGender(), student.getEmail(),
                 student.getPhoneNumber(), student.getId()) == 0) {
-            throw new EntityNotUpdatedException("Student was not updated");
-        } else {
-            logger.debug("Student was updated");
+            throw new EntityNotUpdatedException(String.format("Student with id %d was not updated", student.getId()));
         }
     }
 
@@ -109,9 +104,7 @@ public class JdbcStudentDao implements StudentDao {
     public void delete(int id) {
         logger.debug("Deleting student with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_STUDENT, id) == 0) {
-            throw new EntityNotDeletedException("Student was not deleted");
-        } else {
-            logger.debug("Student was deleted");
+            throw new EntityNotDeletedException(String.format("Student with id %d was not deleted", id));
         }
     }
 

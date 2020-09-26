@@ -2,9 +2,7 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.domain.Subject;
-import com.foxminded.university.exception.EntityOutOfBoundsException;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,29 +51,21 @@ public class SubjectService {
     }
 
     private boolean isSubjectPresent(int id) {
-        if (subjectDao.getById(id).isPresent()) {
-            logger.debug("Subject is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Subject is not present");
-        }
+        return subjectDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
     private boolean isSubjectUnique(String name) {
-        if (!subjectDao.getByName(name).isPresent()) {
-            logger.debug("Subject is unique");
-            return true;
-        } else {
-            throw new EntityNotUniqueException(String.format("Subject with name %s already exist", name));
-        }
+        subjectDao.getByName(name).ifPresent(obj -> {
+            throw new SubjectNameNotUniqueException(String.format("Subject with name %s already exist", name));
+        });
+        return true;
     }
 
     private boolean isCourseConsistent(int course) {
         if ((course <= maxCourse) && (course > 0)) {
-            logger.debug("Course is consistent");
             return true;
         } else {
-            throw new EntityOutOfBoundsException("Course out of bounds");
+            throw new CourseNumberOutOfBoundsException("Course number is out of bounds");
         }
     }
 }

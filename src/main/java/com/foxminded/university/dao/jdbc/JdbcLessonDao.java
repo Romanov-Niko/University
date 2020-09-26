@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -56,11 +57,9 @@ public class JdbcLessonDao implements LessonDao {
     public Optional<Lesson> getById(int id) {
         logger.debug("Retrieving lesson with id {}", id);
         try {
-            Optional<Lesson> lesson = Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, lessonMapper, id));
-            logger.debug("Lesson was retrieved");
-            return lesson;
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, lessonMapper, id));
         } catch (EmptyResultDataAccessException exception) {
-            logger.error("Lesson is not present");
+            logger.error("Lesson with id {} is not present", id);
             return Optional.empty();
         }
     }
@@ -86,12 +85,9 @@ public class JdbcLessonDao implements LessonDao {
             return statement;
         }, keyHolder) == 0) {
             throw new EntityNotSavedException("Lesson was not saved");
-        } else {
-            lesson.setId((int) keyHolder.getKeys().get("id"));
-            lesson.getGroups().forEach(group -> saveGroupToLesson(lesson.getId(), group.getId()));
-            logger.debug("Lesson was saved");
         }
-
+        lesson.setId((int) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
+        lesson.getGroups().forEach(group -> saveGroupToLesson(lesson.getId(), group.getId()));
     }
 
     @Transactional
@@ -118,9 +114,7 @@ public class JdbcLessonDao implements LessonDao {
 
             return statement;
         }) == 0) {
-            throw new EntityNotUpdatedException("Lesson was not updated");
-        } else {
-            logger.debug("Lesson was updated");
+            throw new EntityNotUpdatedException(String.format("Lesson with id %d was not updated", lesson.getId()));
         }
     }
 
@@ -128,9 +122,7 @@ public class JdbcLessonDao implements LessonDao {
     public void delete(int id) {
         logger.debug("Deleting lesson with id {}", id);
         if (jdbcTemplate.update(SQL_DELETE_LESSON, id) == 0) {
-            throw new EntityNotDeletedException("Lesson was not deleted");
-        } else {
-            logger.debug("Lesson was deleted");
+            throw new EntityNotDeletedException(String.format("Lesson with id %d was not deleted", id));
         }
     }
 
@@ -152,21 +144,17 @@ public class JdbcLessonDao implements LessonDao {
         return jdbcTemplate.query(SQL_GET_ALL_BY_AUDIENCE_ID_DATE_AND_TIME_ID, lessonMapper, id, date, lessonTimeId);
     }
 
-    private void removeGroupFromLesson (int lessonId, int groupId) {
+    private void removeGroupFromLesson(int lessonId, int groupId) {
         logger.debug("Removing group with id {} from lesson with id {}", groupId, lessonId);
         if (jdbcTemplate.update(SQL_DELETE_GROUP_FROM_LESSON, lessonId, groupId) == 0) {
-            throw new GroupNotRemovedFromLessonException("Lesson was not removed");
-        } else {
-            logger.debug("Lesson was removed");
+            throw new GroupNotRemovedFromLessonException(String.format("Group with id %d was not removed from lesson with id %d", groupId, lessonId));
         }
     }
 
-    private void saveGroupToLesson (int lessonId, int groupId) {
+    private void saveGroupToLesson(int lessonId, int groupId) {
         logger.debug("Adding group with id {} to lesson with id {}", groupId, lessonId);
         if (jdbcTemplate.update(SQL_SAVE_GROUP_TO_LESSON, lessonId, groupId) == 0) {
-            throw new GroupNotAddedToLessonException("Lesson was not added");
-        } else {
-            logger.debug("Lesson was added");
+            throw new GroupNotAddedToLessonException(String.format("Group with id %d was not added to lesson with id %d", groupId, lessonId));
         }
     }
 }

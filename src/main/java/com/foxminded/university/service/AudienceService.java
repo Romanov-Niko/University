@@ -3,8 +3,9 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.domain.Audience;
+import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,20 +48,14 @@ public class AudienceService {
     }
 
     private boolean isAudiencePresent(int id) {
-        if (audienceDao.getById(id).isPresent()) {
-            logger.debug("Audience is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException(String.format("Audience with id %d is not present", id));
-        }
+        return audienceDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(
+                String.format("Audience with id %d is not present", id)));
     }
 
     private boolean isAudienceUnique(int roomNumber) {
-        if(!audienceDao.getByRoomNumber(roomNumber).isPresent()) {
-            logger.debug("Audience is unique");
-            return true;
-        } else {
-            throw new EntityNotUniqueException(String.format("Audience with room number %d already exist", roomNumber));
-        }
+        audienceDao.getByRoomNumber(roomNumber).ifPresent(obj -> {
+            throw new AudienceRoomNumberNotUniqueException(String.format("Audience with room number %d already exist", roomNumber));
+        });
+        return true;
     }
 }

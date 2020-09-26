@@ -5,7 +5,7 @@ import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class TeacherService {
 
     public void update(Teacher teacher) {
         logger.debug("Check consistency of teacher with id {} before updating", teacher.getId());
-        if(isTeacherPresent(teacher.getId()) && areSubjectsPresent(teacher.getSubjects())) {
+        if (isTeacherPresent(teacher.getId()) && areSubjectsPresent(teacher.getSubjects())) {
             teacherDao.update(teacher);
         }
     }
@@ -48,20 +48,13 @@ public class TeacherService {
     }
 
     private boolean isTeacherPresent(int id) {
-        if (teacherDao.getById(id).isPresent()) {
-            logger.debug("Teacher is present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("Teacher is not present");
-        }
+        return teacherDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
     private boolean areSubjectsPresent(List<Subject> subjects) {
-        if (subjects.stream().allMatch(subject -> subjectDao.getById(subject.getId()).isPresent())) {
-            logger.debug("All subjects are present");
-            return true;
-        } else {
-            throw new EntityNotFoundException("There are subjects which are not present");
-        }
+        subjects.forEach(subject -> subjectDao.getById(subject.getId())
+                .map(obj -> true)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", subject.getId()))));
+        return true;
     }
 }
