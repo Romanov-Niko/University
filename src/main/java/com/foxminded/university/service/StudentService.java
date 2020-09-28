@@ -30,17 +30,16 @@ public class StudentService {
     }
 
     public void save(Student student) {
-        logger.debug("Check consistency of student with id {} before saving", student.getId());
-        if (isCourseConsistent(student.getCourse())) {
-            studentDao.save(student);
-        }
+        logger.debug("Saving student: {}", student);
+        verifyCourseConsistent(student.getCourse());
+        studentDao.save(student);
     }
 
     public void update(Student student) {
-        logger.debug("Check consistency of student with id {} before updating", student.getId());
-        if (isStudentPresent(student.getId()) && isCourseConsistent(student.getCourse())) {
-            studentDao.update(student);
-        }
+        logger.debug("Updating student by id: {}", student);
+        verifyStudentPresent(student.getId());
+        verifyCourseConsistent(student.getCourse());
+        studentDao.update(student);
     }
 
     public void delete(int id) {
@@ -55,14 +54,12 @@ public class StudentService {
         return studentDao.getAllByGroupName(name);
     }
 
-    private boolean isStudentPresent(int id) {
-        return studentDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
+    private void verifyStudentPresent(int id) {
+        studentDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
     }
 
-    private boolean isCourseConsistent(int course) {
-        if ((course <= maxCourse) && (course > 0)) {
-            return true;
-        } else {
+    private void verifyCourseConsistent(int course) {
+        if ((course > maxCourse) || (course < 1)) {
             throw new CourseNumberOutOfBoundsException("Course number is out of bounds");
         }
     }

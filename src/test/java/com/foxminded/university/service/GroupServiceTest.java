@@ -95,46 +95,51 @@ class GroupServiceTest {
     }
 
     @Test
-    void givenGroupWithExistingName_whenSave_thenWasThrownGroupNameNotUniqueException() {
+    void givenGroupWithExistingName_whenSave_thenGroupNameNotUniqueExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getByName(anyString())).willReturn(Optional.of(retrievedGroup));
 
-        assertThrows(GroupNameNotUniqueException.class, () -> groupService.save(createdGroup), "Group with name DD-44 already exist");
+        Throwable exception = assertThrows(GroupNameNotUniqueException.class, () -> groupService.save(createdGroup));
+        assertEquals("Group with name DD-44 already exist", exception.getMessage());
         verify(groupDao, never()).save(createdGroup);
     }
 
     @Test
-    void givenNonExistentStudentId_whenSave_thenWasThrownEntityNotFoundException() {
+    void givenNonExistentStudentId_whenSave_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
 
-        assertThrows(EntityNotFoundException.class, () -> groupService.save(createdGroup), "There are students who are not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> groupService.save(createdGroup));
+        assertEquals("Student with id 1 is not present", exception.getMessage());
         verify(groupDao, never()).save(createdGroup);
     }
 
     @Test
-    void givenNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup), "Group is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup));
+        assertEquals("Group with id 1 is not present", exception.getMessage());
         verify(groupDao, never()).update(updatedGroup);
     }
 
     @Test
-    void givenNonExistentStudentId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenNonExistentStudentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
         given(groupDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup), "There are students who are not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup));
+        assertEquals("Group with id 1 is not present", exception.getMessage());
         verify(groupDao, never()).update(updatedGroup);
     }
 
     @Test
-    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenWasThrownGroupSizeTooLargeException() {
+    void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenGroupSizeTooLargeExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 0);
         given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
 
-        assertThrows(GroupSizeTooLargeException.class, () -> groupService.update(updatedGroup), "Too many students in the group");
+        Throwable exception = assertThrows(GroupSizeTooLargeException.class, () -> groupService.update(updatedGroup));
+        assertEquals("Group with id 1 have too many students", exception.getMessage());
         verify(groupDao, never()).update(updatedGroup);
     }
 

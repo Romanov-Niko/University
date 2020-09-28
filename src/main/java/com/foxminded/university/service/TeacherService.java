@@ -30,31 +30,28 @@ public class TeacherService {
     }
 
     public void save(Teacher teacher) {
-        logger.debug("Check consistency of teacher before updating");
-        if (areSubjectsPresent(teacher.getSubjects())) {
-            teacherDao.save(teacher);
-        }
+        logger.debug("Saving teacher: {}", teacher);
+        verifySubjectsPresent(teacher.getSubjects());
+        teacherDao.save(teacher);
     }
 
     public void update(Teacher teacher) {
-        logger.debug("Check consistency of teacher with id {} before updating", teacher.getId());
-        if (isTeacherPresent(teacher.getId()) && areSubjectsPresent(teacher.getSubjects())) {
-            teacherDao.update(teacher);
-        }
+        logger.debug("Updating teacher by id: {}", teacher);
+        verifyTeacherPresent(teacher.getId());
+        verifySubjectsPresent(teacher.getSubjects());
+        teacherDao.update(teacher);
     }
 
     public void delete(int id) {
         teacherDao.delete(id);
     }
 
-    private boolean isTeacherPresent(int id) {
-        return teacherDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
+    private void verifyTeacherPresent(int id) {
+        teacherDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
-    private boolean areSubjectsPresent(List<Subject> subjects) {
+    private void verifySubjectsPresent(List<Subject> subjects) {
         subjects.forEach(subject -> subjectDao.getById(subject.getId())
-                .map(obj -> true)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", subject.getId()))));
-        return true;
     }
 }

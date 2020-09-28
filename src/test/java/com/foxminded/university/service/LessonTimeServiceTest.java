@@ -81,37 +81,41 @@ class LessonTimeServiceTest {
     }
 
     @Test
-    void givenLessonTimeWithIncorrectDuration_whenSave_thenWasThrownLessonDurationOutOfBoundsException() {
+    void givenLessonTimeWithIncorrectDuration_whenSave_thenLessonDurationOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
 
-        assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time duration is out of bounds");
+        Throwable exception = assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.save(createdLessonTime));
+        assertEquals("Lesson duration is out of bounds", exception.getMessage());
         verify(lessonTimeDao, never()).save(createdLessonTime);
     }
 
     @Test
-    void givenLessonTimeWithExistingBeginAndEnd_whenSave_thenWasThrownLessonTimeNotUniqueException() {
+    void givenLessonTimeWithExistingBeginAndEnd_whenSave_thenLessonTimeNotUniqueExceptionThrown() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
         given(lessonTimeDao.getByStartAndEndTime(any(), any())).willReturn(Optional.of(retrievedLessonTime));
 
-        assertThrows(LessonTimeNotUniqueException.class, () -> lessonTimeService.save(createdLessonTime), "Lesson time with begin 12:00 and end 13:00 already exist");
+        Throwable exception = assertThrows(LessonTimeNotUniqueException.class, () -> lessonTimeService.save(createdLessonTime));
+        assertEquals("Lesson time with begin 12:00 and end 13:00 already exist", exception.getMessage());
         verify(lessonTimeDao, never()).save(createdLessonTime);
     }
 
     @Test
-    void givenLessonTimeWithNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenLessonTimeWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 90);
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> lessonTimeService.update(updatedLessonTime), "Lesson time is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonTimeService.update(updatedLessonTime));
+        assertEquals("Lesson time with id 1 is not present", exception.getMessage());
         verify(lessonTimeDao, never()).update(updatedLessonTime);
     }
 
     @Test
-    void givenLessonTimeWithIncorrectDuration_whenUpdate_thenWasThrownLessonDurationOutOfBoundsException() {
+    void givenLessonTimeWithIncorrectDuration_whenUpdate_thenLessonDurationOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(lessonTimeService, "maxLessonDuration", 0);
         given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
 
-        assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.update(updatedLessonTime), "Lesson time duration is out of bounds");
+        Throwable exception = assertThrows(LessonDurationOutOfBoundsException.class, () -> lessonTimeService.update(updatedLessonTime));
+        assertEquals("Lesson duration is out of bounds", exception.getMessage());
         verify(lessonTimeDao, never()).update(updatedLessonTime);
     }
 }

@@ -37,17 +37,16 @@ public class LessonService {
     }
 
     public void save(Lesson lesson) {
-        logger.debug("Check consistency of lesson with id {} before saving", lesson.getId());
-        if (isDataConsistent(lesson)) {
-            lessonDao.save(lesson);
-        }
+        logger.debug("Saving lesson: {}", lesson);
+        isDataConsistent(lesson);
+        lessonDao.save(lesson);
     }
 
     public void update(Lesson lesson) {
-        logger.debug("Check consistency of lesson with id {} before updating", lesson.getId());
-        if (isLessonPresent(lesson.getId()) && isDataConsistent(lesson)) {
-            lessonDao.update(lesson);
-        }
+        logger.debug("Updating lesson by id: {}", lesson);
+        verifyLessonPresent(lesson.getId());
+        isDataConsistent(lesson);
+        lessonDao.update(lesson);
     }
 
     public void delete(int id) {
@@ -58,51 +57,46 @@ public class LessonService {
         return lessonDao.getAllByDate(date);
     }
 
-    private boolean isLessonPresent(int id) {
-        return lessonDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson with id %d is not present", id)));
+    private void verifyLessonPresent(int id) {
+        lessonDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson with id %d is not present", id)));
     }
 
-    private boolean isTeacherPresent(int id) {
-        return teacherDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
+    private void verifyTeacherPresent(int id) {
+        teacherDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
-    private boolean isSubjectPresent(int id) {
-        return subjectDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
+    private void verifySubjectPresent(int id) {
+        subjectDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
-    private boolean areGroupsPresent(List<Group> groups) {
+    private void verifyGroupsPresent(List<Group> groups) {
         groups.forEach(group -> groupDao.getById(group.getId())
-                .map(obj -> true)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", group.getId()))));
-        return true;
     }
 
-    private boolean isAudiencePresent(int id) {
-        return audienceDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Audience with id %d is not present", id)));
+    private void verifyAudiencePresent(int id) {
+        audienceDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Audience with id %d is not present", id)));
     }
 
-    private boolean isLessonTimePresent(int id) {
-        return lessonTimeDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
+    private void verifyLessonTimePresent(int id) {
+        lessonTimeDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
-    private boolean isAudienceSuitable(Lesson lesson) {
+    private void verifyAudienceHasEnoughCapacity(Lesson lesson) {
         int numberOfStudents = lesson.getGroups().stream().mapToInt(group -> group.getStudents().size()).sum();
-        if (lesson.getAudience().getCapacity() >= numberOfStudents) {
-            return true;
-        } else {
-            throw new AudienceSizeToSmallException(String.format("Audience with id %d is too small", lesson.getAudience().getId()));
+        if (lesson.getAudience().getCapacity() < numberOfStudents) {
+            throw new NotEnoughAudienceCapacityException(String.format("Audience with id %d has capacity %d when need %d", lesson.getAudience().getId(),
+                    lesson.getAudience().getCapacity(), numberOfStudents));
         }
     }
 
-    private boolean isTeacherSuitable(Lesson lesson) {
-        if (lesson.getTeacher().getSubjects().contains(lesson.getSubject())) {
-            return true;
-        } else {
+    private void verifyTeacherHasEnoughKnowledges(Lesson lesson) {
+        if (!lesson.getTeacher().getSubjects().contains(lesson.getSubject())) {
             throw new TeacherNotEnoughKnowledgesException(String.format("Teacher with id %d can not teach %s", lesson.getTeacher().getId(), lesson.getSubject().getName()));
         }
     }
 
-    private boolean isTeacherFree(Lesson currentLesson) {
+    private void verifyTeacherFree(Lesson currentLesson) {
         List<Lesson> lessons = lessonDao.getAllByTeacherIdDateAndLessonTimeId(currentLesson.getTeacher().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
@@ -110,10 +104,9 @@ public class LessonService {
                 throw new TeacherLessonOverlapException(String.format("Teacher with id %d is busy", currentLesson.getTeacher().getId()));
             }
         }
-        return true;
     }
 
-    private boolean isAudienceFree(Lesson currentLesson) {
+    private void verifyAudienceFree(Lesson currentLesson) {
         List<Lesson> lessons = lessonDao.getAllByAudienceIdDateAndLessonTimeId(currentLesson.getAudience().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
@@ -121,13 +114,17 @@ public class LessonService {
                 throw new AudienceLessonOverlapException(String.format("Audience with id %d is busy", currentLesson.getAudience().getId()));
             }
         }
-        return true;
     }
 
-    private boolean isDataConsistent(Lesson lesson) {
-        return isSubjectPresent(lesson.getSubject().getId()) && isTeacherPresent(lesson.getTeacher().getId()) &&
-                areGroupsPresent(lesson.getGroups()) && isAudiencePresent(lesson.getAudience().getId()) &&
-                isLessonTimePresent(lesson.getLessonTime().getId()) && isAudienceSuitable(lesson) && isTeacherSuitable(lesson) &&
-                isTeacherFree(lesson) && isAudienceFree(lesson);
+    private void isDataConsistent(Lesson lesson) {
+        verifySubjectPresent(lesson.getSubject().getId());
+        verifyTeacherPresent(lesson.getTeacher().getId());
+        verifyGroupsPresent(lesson.getGroups());
+        verifyAudiencePresent(lesson.getAudience().getId());
+        verifyLessonTimePresent(lesson.getLessonTime().getId());
+        verifyAudienceHasEnoughCapacity(lesson);
+        verifyTeacherHasEnoughKnowledges(lesson);
+        verifyTeacherFree(lesson);
+        verifyAudienceFree(lesson);
     }
 }

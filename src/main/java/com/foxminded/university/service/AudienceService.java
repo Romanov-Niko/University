@@ -1,15 +1,12 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,32 +27,32 @@ public class AudienceService {
     }
 
     public void save(Audience audience) {
-        logger.debug("Check consistency of audience before saving");
-        if (isAudienceUnique(audience.getRoomNumber())) {
-            audienceDao.save(audience);
-        }
+        logger.debug("Saving audience: {}", audience);
+        verifyAudienceUnique(audience);
+        audienceDao.save(audience);
     }
 
     public void update(Audience audience) {
-        logger.debug("Check consistency of audience with id {} before updating", audience.getId());
-        if (isAudiencePresent(audience.getId())) {
-            audienceDao.update(audience);
-        }
+        logger.debug("Updating audience by id: {}", audience);
+        verifyAudienceUnique(audience);
+        verifyAudiencePresent(audience.getId());
+        audienceDao.update(audience);
     }
 
     public void delete(int id) {
         audienceDao.delete(id);
     }
 
-    private boolean isAudiencePresent(int id) {
-        return audienceDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(
+    private void verifyAudiencePresent(int id) {
+        audienceDao.getById(id).orElseThrow(() -> new EntityNotFoundException(
                 String.format("Audience with id %d is not present", id)));
     }
 
-    private boolean isAudienceUnique(int roomNumber) {
-        audienceDao.getByRoomNumber(roomNumber).ifPresent(obj -> {
-            throw new AudienceRoomNumberNotUniqueException(String.format("Audience with room number %d already exist", roomNumber));
+    private void verifyAudienceUnique(Audience audience) {
+        audienceDao.getByRoomNumber(audience.getRoomNumber()).ifPresent(audienceWithSameRoomNumber -> {
+            if (audience.getId() != audienceWithSameRoomNumber.getId()) {
+                throw new AudienceRoomNumberNotUniqueException(String.format("Audience with room number %d already exist", audience.getRoomNumber()));
+            }
         });
-        return true;
     }
 }

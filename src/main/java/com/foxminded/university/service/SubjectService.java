@@ -29,17 +29,17 @@ public class SubjectService {
     }
 
     public void save(Subject subject) {
-        logger.debug("Check consistency of subject with id {} before saving", subject.getId());
-        if (isCourseConsistent(subject.getCourse()) && isSubjectUnique(subject.getName())) {
-            subjectDao.save(subject);
-        }
+        logger.debug("Saving subject: {}", subject);
+        verifyCourseConsistent(subject.getCourse());
+        verifySubjectUnique(subject.getName());
+        subjectDao.save(subject);
     }
 
     public void update(Subject subject) {
-        logger.debug("Check consistency of subject with id {} before updating", subject.getId());
-        if ((isSubjectPresent(subject.getId())) && isCourseConsistent(subject.getCourse())) {
-            subjectDao.update(subject);
-        }
+        logger.debug("Updating subject by id: {}", subject);
+        verifySubjectPresent(subject.getId());
+        verifyCourseConsistent(subject.getCourse());
+        subjectDao.update(subject);
     }
 
     public void delete(int id) {
@@ -50,21 +50,18 @@ public class SubjectService {
         return subjectDao.getAllByTeacherId(id);
     }
 
-    private boolean isSubjectPresent(int id) {
-        return subjectDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
+    private void verifySubjectPresent(int id) {
+        subjectDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
-    private boolean isSubjectUnique(String name) {
+    private void verifySubjectUnique(String name) {
         subjectDao.getByName(name).ifPresent(obj -> {
             throw new SubjectNameNotUniqueException(String.format("Subject with name %s already exist", name));
         });
-        return true;
     }
 
-    private boolean isCourseConsistent(int course) {
-        if ((course <= maxCourse) && (course > 0)) {
-            return true;
-        } else {
+    private void verifyCourseConsistent(int course) {
+        if ((course > maxCourse) || (course < 1)) {
             throw new CourseNumberOutOfBoundsException("Course number is out of bounds");
         }
     }

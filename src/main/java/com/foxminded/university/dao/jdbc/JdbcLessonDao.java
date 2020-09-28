@@ -146,15 +146,11 @@ public class JdbcLessonDao implements LessonDao {
 
     private void removeGroupFromLesson(int lessonId, int groupId) {
         logger.debug("Removing group with id {} from lesson with id {}", groupId, lessonId);
-        if (jdbcTemplate.update(SQL_DELETE_GROUP_FROM_LESSON, lessonId, groupId) == 0) {
-            throw new GroupNotRemovedFromLessonException(String.format("Group with id %d was not removed from lesson with id %d", groupId, lessonId));
-        }
+        jdbcTemplate.update(SQL_DELETE_GROUP_FROM_LESSON, lessonId, groupId);
     }
 
     private void saveGroupToLesson(int lessonId, int groupId) {
         logger.debug("Adding group with id {} to lesson with id {}", groupId, lessonId);
-        if (jdbcTemplate.update(SQL_SAVE_GROUP_TO_LESSON, lessonId, groupId) == 0) {
-            throw new GroupNotAddedToLessonException(String.format("Group with id %d was not added to lesson with id %d", groupId, lessonId));
-        }
+        jdbcTemplate.update(SQL_SAVE_GROUP_TO_LESSON, lessonId, groupId);
     }
 }

@@ -78,16 +78,18 @@ class AudienceServiceTest {
     }
 
     @Test
-    void givenExistingRoomNumber_whenSave_thenWasThrownAudienceRoomNumberNotUniqueException() {
+    void givenExistingRoomNumber_whenSave_thenAudienceRoomNumberNotUniqueExceptionThrown() {
         given(audienceDao.getByRoomNumber(anyInt())).willReturn(Optional.of(retrievedAudience));
-        assertThrows(AudienceRoomNumberNotUniqueException.class, () -> audienceService.save(createdAudience), "Audience with room number 104 already exist");
+        Throwable exception = assertThrows(AudienceRoomNumberNotUniqueException.class, () -> audienceService.save(createdAudience));
+        assertEquals("Audience with room number 104 already exist", exception.getMessage());
         verify(audienceDao, never()).save(createdAudience);
     }
 
     @Test
-    void givenAudienceWithNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenAudienceWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         given(audienceDao.getById(anyInt())).willReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> audienceService.update(updatedAudience), "Audience with id 1 is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> audienceService.update(updatedAudience));
+        assertEquals("Audience with id 1 is not present", exception.getMessage());
         verify(audienceDao, never()).update(updatedAudience);
     }
 }

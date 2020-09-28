@@ -59,4 +59,13 @@ public class Audience {
     public int hashCode() {
         return Objects.hash(id, roomNumber, capacity);
     }
+
+    @Override
+    public String toString() {
+        return "Audience{" +
+                "id=" + id +
+                ", roomNumber=" + roomNumber +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

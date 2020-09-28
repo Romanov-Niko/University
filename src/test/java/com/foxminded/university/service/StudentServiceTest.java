@@ -103,28 +103,31 @@ class StudentServiceTest {
     }
 
     @Test
-    void givenStudentWithIncorrectCourse_whenSave_thenWasThrownCourseNumberOutOfBoundsException() {
+    void givenStudentWithIncorrectCourse_whenSave_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
 
-        assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.save(createdStudent), "Course out of bounds");
+        Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.save(createdStudent));
+        assertEquals("Course number is out of bounds", exception.getMessage());
         verify(studentDao, never()).save(createdStudent);
     }
 
     @Test
-    void givenStudentWithNonExistentId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenStudentWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
         given(studentDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent), "Student is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent));
+        assertEquals("Student with id 1 is not present", exception.getMessage());
         verify(studentDao, never()).update(updatedStudent);
     }
 
     @Test
-    void givenStudentWithIncorrectCourse_whenUpdate_thenWasThrownCourseNumberOutOfBoundsException() {
+    void givenStudentWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
         given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
 
-        assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.update(updatedStudent), "Course out of bounds");
+        Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.update(updatedStudent));
+        assertEquals("Course number is out of bounds", exception.getMessage());
         verify(studentDao, never()).update(updatedStudent);
     }
 

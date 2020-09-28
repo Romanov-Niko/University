@@ -126,15 +126,11 @@ public class JdbcTeacherDao implements TeacherDao {
 
     private void removeSubjectFromTeacher(int teacherId, int subjectId) {
         logger.debug("Removing subject with id {} form teacher with id {}", subjectId, teacherId);
-        if (jdbcTemplate.update(SQL_DELETE_TEACHER_SUBJECT, teacherId, subjectId) == 0) {
-            throw new SubjectNotRemovedFromTeacherException(String.format("Subject with id %d was not removed from teacher with id %d", subjectId, teacherId));
-        }
+        jdbcTemplate.update(SQL_DELETE_TEACHER_SUBJECT, teacherId, subjectId);
     }
 
     private void saveSubjectToTeacher(int teacherId, int subjectId) {
         logger.debug("Adding subject with id {} to teacher with id {}", subjectId, teacherId);
-        if (jdbcTemplate.update(SQL_SAVE_TEACHER_SUBJECT, teacherId, subjectId) == 0) {
-            throw new SubjectNotAddedToTeacherException(String.format("Subject with id %d was not added to teacher with id %d", subjectId, teacherId));
-        }
+        jdbcTemplate.update(SQL_SAVE_TEACHER_SUBJECT, teacherId, subjectId);
     }
 }

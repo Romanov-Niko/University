@@ -122,14 +122,16 @@ class LessonServiceTest {
     }
 
     @Test
-    void givenLessonWithConflictingData_whenSave_thenWasThrownEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> lessonService.save(createdLesson), "Lesson is not present");
+    void givenLessonWithConflictingData_whenSave_thenEntityNotFoundExceptionThrown() {
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonService.save(createdLesson));
+        assertEquals("Subject with id 1 is not present", exception.getMessage());
         verify(lessonDao, never()).save(createdLesson);
     }
 
     @Test
-    void givenLessonWithConflictingData_whenUpdate_thenWasThrownEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> lessonService.update(updatedLesson), "Lesson is not present");
+    void givenLessonWithConflictingData_whenUpdate_thenEntityNotFoundExceptionThrown() {
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonService.update(updatedLesson));
+        assertEquals("Lesson with id 2 is not present", exception.getMessage());
         verify(lessonDao, never()).update(updatedLesson);
     }
 

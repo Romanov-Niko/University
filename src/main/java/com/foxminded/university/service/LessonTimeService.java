@@ -30,40 +30,37 @@ public class LessonTimeService {
     }
 
     public void save(LessonTime lessonTime) {
-        logger.debug("Check consistency of lesson time with id {} before saving", lessonTime.getId());
-        if (isDurationConsistent(lessonTime) && isLessonTimeUnique(lessonTime)) {
-            lessonTimeDao.save(lessonTime);
-        }
+        logger.debug("Saving lesson time: {}", lessonTime);
+        verifyDurationConsistent(lessonTime);
+        verifyLessonTimeUnique(lessonTime);
+        lessonTimeDao.save(lessonTime);
     }
 
     public void update(LessonTime lessonTime) {
-        logger.debug("Check consistency of lesson time with id {} before updating", lessonTime.getId());
-        if (isLessonTimePresent(lessonTime.getId()) && isDurationConsistent(lessonTime)) {
-            lessonTimeDao.update(lessonTime);
-        }
+        logger.debug("Updating lesson time by id: {}", lessonTime);
+        verifyLessonTimePresent(lessonTime.getId());
+        verifyDurationConsistent(lessonTime);
+        lessonTimeDao.update(lessonTime);
     }
 
     public void delete(int id) {
         lessonTimeDao.delete(id);
     }
 
-    private boolean isLessonTimePresent(int id) {
-        return lessonTimeDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
+    private void verifyLessonTimePresent(int id) {
+        lessonTimeDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
-    private boolean isDurationConsistent(LessonTime lessonTime) {
-        if (Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < maxLessonDuration
-                && Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() > 0) {
-            return true;
-        } else {
+    private void verifyDurationConsistent(LessonTime lessonTime) {
+        if (Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() > maxLessonDuration
+                || Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < 1) {
             throw new LessonDurationOutOfBoundsException("Lesson duration is out of bounds");
         }
     }
 
-    private boolean isLessonTimeUnique(LessonTime lessonTime) {
+    private void verifyLessonTimeUnique(LessonTime lessonTime) {
         lessonTimeDao.getByStartAndEndTime(lessonTime.getBegin(), lessonTime.getEnd()).ifPresent(obj -> {
             throw new LessonTimeNotUniqueException(String.format("Lesson time with begin %s and end %s already exist", lessonTime.getBegin(), lessonTime.getEnd()));
         });
-        return true;
     }
 }

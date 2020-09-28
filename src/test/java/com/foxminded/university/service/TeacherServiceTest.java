@@ -94,24 +94,27 @@ class TeacherServiceTest {
     }
 
     @Test
-    void givenNonExistentSubjectId_whenSave_thenWasThrownEntityNotFoundException() {
+    void givenNonExistentSubjectId_whenSave_thenEntityNotFoundExceptionThrown() {
         given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> teacherService.save(createdTeacher), "Teacher is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.save(createdTeacher));
+        assertEquals("Subject with id 1 is not present", exception.getMessage());
         verify(teacherDao, never()).save(createdTeacher);
     }
 
     @Test
-    void givenNonExistentTeacherId_whenUpdate_thenWasThrownEntityNotFoundException() {
+    void givenNonExistentTeacherId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         given(teacherDao.getById(anyInt())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher), "Teacher is not present");
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher));
+        assertEquals("Teacher with id 1 is not present", exception.getMessage());
         verify(teacherDao, never()).update(updatedTeacher);
     }
 
     @Test
-    void givenNonExistentSubjectId_whenUpdate_thenWasThrownEntityNotFoundException() {
-        assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher), "Teacher is not present");
+    void givenNonExistentSubjectId_whenUpdate_thenEntityNotFoundExceptionThrown() {
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher));
+        assertEquals("Teacher with id 1 is not present", exception.getMessage());
         verify(teacherDao, never()).update(updatedTeacher);
     }
 }

@@ -32,17 +32,20 @@ public class GroupService {
     }
 
     public void save(Group group) {
-        logger.debug("Check consistency of group before saving");
-        if (isGroupSizeConsistent(group) && isGroupUnique(group.getName()) && areStudentsPresent(group.getStudents())) {
-            groupDao.save(group);
-        }
+        logger.debug("Saving group: {}", group);
+        verifyGroupSizeConsistent(group);
+        verifyGroupUnique(group);
+        verifyStudentsPresent(group.getStudents());
+        groupDao.save(group);
     }
 
     public void update(Group group) {
-        logger.debug("Check consistency of group with id {} before updating", group.getId());
-        if (isGroupPresent(group.getId()) && isGroupSizeConsistent(group) && areStudentsPresent(group.getStudents())) {
-            groupDao.update(group);
-        }
+        logger.debug("Updating group by id: {}", group);
+        verifyGroupPresent(group.getId());
+        verifyGroupUnique(group);
+        verifyGroupSizeConsistent(group);
+        verifyStudentsPresent(group.getStudents());
+        groupDao.update(group);
     }
 
     public void delete(int id) {
@@ -53,28 +56,25 @@ public class GroupService {
         return groupDao.getAllByLessonId(id);
     }
 
-    private boolean isGroupPresent(int id) {
-        return groupDao.getById(id).map(obj -> true).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
+    private void verifyGroupPresent(int id) {
+        groupDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
     }
 
-    private boolean isGroupUnique(String name) {
-        groupDao.getByName(name).ifPresent(obj -> {
-            throw new GroupNameNotUniqueException(String.format("Group with name %s already exist", name));
+    private void verifyGroupUnique(Group group) {
+        groupDao.getByName(group.getName()).ifPresent(groupWithSameName -> {
+            if (group.getId() != groupWithSameName.getId()) {
+                throw new GroupNameNotUniqueException(String.format("Group with name %s already exist", group.getName()));
+            }
         });
-        return true;
     }
 
-    private boolean areStudentsPresent(List<Student> students) {
+    private void verifyStudentsPresent(List<Student> students) {
         students.forEach(student -> studentDao.getById(student.getId())
-                .map(obj -> true)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", student.getId()))));
-        return true;
     }
 
-    private boolean isGroupSizeConsistent(Group group) {
-        if (group.getStudents().size() <= maxGroupCapacity) {
-            return true;
-        } else {
+    private void verifyGroupSizeConsistent(Group group) {
+        if (group.getStudents().size() > maxGroupCapacity) {
             throw new GroupSizeTooLargeException(String.format("Group with id %d have too many students", group.getId()));
         }
     }

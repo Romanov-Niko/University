@@ -60,4 +60,13 @@ public class LessonTime {
     public int hashCode() {
         return Objects.hash(id, begin, end);
     }
+
+    @Override
+    public String toString() {
+        return "LessonTime{" +
+                "id=" + id +
+                ", begin=" + begin +
+                ", end=" + end +
+                '}';
+    }
 }
