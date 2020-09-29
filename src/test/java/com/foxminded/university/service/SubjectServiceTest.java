@@ -5,6 +5,7 @@ import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
+import com.foxminded.university.exception.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -96,41 +97,41 @@ class SubjectServiceTest {
     }
 
     @Test
-    void givenSubjectWithExistingName_whenSave_thenWasNotCalledSubjectDaoSave() {
+    void givenSubjectWithExistingName_whenSave_thenSubjectNameNotUniqueExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
         given(subjectDao.getByName(anyString())).willReturn(Optional.of(retrievedSubject));
 
-        subjectService.save(createdSubject);
-
+        Throwable exception = assertThrows(SubjectNameNotUniqueException.class, () -> subjectService.save(createdSubject));
+        assertEquals("Subject with name NEW already exist", exception.getMessage());
         verify(subjectDao, never()).save(createdSubject);
     }
 
     @Test
-    void givenSubjectWithIncorrectCourse_whenSave_thenWasNotCalledSubjectDaoSave() {
+    void givenSubjectWithIncorrectCourse_whenSave_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 0);
 
-        subjectService.save(createdSubject);
-
+        Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> subjectService.save(createdSubject));
+        assertEquals("Course number is out of bounds", exception.getMessage());
         verify(subjectDao, never()).save(createdSubject);
     }
 
     @Test
-    void givenSubjectWithNonExistentId_whenUpdate_thenWasNotCalledSubjectDaoUpdate() {
+    void givenSubjectWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
         given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
 
-        subjectService.update(updatedSubject);
-
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> subjectService.update(updatedSubject));
+        assertEquals("Subject with id 1 is not present", exception.getMessage());
         verify(subjectDao, never()).update(updatedSubject);
     }
 
     @Test
-    void givenSubjectWithIncorrectCourse_whenUpdate_thenWasNotCalledSubjectDaoUpdate() {
+    void givenSubjectWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 0);
         given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
 
-        subjectService.update(updatedSubject);
-
+        Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> subjectService.update(updatedSubject));
+        assertEquals("Course number is out of bounds", exception.getMessage());
         verify(subjectDao, never()).update(updatedSubject);
     }
 

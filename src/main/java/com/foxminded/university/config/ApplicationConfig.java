@@ -1,6 +1,7 @@
 package com.foxminded.university.config;
 
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -8,14 +9,11 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
-@PropertySources({
-        @PropertySource("classpath:config.properties"),
-        @PropertySource("classpath:restrictions.properties")
-})
-@PropertySource("classpath:restrictions.properties")
+@PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 
     private static final String URL = "url";
@@ -29,7 +27,7 @@ public class ApplicationConfig {
         driverManagerDataSource.setUrl(environment.getProperty(URL));
         driverManagerDataSource.setUsername(environment.getProperty(USER));
         driverManagerDataSource.setPassword(environment.getProperty(PASSWORD));
-        driverManagerDataSource.setDriverClassName(environment.getProperty(DRIVER));
+        driverManagerDataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty(DRIVER)));
         return driverManagerDataSource;
     }
 
@@ -43,4 +41,8 @@ public class ApplicationConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 }

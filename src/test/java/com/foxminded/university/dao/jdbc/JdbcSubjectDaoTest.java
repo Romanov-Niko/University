@@ -37,13 +37,10 @@ class JdbcSubjectDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private SubjectService subjectService;
-
     @Test
     void givenId1_whenGetById_thenReturnedFirstSubject() {
         Subject actualSubject = subjectDao.getById(1).orElse(null);
-        subjectService.save(retrievedSubject);
+
         assertEquals(retrievedSubject, actualSubject);
     }
 

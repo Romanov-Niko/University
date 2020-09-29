@@ -17,6 +17,7 @@
         <h2.version>1.4.200</h2.version>
         <spring-test.version>5.2.2.RELEASE</spring-test.version>
         <mockito.version>2.23.0</mockito.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <dependencies>
@@ -39,6 +40,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.framework}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

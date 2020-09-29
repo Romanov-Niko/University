@@ -4,12 +4,18 @@ import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
+import com.foxminded.university.exception.EntityNotFoundException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TeacherService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
     private final TeacherDao teacherDao;
     private final SubjectDao subjectDao;
@@ -24,26 +30,28 @@ public class TeacherService {
     }
 
     public void save(Teacher teacher) {
-        if (areSubjectsPresent(teacher.getSubjects())) {
-            teacherDao.save(teacher);
-        }
+        logger.debug("Saving teacher: {}", teacher);
+        verifySubjectsPresent(teacher.getSubjects());
+        teacherDao.save(teacher);
     }
 
     public void update(Teacher teacher) {
-        if(isTeacherPresent(teacher.getId()) && areSubjectsPresent(teacher.getSubjects())) {
-            teacherDao.update(teacher);
-        }
+        logger.debug("Updating teacher by id: {}", teacher);
+        verifyTeacherPresent(teacher.getId());
+        verifySubjectsPresent(teacher.getSubjects());
+        teacherDao.update(teacher);
     }
 
     public void delete(int id) {
         teacherDao.delete(id);
     }
 
-    private boolean isTeacherPresent(int id) {
-        return teacherDao.getById(id).isPresent();
+    private void verifyTeacherPresent(int id) {
+        teacherDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
-    private boolean areSubjectsPresent(List<Subject> subjects) {
-        return subjects.stream().allMatch(subject -> subjectDao.getById(subject.getId()).isPresent());
+    private void verifySubjectsPresent(List<Subject> subjects) {
+        subjects.forEach(subject -> subjectDao.getById(subject.getId())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", subject.getId()))));
     }
 }

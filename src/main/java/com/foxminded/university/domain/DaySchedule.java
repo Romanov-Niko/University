@@ -46,4 +46,12 @@ public class DaySchedule {
     public int hashCode() {
         return Objects.hash(day, lessons);
     }
+
+    @Override
+    public String toString() {
+        return "DaySchedule{" +
+                "day=" + day +
+                ", lessons=" + lessons +
+                '}';
+    }
 }

@@ -1,20 +1,19 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.foxminded.university.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SubjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SubjectService.class);
 
     @Value("${maxCourse}")
     private int maxCourse;
@@ -30,15 +29,17 @@ public class SubjectService {
     }
 
     public void save(Subject subject) {
-        if ((subject.getCourse() <= maxCourse) && (subject.getCourse() > 0) && isSubjectUnique(subject.getName())) {
-            subjectDao.save(subject);
-        }
+        logger.debug("Saving subject: {}", subject);
+        verifyCourseConsistent(subject.getCourse());
+        verifySubjectUnique(subject.getName());
+        subjectDao.save(subject);
     }
 
     public void update(Subject subject) {
-        if ((isSubjectPresent(subject.getId())) && (subject.getCourse() <= maxCourse) && (subject.getCourse() > 0)) {
-            subjectDao.update(subject);
-        }
+        logger.debug("Updating subject by id: {}", subject);
+        verifySubjectPresent(subject.getId());
+        verifyCourseConsistent(subject.getCourse());
+        subjectDao.update(subject);
     }
 
     public void delete(int id) {
@@ -49,11 +50,19 @@ public class SubjectService {
         return subjectDao.getAllByTeacherId(id);
     }
 
-    private boolean isSubjectPresent(int id) {
-        return subjectDao.getById(id).isPresent();
+    private void verifySubjectPresent(int id) {
+        subjectDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
-    private boolean isSubjectUnique(String name) {
-        return !subjectDao.getByName(name).isPresent();
+    private void verifySubjectUnique(String name) {
+        subjectDao.getByName(name).ifPresent(obj -> {
+            throw new SubjectNameNotUniqueException(String.format("Subject with name %s already exist", name));
+        });
+    }
+
+    private void verifyCourseConsistent(int course) {
+        if ((course > maxCourse) || (course < 1)) {
+            throw new CourseNumberOutOfBoundsException("Course number is out of bounds");
+        }
     }
 }

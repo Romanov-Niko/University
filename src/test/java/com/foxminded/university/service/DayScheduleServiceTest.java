@@ -34,7 +34,6 @@ class DayScheduleServiceTest {
     @InjectMocks
     private DayScheduleService dayScheduleService;
 
-
     @Test
     void givenId1AndFirstDay_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedScheduleOfGivenDate() {
         given(dayScheduleService.getByDateForStudent(anyInt(), any())).willReturn(Optional.of(retrievedDaySchedule));

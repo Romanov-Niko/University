@@ -2,17 +2,19 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.domain.LessonTime;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.foxminded.university.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
 public class LessonTimeService {
+
+    private static final Logger logger = LoggerFactory.getLogger(LessonTimeService.class);
 
     @Value("${maxLessonDuration}")
     private int maxLessonDuration;
@@ -28,31 +30,37 @@ public class LessonTimeService {
     }
 
     public void save(LessonTime lessonTime) {
-        if (isDurationCorrect(lessonTime) && isLessonTimeUnique(lessonTime)) {
-            lessonTimeDao.save(lessonTime);
-        }
+        logger.debug("Saving lesson time: {}", lessonTime);
+        verifyDurationConsistent(lessonTime);
+        verifyLessonTimeUnique(lessonTime);
+        lessonTimeDao.save(lessonTime);
     }
 
     public void update(LessonTime lessonTime) {
-        if (isLessonTimePresent(lessonTime.getId()) && isDurationCorrect(lessonTime)) {
-            lessonTimeDao.update(lessonTime);
-        }
+        logger.debug("Updating lesson time by id: {}", lessonTime);
+        verifyLessonTimePresent(lessonTime.getId());
+        verifyDurationConsistent(lessonTime);
+        lessonTimeDao.update(lessonTime);
     }
 
     public void delete(int id) {
         lessonTimeDao.delete(id);
     }
 
-    private boolean isLessonTimePresent(int id) {
-        return lessonTimeDao.getById(id).isPresent();
+    private void verifyLessonTimePresent(int id) {
+        lessonTimeDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
-    private boolean isDurationCorrect (LessonTime lessonTime) {
-        return Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < maxLessonDuration
-                && Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() > 0;
+    private void verifyDurationConsistent(LessonTime lessonTime) {
+        if (Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() > maxLessonDuration
+                || Duration.between(lessonTime.getBegin(), lessonTime.getEnd()).toMinutes() < 1) {
+            throw new LessonDurationOutOfBoundsException("Lesson duration is out of bounds");
+        }
     }
 
-    private boolean isLessonTimeUnique(LessonTime lessonTime) {
-        return !lessonTimeDao.getByStartAndEndTime(lessonTime.getBegin(), lessonTime.getEnd()).isPresent();
+    private void verifyLessonTimeUnique(LessonTime lessonTime) {
+        lessonTimeDao.getByStartAndEndTime(lessonTime.getBegin(), lessonTime.getEnd()).ifPresent(obj -> {
+            throw new LessonTimeNotUniqueException(String.format("Lesson time with begin %s and end %s already exist", lessonTime.getBegin(), lessonTime.getEnd()));
+        });
     }
 }
