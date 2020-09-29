@@ -57,7 +57,7 @@ public class JdbcLessonDao implements LessonDao {
     public Optional<Lesson> getById(int id) {
         logger.debug("Retrieving lesson with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, lessonMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_BY_ID, lessonMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Lesson with id {} is not present", id);
             return Optional.empty();

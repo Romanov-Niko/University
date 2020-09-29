@@ -57,7 +57,7 @@ public class JdbcGroupDao implements GroupDao {
     public Optional<Group> getById(int id) {
         logger.debug("Retrieving group with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_ID, groupMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Group with id {} is not present", id);
             return Optional.empty();
@@ -115,7 +115,7 @@ public class JdbcGroupDao implements GroupDao {
     public Optional<Group> getByName(String name) {
         logger.debug("Retrieving group with name {}", name);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_NAME, groupMapper, name));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_GROUP_BY_NAME, groupMapper, name));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

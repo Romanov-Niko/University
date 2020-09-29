@@ -44,7 +44,7 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
     public Optional<DaySchedule> getByDateForStudent(int id, LocalDate day) {
         logger.debug("Retrieving schedule for date {} for student with id {}", day, id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_STUDENT, dayScheduleMapper, id, day));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_STUDENT, dayScheduleMapper, id, day));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
@@ -54,7 +54,7 @@ public class JdbcDayScheduleDao implements DayScheduleDao {
     public Optional<DaySchedule> getByDateForTeacher(int id, LocalDate day) {
         logger.debug("Retrieving schedule for date {} for teacher with id {}", day, id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_TEACHER, dayScheduleMapper, id, day));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SCHEDULE_BY_DAY_FOR_TEACHER, dayScheduleMapper, id, day));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

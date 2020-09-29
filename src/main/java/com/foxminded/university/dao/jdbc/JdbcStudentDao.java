@@ -52,7 +52,7 @@ public class JdbcStudentDao implements StudentDao {
     public Optional<Student> getById(int id) {
         logger.debug("Retrieving student with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_STUDENT_BY_ID, studentMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Student with id {} is not present", id);
             return Optional.empty();

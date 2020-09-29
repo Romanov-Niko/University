@@ -38,14 +38,14 @@ public class LessonService {
 
     public void save(Lesson lesson) {
         logger.debug("Saving lesson: {}", lesson);
-        isDataConsistent(lesson);
+        verifyDataConsistent(lesson);
         lessonDao.save(lesson);
     }
 
     public void update(Lesson lesson) {
         logger.debug("Updating lesson by id: {}", lesson);
         verifyLessonPresent(lesson.getId());
-        isDataConsistent(lesson);
+        verifyDataConsistent(lesson);
         lessonDao.update(lesson);
     }
 
@@ -116,7 +116,7 @@ public class LessonService {
         }
     }
 
-    private void isDataConsistent(Lesson lesson) {
+    private void verifyDataConsistent(Lesson lesson) {
         verifySubjectPresent(lesson.getSubject().getId());
         verifyTeacherPresent(lesson.getTeacher().getId());
         verifyGroupsPresent(lesson.getGroups());

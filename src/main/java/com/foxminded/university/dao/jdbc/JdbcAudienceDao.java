@@ -47,7 +47,7 @@ public class JdbcAudienceDao implements AudienceDao {
     public Optional<Audience> getById(int id) {
         logger.debug("Retrieving audience with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_AUDIENCE_BY_ID, audienceMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Audience with id {} is not present", id);
             return Optional.empty();
@@ -95,7 +95,7 @@ public class JdbcAudienceDao implements AudienceDao {
     public Optional<Audience> getByRoomNumber(int roomNumber) {
         logger.debug("Retrieving audience with room number {}", roomNumber);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_AUDIENCE_BY_ROOM_NUMBER, audienceMapper, roomNumber));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_AUDIENCE_BY_ROOM_NUMBER, audienceMapper, roomNumber));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

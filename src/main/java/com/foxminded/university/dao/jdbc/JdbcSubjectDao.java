@@ -54,7 +54,7 @@ public class JdbcSubjectDao implements SubjectDao {
     public Optional<Subject> getById(int id) {
         logger.debug("Retrieving subject with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_ID, subjectMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Subject with id {} is not present", id);
             return Optional.empty();
@@ -110,7 +110,7 @@ public class JdbcSubjectDao implements SubjectDao {
     public Optional<Subject> getByName(String name) {
         logger.debug("Retrieving subject with name {}", name);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_NAME, subjectMapper, name));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_SUBJECT_BY_NAME, subjectMapper, name));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

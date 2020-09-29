@@ -51,7 +51,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     public Optional<LessonTime> getById(int id) {
         logger.debug("Retrieving lesson time with id {}", id);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_ID, lessonTimeMapper, id));
         } catch (EmptyResultDataAccessException exception) {
             logger.error("Lesson time with id {} is not present", id);
             return Optional.empty();
@@ -99,7 +99,7 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
     public Optional<LessonTime> getByStartAndEndTime(LocalTime start, LocalTime end) {
         logger.debug("Retrieving lesson time with start {} and end {}", start, end);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_START_AND_END_TIME, lessonTimeMapper, start, end));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_GET_LESSON_TIME_BY_START_AND_END_TIME, lessonTimeMapper, start, end));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
