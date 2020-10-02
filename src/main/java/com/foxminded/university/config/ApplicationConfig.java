@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.util.Objects;
 
 @Configuration
-@ComponentScan("com.foxminded.university.dao")
+@ComponentScan("com.foxminded.university")
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 
