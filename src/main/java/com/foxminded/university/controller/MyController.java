@@ -9,7 +9,7 @@ public class MyController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("message", "Hello Spring MVC 5!");
+        model.addAttribute("message", "FINALLY FIXED GIT PROBLEMS!");
         return "index";
     }
 }
