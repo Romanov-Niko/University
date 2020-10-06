@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="ISO-8859-1">
-
-    <title>BORAJI.COM</title>
+    <title>JoaoDuraes' Twitter Bootstrap example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> </meta>
+    <link type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"> </link>
 </head>
 <body>
-<h1>Spring MVC + Thymeleaf  Hello World example</h1>
-<p th:text="${message}"></p>
+
+<script th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+<p th:text="'Hello, ' + ${username} + '!'" />
+
+<div class="btn-group">
+    <button type="button" class="btn btn-success">This is a success button</button>
+    <button type="button" class="btn btn-warning">This is a warning button</button>
+    <button type="button" class="btn btn-danger">This is a danger button</button>
+</div>
 </body>
 </html>
