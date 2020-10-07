@@ -1,5 +1,7 @@
 package com.foxminded.university.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,7 +11,9 @@ public class Student extends Person {
     private int groupId;
     private String specialty;
     private Integer course;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate admission;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate graduation;
 
     public Student() {

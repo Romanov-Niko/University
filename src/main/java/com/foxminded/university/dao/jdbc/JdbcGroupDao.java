@@ -92,6 +92,10 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public void update(Group group) {
         logger.debug("Updating group with id {}", group.getId());
+        group.getStudents().forEach(student -> {
+            updateStudentGroup(student.getId(), group.getId());
+            student.setGroupId(group.getId());
+        });
         if (jdbcTemplate.update(SQL_UPDATE_GROUP, group.getName(), group.getId()) == 0) {
             throw new EntityNotUpdatedException(String.format("Group with id %d was not updated", group.getId()));
         }

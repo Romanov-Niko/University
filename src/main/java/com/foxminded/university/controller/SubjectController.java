@@ -1,71 +1,72 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.AudienceDao;
+import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.domain.Audience;
-import com.foxminded.university.service.AudienceService;
+import com.foxminded.university.domain.Subject;
+import com.foxminded.university.service.SubjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/subjects")
 public class SubjectController {
 
-    private final AudienceService audienceService;
+    private final SubjectService subjectService;
+    private final SubjectDao subjectDao;
 
-    public SubjectController(AudienceService audienceService) {
-        this.audienceService = audienceService;
+    public SubjectController(SubjectService subjectService, SubjectDao subjectDao) {
+        this.subjectService = subjectService;
+        this.subjectDao = subjectDao;
     }
 
     @GetMapping()
     public String showAll(Model model) {
-        model.addAttribute("audiences", audienceService.getAll());
-        return "audiences/index";
+        model.addAttribute("subjects", subjectService.getAll());
+        return "subjects/index";
     }
 
     @GetMapping("/new")
     public String newAudience(Model model) {
-        model.addAttribute("audience", new Audience());
-        return "audiences/new";
+        model.addAttribute("subject", new Subject());
+        return "subjects/new";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
         try {
-            audienceService.save(audience);
+            subjectService.save(subject);
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/new";
+            return "redirect:/subjects/new";
         }
-        return "redirect:/audiences";
+        return "redirect:/subjects";
     }
 
     @GetMapping("delete/{id}")
     public String delete(@PathVariable("id") int id) {
-        audienceService.delete(id);
-        return "redirect:/audiences";
+        subjectService.delete(id);
+        return "redirect:/subjects";
     }
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Audience> audience = audienceDao.getById(id);
-        model.addAttribute("audience", audience);
-        return "audiences/edit";
+        Optional<Subject> subject = subjectDao.getById(id);
+        model.addAttribute("subject", subject);
+        return "subjects/edit";
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
         try {
-            audienceService.update(audience);
+            subjectService.update(subject);
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/edit/"+audience.getId();
+            return "redirect:/subjects/edit/"+subject.getId();
         }
-        return "redirect:/audiences";
+        return "redirect:/subjects";
     }
 }
