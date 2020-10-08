@@ -4,6 +4,7 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
+import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.service.GroupService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,5 +92,12 @@ public class GroupController {
             return "redirect:/groups/edit/"+group.getId();
         }
         return "redirect:/groups";
+    }
+
+    @GetMapping("students/{id}")
+    public String showSubjects(@PathVariable("id") int id, Model model) {
+        Optional<Group> group = groupDao.getById(id);
+        model.addAttribute("students", group.get().getStudents());
+        return "groups/students";
     }
 }

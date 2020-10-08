@@ -1,5 +1,7 @@
 package com.foxminded.university.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalTime;
 import java.util.Objects;
 

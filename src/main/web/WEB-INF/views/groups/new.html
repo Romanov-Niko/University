@@ -11,6 +11,36 @@
 </head>
 
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/audiences">AUDIENCES<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/groups">GROUPS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/lessons">LESSONS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/lessonstimes">LESSONS TIMES</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/students">STUDENTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/subjects">SUBJECTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/teachers">TEACHERS</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="container my-5">
     <h3> ADD GROUP</h3>
     <div class="card">
@@ -26,7 +56,7 @@
                             <label class="col-form-label">STUDENTS:</label>
                             <div th:each="student : ${allStudents}">
                                 <label>
-                                    <input type="checkbox" name="stud" th:value="${student.id}"/>
+                                    <input type="checkbox" name="grou" th:value="${student.id}"/>
                                 </label>
                                 <label class="checkbox-inline" th:text="${student.name}"></label>
                             </div>

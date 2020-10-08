@@ -42,30 +42,51 @@
     </div>
 </nav>
 <div class="container my-5">
-    <h3> UPDATE STUDENT</h3>
+    <h3> UPDATE LESSON</h3>
     <div class="card">
         <div class="card-body">
             <div class="col-md-8">
                 <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
-                <form action="#" th:action="@{/students/update/{id}(id=${student.get().getId()})}" th:object="${student}" method="post">
+                <form action="#" th:action="@{/lessons/update/{id}(id=${lesson.get().getId()})}" th:object="${lesson}" method="post">
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="groupId" class="col-form-label">GROUP ID</label> <input type="number" th:field="*{groupId}" class="form-control" id="groupId">
+                        <div th:each="currSubject : ${allSubjects}">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" th:field="*{subject}" th:value="${currSubject}" class="custom-control-input">
+                                <label class="custom-control-label" th:text="${currSubject.name}"></label>
+                            </div>
+                        </div>
+                        <div th:each="currTeacher : ${allTeachers}">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" th:field="*{teacher}" th:value="${currTeacher}" class="custom-control-input">
+                                <label class="custom-control-label" th:text="${currTeacher.surname}"></label>
+                            </div>
+                        </div>
+                        <div th:each="currAudience : ${allAudiences}">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" th:field="*{audience}" th:value="${currAudience}" class="custom-control-input">
+                                <label class="custom-control-label" th:text="${currAudience.roomNumber}">model</label>
+                            </div>
+                        </div>
+                        <div th:each="currLessonTime : ${allLessonsTimes}">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" th:field="*{lessonTime}" th:value="${currLessonTime}" class="custom-control-input">
+                                <label class="custom-control-label" th:time="${currLessonTime.begin}">model</label>
+                            </div>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="specialty" class="col-form-label">SPECIALTY</label> <input type="text" th:field="*{specialty}" class="form-control" id="specialty">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="course" class="col-form-label">COURSE</label> <input type="number" th:field="*{course}" class="form-control" id="course">
+                            <label for="date" class="col-form-label">DATE</label> <input type="text" th:field="*{date}" class="form-control" id="date">
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="admission" class="col-form-label">ADMISSION</label> <input type="date" th:field="*{admission}" class="form-control" id="admission">
+                            <label class="col-form-label">GROUPS:</label>
+                            <div th:each="group : ${allGroups}">
+                                <label>
+                                    <input type="checkbox" name="grou" th:value="${group.id}" th:checked="${lesson.get().groups.contains(group)}"/>
+                                </label>
+                                <label class="checkbox-inline" th:text="${group.name}"></label>
+                            </div>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="graduation" class="col-form-label">GRADUATION</label> <input type="date" th:field="*{graduation}" class="form-control" id="graduation">
-                        </div>
-                        <div class="form-group col-md-8">
-                            <input type="submit" class="btn btn-primary" value="UPDATE STUDENT">
+                            <input type="submit" class="btn btn-primary" value="UPDATE LESSON">
                         </div>
                     </div>
                 </form>

@@ -41,9 +41,6 @@
     <div class="card">
         <div class="card-body">
             <div th:switch="${groups}" class="container my-5">
-                <p class="my-5">
-                    <a href="/groups/new" class="btn btn-primary"><i class="fas fa-user-plus ml-2"> ADD GROUP</i></a>
-                </p>
                 <div class="col-md-10">
                     <h2 th:case="null">NO GROUPS YET!</h2>
                     <div th:case="*">
@@ -52,27 +49,23 @@
                             <tr>
                                 <th>ID</th>
                                 <th>GROUP NAME</th>
-                                <th>EDIT</th>
-                                <th>DELETE</th>
-                                <th>SHOW STUDENTS</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="group : ${groups}">
                                 <td th:text="${group.getId()}"></td>
                                 <td th:text="${group.getName()}"></td>
-                                <td><a th:href="@{/groups/edit/{id}(id=${group.getId()})}" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
-                                <td><a th:href="@{/groups/delete/{id}(id=${group.getId()})}" class="btn btn-primary"><i class="fas fa-trash-alt"></i></a></td>
-                                <td><a th:href="@{/groups/students/{id}(id=${group.getId()})}" class="btn btn-primary"><i class="fas fa-list"></i></a></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <p class="my-5">
+                    <a href="/lessons" class="btn btn-secondary btn-sm">BACK</a>
+                </p>
             </div>
         </div>
     </div>
 </div>
 </body>
-
 </html>

@@ -93,4 +93,11 @@ public class TeacherController {
         }
         return "redirect:/teachers";
     }
+
+    @GetMapping("subjects/{id}")
+    public String showSubjects(@PathVariable("id") int id, Model model) {
+        Optional<Teacher> teacher = teacherDao.getById(id);
+        model.addAttribute("subjects", teacher.get().getSubjects());
+        return "teachers/subjects";
+    }
 }

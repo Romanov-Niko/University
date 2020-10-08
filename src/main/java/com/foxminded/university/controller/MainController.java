@@ -5,11 +5,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class MyController {
+public class MainController {
 
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("message", "FINALLY FIXED GIT PROBLEMS!");
-        return "index";
+    public String index() {
+        return "redirect:audiences";
     }
 }

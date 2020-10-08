@@ -33,6 +33,9 @@ class StudentServiceTest {
     @Mock
     private StudentDao studentDao;
 
+    @Mock
+    private GroupDao groupDao;
+
     @InjectMocks
     private StudentService studentService;
 
@@ -49,6 +52,7 @@ class StudentServiceTest {
     @Test
     void givenStudent_whenSave_thenCalledStudentDaoSave() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
 
         studentService.save(createdStudent);
 
@@ -59,6 +63,7 @@ class StudentServiceTest {
     void givenStudent_whenUpdate_thenCalledStudentDaoUpdate() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
         given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
 
         studentService.update(updatedStudent);
 
