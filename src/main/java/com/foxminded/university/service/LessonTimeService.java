@@ -1,6 +1,8 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.LessonTimeDao;
+import com.foxminded.university.domain.Audience;
+import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LessonTimeService {
@@ -23,6 +26,10 @@ public class LessonTimeService {
 
     public LessonTimeService(LessonTimeDao lessonTimeDao) {
         this.lessonTimeDao = lessonTimeDao;
+    }
+
+    public Optional<LessonTime> getById(int id) {
+        return lessonTimeDao.getById(id);
     }
 
     public List<LessonTime> getAll() {

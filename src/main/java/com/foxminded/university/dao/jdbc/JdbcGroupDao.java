@@ -89,6 +89,7 @@ public class JdbcGroupDao implements GroupDao {
         });
     }
 
+    @Transactional
     @Override
     public void update(Group group) {
         logger.debug("Updating group with id {}", group.getId());

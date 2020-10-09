@@ -1,9 +1,8 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.*;
 import com.foxminded.university.domain.*;
 import com.foxminded.university.editor.*;
-import com.foxminded.university.service.LessonService;
+import com.foxminded.university.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -19,54 +18,52 @@ import java.util.Optional;
 public class LessonController {
 
     private final LessonService lessonService;
-    private final LessonDao lessonDao;
-    private final GroupDao groupDao;
-    private final TeacherDao teacherDao;
-    private final SubjectDao subjectDao;
-    private final AudienceDao audienceDao;
-    private final LessonTimeDao lessonTimeDao;
+    private final GroupService groupService;
+    private final TeacherService teacherService;
+    private final SubjectService subjectService;
+    private final AudienceService audienceService;
+    private final LessonTimeService lessonTimeService;
 
-    public LessonController(LessonService lessonService, LessonDao lessonDao, GroupDao groupDao, TeacherDao teacherDao, SubjectDao subjectDao, AudienceDao audienceDao, LessonTimeDao lessonTimeDao) {
+    public LessonController(LessonService lessonService, GroupService groupService, TeacherService teacherService, SubjectService subjectService, AudienceService audienceService, LessonTimeService lessonTimeService) {
         this.lessonService = lessonService;
-        this.lessonDao = lessonDao;
-        this.groupDao = groupDao;
-        this.teacherDao = teacherDao;
-        this.subjectDao = subjectDao;
-        this.audienceDao = audienceDao;
-        this.lessonTimeDao = lessonTimeDao;
+        this.groupService = groupService;
+        this.teacherService = teacherService;
+        this.subjectService = subjectService;
+        this.audienceService = audienceService;
+        this.lessonTimeService = lessonTimeService;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceDao));
-        binder.registerCustomEditor(LessonTime.class, new LessonTimeEditor(lessonTimeDao));
-        binder.registerCustomEditor(Subject.class, new SubjectEditor(subjectDao));
-        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherDao));
+        binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceService));
+        binder.registerCustomEditor(LessonTime.class, new LessonTimeEditor(lessonTimeService));
+        binder.registerCustomEditor(Subject.class, new SubjectEditor(subjectService));
+        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherService));
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("lessons", lessonService.getAll());
-        return "lessons/index";
+        return "lessons/lessons";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("lesson", new Lesson());
-        model.addAttribute("allGroups", groupDao.getAll());
-        model.addAttribute("allTeachers", teacherDao.getAll());
-        model.addAttribute("allAudiences", audienceDao.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeDao.getAll());
-        model.addAttribute("allSubjects", subjectDao.getAll());
+        model.addAttribute("allGroups", groupService.getAll());
+        model.addAttribute("allTeachers", teacherService.getAll());
+        model.addAttribute("allAudiences", audienceService.getAll());
+        model.addAttribute("allLessonsTimes", lessonTimeService.getAll());
+        model.addAttribute("allSubjects", subjectService.getAll());
         return "lessons/new";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "grou", required = false) int[] grou, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
         List<Group> groups = new ArrayList<>();
-        if (grou != null) {
-            for (int id : grou) {
-                Group group = groupDao.getById(id).get();
+        if (groupsOfLesson != null) {
+            for (int id : groupsOfLesson) {
+                Group group = groupService.getById(id).get();
                 groups.add(group);
             }
             lesson.setGroups(groups);
@@ -89,22 +86,22 @@ public class LessonController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Lesson> lesson = lessonDao.getById(id);
+        Optional<Lesson> lesson = lessonService.getById(id);
         model.addAttribute("lesson", lesson);
-        model.addAttribute("allGroups", groupDao.getAll());
-        model.addAttribute("allTeachers", teacherDao.getAll());
-        model.addAttribute("allAudiences", audienceDao.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeDao.getAll());
-        model.addAttribute("allSubjects", subjectDao.getAll());
+        model.addAttribute("allGroups", groupService.getAll());
+        model.addAttribute("allTeachers", teacherService.getAll());
+        model.addAttribute("allAudiences", audienceService.getAll());
+        model.addAttribute("allLessonsTimes", lessonTimeService.getAll());
+        model.addAttribute("allSubjects", subjectService.getAll());
         return "lessons/edit";
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "grou", required = false) int[] subj, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
         List<Group> groups = new ArrayList<>();
-        if (subj != null) {
-            for (int id : subj) {
-                Group group = groupDao.getById(id).get();
+        if (groupsOfLesson != null) {
+            for (int id : groupsOfLesson) {
+                Group group = groupService.getById(id).get();
                 groups.add(group);
             }
             lesson.setGroups(groups);
@@ -120,7 +117,7 @@ public class LessonController {
 
     @GetMapping("groups/{id}")
     public String showSubjects(@PathVariable("id") int id, Model model) {
-        Optional<Lesson> lesson = lessonDao.getById(id);
+        Optional<Lesson> lesson = lessonService.getById(id);
         model.addAttribute("groups", lesson.get().getGroups());
         return "lessons/groups";
     }

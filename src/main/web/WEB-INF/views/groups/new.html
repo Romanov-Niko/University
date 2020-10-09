@@ -56,7 +56,7 @@
                             <label class="col-form-label">STUDENTS:</label>
                             <div th:each="student : ${allStudents}">
                                 <label>
-                                    <input type="checkbox" name="grou" th:value="${student.id}"/>
+                                    <input type="checkbox" name="studentsOfGroup" th:value="${student.id}"/>
                                 </label>
                                 <label class="checkbox-inline" th:text="${student.name}"></label>
                             </div>

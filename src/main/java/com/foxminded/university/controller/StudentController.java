@@ -1,10 +1,6 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Student;
-import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.StudentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,21 +14,19 @@ import java.util.Optional;
 public class StudentController {
 
     private final StudentService studentService;
-    private final StudentDao studentDao;
 
-    public StudentController(StudentService studentService, StudentDao studentDao) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.studentDao = studentDao;
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("students", studentService.getAll());
-        return "students/index";
+        return "students/students";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("student", new Student());
         return "students/new";
     }
@@ -56,7 +50,7 @@ public class StudentController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Student> student = studentDao.getById(id);
+        Optional<Student> student = studentService.getById(id);
         model.addAttribute("student", student);
         return "students/edit";
     }

@@ -20,7 +20,7 @@
         <mockito.version>2.23.0</mockito.version>
         <logback.version>1.2.3</logback.version>
         <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
-        <servler.version>4.0.0</servler.version>
+        <servlet.version>4.0.0</servlet.version>
     </properties>
 
     <dependencies>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servler.version}</version>
+            <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

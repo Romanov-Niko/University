@@ -1,23 +1,22 @@
 package com.foxminded.university.editor;
 
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Subject;
+import com.foxminded.university.service.SubjectService;
 
 import java.beans.PropertyEditorSupport;
 
 public class SubjectEditor extends PropertyEditorSupport {
 
-    private SubjectDao subjectDao;
+    private SubjectService subjectService;
 
-    public SubjectEditor(SubjectDao subjectDao) {
-        this.subjectDao = subjectDao;
+    public SubjectEditor(SubjectService subjectService) {
+        this.subjectService = subjectService;
     }
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Subject subject = subjectDao.getById(parsedId).get();
+        Subject subject = subjectService.getById(parsedId).get();
         setValue(subject);
     }
 }

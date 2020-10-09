@@ -1,10 +1,6 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.LessonTimeDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.LessonTime;
-import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.LessonTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,21 +14,19 @@ import java.util.Optional;
 public class LessonTimeController {
 
     private final LessonTimeService lessonTimeService;
-    private final LessonTimeDao lessonTimeDao;
 
-    public LessonTimeController(LessonTimeService lessonTimeService, LessonTimeDao lessonTimeDao) {
+    public LessonTimeController(LessonTimeService lessonTimeService) {
         this.lessonTimeService = lessonTimeService;
-        this.lessonTimeDao = lessonTimeDao;
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("lessonstimes", lessonTimeService.getAll());
-        return "lessonstimes/index";
+        return "lessonstimes/lessonstimes";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("lessontime", new LessonTime());
         return "lessonstimes/new";
     }
@@ -56,7 +50,7 @@ public class LessonTimeController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<LessonTime> lessonTime = lessonTimeDao.getById(id);
+        Optional<LessonTime> lessonTime = lessonTimeService.getById(id);
         model.addAttribute("lessontime", lessonTime);
         return "lessonstimes/edit";
     }

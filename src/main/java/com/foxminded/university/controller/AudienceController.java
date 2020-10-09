@@ -1,8 +1,6 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
-import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.service.AudienceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,21 +14,19 @@ import java.util.Optional;
 public class AudienceController {
 
     private final AudienceService audienceService;
-    private final AudienceDao audienceDao;
 
-    public AudienceController(AudienceService audienceService, AudienceDao audienceDao) {
+    public AudienceController(AudienceService audienceService) {
         this.audienceService = audienceService;
-        this.audienceDao = audienceDao;
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("audiences", audienceService.getAll());
-        return "audiences/index";
+        return "audiences/audiences";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("audience", new Audience());
         return "audiences/new";
     }
@@ -54,7 +50,7 @@ public class AudienceController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Audience> audience = audienceDao.getById(id);
+        Optional<Audience> audience = audienceService.getById(id);
         model.addAttribute("audience", audience);
         return "audiences/edit";
     }

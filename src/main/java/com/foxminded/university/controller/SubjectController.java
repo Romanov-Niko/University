@@ -1,7 +1,5 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.service.SubjectService;
 import org.springframework.stereotype.Controller;
@@ -16,21 +14,19 @@ import java.util.Optional;
 public class SubjectController {
 
     private final SubjectService subjectService;
-    private final SubjectDao subjectDao;
 
-    public SubjectController(SubjectService subjectService, SubjectDao subjectDao) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
-        this.subjectDao = subjectDao;
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("subjects", subjectService.getAll());
-        return "subjects/index";
+        return "subjects/subjects";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("subject", new Subject());
         return "subjects/new";
     }
@@ -54,7 +50,7 @@ public class SubjectController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Subject> subject = subjectDao.getById(id);
+        Optional<Subject> subject = subjectService.getById(id);
         model.addAttribute("subject", subject);
         return "subjects/edit";
     }

@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -28,6 +30,10 @@ public class StudentService {
     public StudentService(StudentDao studentDao, GroupDao groupDao) {
         this.studentDao = studentDao;
         this.groupDao = groupDao;
+    }
+
+    public Optional<Student> getById(int id) {
+        return studentDao.getById(id);
     }
 
     public List<Student> getAll() {

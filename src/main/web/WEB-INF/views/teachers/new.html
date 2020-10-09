@@ -71,7 +71,7 @@
                             <label class="col-form-label">SUBJECTS:</label>
                             <div th:each="subject : ${allSubjects}">
                                 <label>
-                                    <input type="checkbox" name="subj" th:value="${subject.id}"/>
+                                    <input type="checkbox" name="subjectsOfTeacher" th:value="${subject.id}"/>
                                 </label>
                                 <label class="checkbox-inline" th:text="${subject.name}"></label>
                             </div>

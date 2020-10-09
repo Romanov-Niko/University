@@ -92,7 +92,7 @@
                             <label class="col-form-label">GROUPS:</label>
                             <div th:each="group : ${allGroups}">
                                 <label>
-                                    <input type="checkbox" name="grou" th:value="${group.id}"/>
+                                    <input type="checkbox" name="groupsOfLesson" th:value="${group.id}"/>
                                 </label>
                                 <label class="checkbox-inline" th:text="${group.name}"></label>
                             </div>

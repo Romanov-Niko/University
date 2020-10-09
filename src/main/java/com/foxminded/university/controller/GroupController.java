@@ -1,11 +1,9 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
-import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.service.GroupService;
+import com.foxminded.university.service.StudentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,34 +18,32 @@ import java.util.Optional;
 public class GroupController {
 
     private final GroupService groupService;
-    private final GroupDao groupDao;
-    private final StudentDao studentDao;
+    private final StudentService studentService;
 
-    public GroupController(GroupService groupService, GroupDao groupDao, StudentDao studentDao) {
+    public GroupController(GroupService groupService, StudentService studentService) {
         this.groupService = groupService;
-        this.groupDao = groupDao;
-        this.studentDao = studentDao;
+        this.studentService = studentService;
     }
 
-    @GetMapping()
+    @GetMapping
     public String showAll(Model model) {
         model.addAttribute("groups", groupService.getAll());
-        return "groups/index";
+        return "groups/groups";
     }
 
     @GetMapping("/new")
-    public String newAudience(Model model) {
+    public String redirectToSaveForm(Model model) {
         model.addAttribute("group", new Group());
-        model.addAttribute("allStudents", studentDao.getAll());
+        model.addAttribute("allStudents", studentService.getAll());
         return "groups/new";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("group") Group group, @RequestParam(value = "stud" , required = false) int[] stud, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
         List<Student> students = new ArrayList<>();
-        if(stud != null) {
-            for (int id: stud){
-                Student student = studentDao.getById(id).get();
+        if(studentsOfGroup != null) {
+            for (int id: studentsOfGroup){
+                Student student = studentService.getById(id).get();
                 students.add(student);
             }
             group.setStudents(students);
@@ -69,18 +65,18 @@ public class GroupController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Group> group = groupDao.getById(id);
+        Optional<Group> group = groupService.getById(id);
         model.addAttribute("group", group);
-        model.addAttribute("allStudents", studentDao.getAll());
+        model.addAttribute("allStudents", studentService.getAll());
         return "groups/edit";
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("group") Group group, @RequestParam(value = "stud" , required = false) int[] stud, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
         List<Student> students = new ArrayList<>();
-        if(stud != null) {
-            for (int id: stud){
-                Student student = studentDao.getById(id).get();
+        if(studentsOfGroup != null) {
+            for (int id: studentsOfGroup){
+                Student student = studentService.getById(id).get();
                 students.add(student);
             }
             group.setStudents(students);
@@ -96,7 +92,7 @@ public class GroupController {
 
     @GetMapping("students/{id}")
     public String showSubjects(@PathVariable("id") int id, Model model) {
-        Optional<Group> group = groupDao.getById(id);
+        Optional<Group> group = groupService.getById(id);
         model.addAttribute("students", group.get().getStudents());
         return "groups/students";
     }

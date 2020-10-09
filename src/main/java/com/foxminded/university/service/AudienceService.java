@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AudienceService {
@@ -20,6 +21,10 @@ public class AudienceService {
 
     public AudienceService(AudienceDao audienceDao) {
         this.audienceDao = audienceDao;
+    }
+
+    public Optional<Audience> getById(int id) {
+        return audienceDao.getById(id);
     }
 
     public List<Audience> getAll() {

@@ -1,11 +1,14 @@
 package com.foxminded.university.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 public class DaySchedule {
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate day;
     private List<Lesson> lessons;
 

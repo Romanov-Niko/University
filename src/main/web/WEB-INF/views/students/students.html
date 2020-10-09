@@ -58,6 +58,7 @@
                                 <th>GRADUATION</th>
                                 <th>EDIT</th>
                                 <th>DELETE</th>
+                                <th>SCHEDULE</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -70,6 +71,7 @@
                                 <td th:text="${student.getGraduation()}"></td>
                                 <td><a th:href="@{/students/edit/{id}(id=${student.getId()})}" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 <td><a th:href="@{/students/delete/{id}(id=${student.getId()})}" class="btn btn-primary"><i class="fas fa-trash-alt"></i></a></td>
+                                <td><a th:href="@{/daysschedules/search/student/{id}(id=${student.getId()})}" class="btn btn-primary"><i class="fa fa-calendar"></i></a></td>
                             </tr>
                             </tbody>
                         </table>
