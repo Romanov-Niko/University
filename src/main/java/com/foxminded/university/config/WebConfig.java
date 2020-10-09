@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,16 +20,10 @@ import java.util.Set;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.foxminded.university")
-public class WebConfig implements WebMvcConfigurer {
-
-    private final ApplicationContext applicationContext;
-
-    public WebConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+public class WebConfig {
 
     @Bean
-    public SpringResourceTemplateResolver templateResolver() {
+    public SpringResourceTemplateResolver templateResolver(ApplicationContext applicationContext) {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views/");
@@ -37,17 +32,18 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SpringTemplateEngine templateEngine() {
+    public SpringTemplateEngine templateEngine(SpringResourceTemplateResolver templateResolver) {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.setTemplateResolver(templateResolver);
         templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }
 
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        registry.viewResolver(resolver);
+    @Bean
+    public ViewResolver viewResolver(SpringTemplateEngine templateEngine) {
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine);
+        viewResolver.setCharacterEncoding("UTF-8");
+        return viewResolver;
     }
 }

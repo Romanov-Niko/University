@@ -38,56 +38,12 @@ public class GroupController {
         return "groups/new";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
-        List<Student> students = new ArrayList<>();
-        if(studentsOfGroup != null) {
-            for (int id: studentsOfGroup){
-                Student student = studentService.getById(id).get();
-                students.add(student);
-            }
-            group.setStudents(students);
-        }
-        try {
-            groupService.save(group);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/groups/new";
-        }
-        return "redirect:/groups";
-    }
-
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        groupService.delete(id);
-        return "redirect:/groups";
-    }
-
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Optional<Group> group = groupService.getById(id);
         model.addAttribute("group", group);
         model.addAttribute("allStudents", studentService.getAll());
         return "groups/edit";
-    }
-
-    @PostMapping("update/{id}")
-    public String update(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
-        List<Student> students = new ArrayList<>();
-        if(studentsOfGroup != null) {
-            for (int id: studentsOfGroup){
-                Student student = studentService.getById(id).get();
-                students.add(student);
-            }
-            group.setStudents(students);
-        }
-        try {
-            groupService.update(group);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/groups/edit/"+group.getId();
-        }
-        return "redirect:/groups";
     }
 
     @GetMapping("students/{id}")

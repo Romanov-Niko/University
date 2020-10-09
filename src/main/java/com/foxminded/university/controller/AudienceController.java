@@ -31,38 +31,10 @@ public class AudienceController {
         return "audiences/new";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
-        try {
-            audienceService.save(audience);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/new";
-        }
-        return "redirect:/audiences";
-    }
-
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        audienceService.delete(id);
-        return "redirect:/audiences";
-    }
-
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Optional<Audience> audience = audienceService.getById(id);
         model.addAttribute("audience", audience);
         return "audiences/edit";
-    }
-
-    @PostMapping("update/{id}")
-    public String update(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
-        try {
-            audienceService.update(audience);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/edit/"+audience.getId();
-        }
-        return "redirect:/audiences";
     }
 }

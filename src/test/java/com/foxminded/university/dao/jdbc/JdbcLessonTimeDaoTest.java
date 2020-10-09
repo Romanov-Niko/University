@@ -28,7 +28,6 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@WebAppConfiguration
 @SpringJUnitConfig(ApplicationTestConfig.class)
 class JdbcLessonTimeDaoTest {
 

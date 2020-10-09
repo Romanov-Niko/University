@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static java.util.Collections.*;
 
 @Transactional
-@WebAppConfiguration
 @SpringJUnitConfig(ApplicationTestConfig.class)
 class JdbcDayScheduleDaoTest {
 

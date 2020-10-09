@@ -38,57 +38,12 @@ public class TeacherController {
         return "teachers/new";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher , RedirectAttributes redirectAttributes) {
-        List<Subject> subjects = new ArrayList<>();
-        if(subjectsOfTeacher != null) {
-            for (int id: subjectsOfTeacher){
-                Subject subject = subjectService.getById(id).get();
-                subjects.add(subject);
-            }
-            teacher.setSubjects(subjects);
-        }
-
-        try {
-            teacherService.save(teacher);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/teachers/new";
-        }
-        return "redirect:/teachers";
-    }
-
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        teacherService.delete(id);
-        return "redirect:/teachers";
-    }
-
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Optional<Teacher> teacher = teacherService.getById(id);
         model.addAttribute("teacher", teacher);
         model.addAttribute("allSubjects", subjectService.getAll());
         return "teachers/edit";
-    }
-
-    @PostMapping("update/{id}")
-    public String update(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher, RedirectAttributes redirectAttributes) {
-        List<Subject> subjects = new ArrayList<>();
-        if(subjectsOfTeacher != null) {
-            for (int id: subjectsOfTeacher){
-                Subject subject = subjectService.getById(id).get();
-                subjects.add(subject);
-            }
-            teacher.setSubjects(subjects);
-        }
-        try {
-            teacherService.update(teacher);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/teachers/edit/"+teacher.getId();
-        }
-        return "redirect:/teachers";
     }
 
     @GetMapping("subjects/{id}")

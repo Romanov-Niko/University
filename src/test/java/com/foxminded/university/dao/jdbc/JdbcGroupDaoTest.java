@@ -25,7 +25,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@WebAppConfiguration
 @SpringJUnitConfig(ApplicationTestConfig.class)
 class JdbcGroupDaoTest {
 

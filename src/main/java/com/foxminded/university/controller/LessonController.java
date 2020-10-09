@@ -58,32 +58,6 @@ public class LessonController {
         return "lessons/new";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
-        List<Group> groups = new ArrayList<>();
-        if (groupsOfLesson != null) {
-            for (int id : groupsOfLesson) {
-                Group group = groupService.getById(id).get();
-                groups.add(group);
-            }
-            lesson.setGroups(groups);
-        }
-
-        try {
-            lessonService.save(lesson);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessons/new";
-        }
-        return "redirect:/lessons";
-    }
-
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        lessonService.delete(id);
-        return "redirect:/lessons";
-    }
-
     @GetMapping("edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Optional<Lesson> lesson = lessonService.getById(id);
@@ -94,25 +68,6 @@ public class LessonController {
         model.addAttribute("allLessonsTimes", lessonTimeService.getAll());
         model.addAttribute("allSubjects", subjectService.getAll());
         return "lessons/edit";
-    }
-
-    @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
-        List<Group> groups = new ArrayList<>();
-        if (groupsOfLesson != null) {
-            for (int id : groupsOfLesson) {
-                Group group = groupService.getById(id).get();
-                groups.add(group);
-            }
-            lesson.setGroups(groups);
-        }
-        try {
-            lessonService.update(lesson);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessons/edit/" + lesson.getId();
-        }
-        return "redirect:/lessons";
     }
 
     @GetMapping("groups/{id}")
