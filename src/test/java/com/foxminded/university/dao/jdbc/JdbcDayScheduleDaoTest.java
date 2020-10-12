@@ -4,25 +4,18 @@ import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.DayScheduleDao;
 import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.*;
+import static com.foxminded.university.TestData.retrievedDaySchedule;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static java.util.Collections.*;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)

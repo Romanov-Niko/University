@@ -32,9 +32,13 @@ public class SubjectController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Subject> subject = subjectService.getById(id);
-        model.addAttribute("subject", subject);
+        if(subject.isPresent()) {
+            model.addAttribute("subject", subject.get());
+        } else {
+            model.addAttribute("subject", new Subject());
+        }
         return "subjects/edit";
     }
 }

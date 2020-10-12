@@ -39,17 +39,21 @@ public class GroupController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Group> group = groupService.getById(id);
-        model.addAttribute("group", group);
+        if(group.isPresent()) {
+            model.addAttribute("group", group.get());
+        } else {
+            model.addAttribute("group", new Group());
+        }
         model.addAttribute("allStudents", studentService.getAll());
         return "groups/edit";
     }
 
     @GetMapping("students/{id}")
-    public String showSubjects(@PathVariable("id") int id, Model model) {
+    public String showSubjects(@PathVariable int id, Model model) {
         Optional<Group> group = groupService.getById(id);
-        model.addAttribute("students", group.get().getStudents());
+        group.ifPresent(currentGroup ->  model.addAttribute("students", currentGroup.getStudents()));
         return "groups/students";
     }
 }

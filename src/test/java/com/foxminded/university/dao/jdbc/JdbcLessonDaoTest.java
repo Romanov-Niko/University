@@ -2,14 +2,11 @@ package com.foxminded.university.dao.jdbc;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.LessonDao;
-import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
-import com.foxminded.university.domain.Subject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 

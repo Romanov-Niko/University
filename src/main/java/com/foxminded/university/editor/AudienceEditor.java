@@ -5,6 +5,7 @@ import com.foxminded.university.domain.Audience;
 import com.foxminded.university.service.AudienceService;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Optional;
 
 public class AudienceEditor extends PropertyEditorSupport {
 
@@ -17,7 +18,11 @@ public class AudienceEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Audience audience = audienceService.getById(parsedId).get();
-        setValue(audience);
+        Optional<Audience> audience = audienceService.getById(parsedId);
+        if (audience.isPresent()) {
+            setValue(audience);
+        } else {
+            setValue(new Audience());
+        }
     }
 }

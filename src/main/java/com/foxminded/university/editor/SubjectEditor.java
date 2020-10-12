@@ -1,9 +1,11 @@
 package com.foxminded.university.editor;
 
+import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.service.SubjectService;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Optional;
 
 public class SubjectEditor extends PropertyEditorSupport {
 
@@ -16,7 +18,11 @@ public class SubjectEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Subject subject = subjectService.getById(parsedId).get();
-        setValue(subject);
+        Optional<Subject> subject = subjectService.getById(parsedId);
+        if (subject.isPresent()) {
+            setValue(subject);
+        } else {
+            setValue(new Subject());
+        }
     }
 }

@@ -32,9 +32,13 @@ public class AudienceController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Audience> audience = audienceService.getById(id);
-        model.addAttribute("audience", audience);
+        if(audience.isPresent()) {
+            model.addAttribute("audience", audience.get());
+        } else {
+            model.addAttribute("audience", new Audience());
+        }
         return "audiences/edit";
     }
 }

@@ -1,11 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -13,26 +9,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.createdGroup;
-import static com.foxminded.university.TestData.updatedGroup;
+import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-
-import static com.foxminded.university.TestData.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

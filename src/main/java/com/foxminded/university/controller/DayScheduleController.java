@@ -27,14 +27,14 @@ public class DayScheduleController {
     }
 
     @GetMapping("/search/teacher/{id}")
-    public String searchScheduleForTeacher(@PathVariable("id") int id, Model model) {
+    public String searchScheduleForTeacher(@PathVariable int id, Model model) {
         model.addAttribute("id", id);
         model.addAttribute("person", "teacher");
         return "daysschedules/search";
     }
 
     @GetMapping("/search/student/{id}")
-    public String searchScheduleForStudent(@PathVariable("id") int id, Model model) {
+    public String searchScheduleForStudent(@PathVariable int id, Model model) {
         model.addAttribute("id", id);
         model.addAttribute("person", "student");
         return "daysschedules/search";

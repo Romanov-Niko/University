@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.DayScheduleDao;
-import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,16 +12,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.foxminded.university.TestData.retrievedDaySchedule;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static com.foxminded.university.TestData.*;
 
 
 @ExtendWith(MockitoExtension.class)

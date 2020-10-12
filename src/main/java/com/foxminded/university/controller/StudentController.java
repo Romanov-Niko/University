@@ -32,9 +32,13 @@ public class StudentController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Student> student = studentService.getById(id);
-        model.addAttribute("student", student);
+        if(student.isPresent()) {
+            model.addAttribute("student", student.get());
+        } else {
+            model.addAttribute("student", new Student());
+        }
         return "students/edit";
     }
 }

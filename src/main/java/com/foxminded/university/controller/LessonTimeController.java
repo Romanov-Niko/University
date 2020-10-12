@@ -32,9 +32,13 @@ public class LessonTimeController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<LessonTime> lessonTime = lessonTimeService.getById(id);
-        model.addAttribute("lessontime", lessonTime);
+        if (lessonTime.isPresent()) {
+            model.addAttribute("lessontime", lessonTime.get());
+        } else {
+            model.addAttribute("lessontime", new LessonTime());
+        }
         return "lessonstimes/edit";
     }
 }

@@ -1,33 +1,28 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.config.ApplicationTestConfig;
-import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Subject;
-import com.foxminded.university.exception.*;
+import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.SubjectNameNotUniqueException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.createdStudent;
-import static com.foxminded.university.TestData.updatedStudent;
+import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-
-import static com.foxminded.university.TestData.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

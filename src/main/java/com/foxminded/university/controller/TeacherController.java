@@ -39,17 +39,21 @@ public class TeacherController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Teacher> teacher = teacherService.getById(id);
-        model.addAttribute("teacher", teacher);
+        if(teacher.isPresent()) {
+            model.addAttribute("teacher", teacher.get());
+        } else {
+            model.addAttribute("teacher", new Teacher());
+        }
         model.addAttribute("allSubjects", subjectService.getAll());
         return "teachers/edit";
     }
 
     @GetMapping("subjects/{id}")
-    public String showSubjects(@PathVariable("id") int id, Model model) {
+    public String showSubjects(@PathVariable int id, Model model) {
         Optional<Teacher> teacher = teacherService.getById(id);
-        model.addAttribute("subjects", teacher.get().getSubjects());
+        teacher.ifPresent(currentTeacher -> model.addAttribute("subjects", currentTeacher.getSubjects()));
         return "teachers/subjects";
     }
 }

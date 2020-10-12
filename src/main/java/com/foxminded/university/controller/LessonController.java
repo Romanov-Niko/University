@@ -59,9 +59,13 @@ public class LessonController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public String edit(@PathVariable int id, Model model) {
         Optional<Lesson> lesson = lessonService.getById(id);
-        model.addAttribute("lesson", lesson);
+        if (lesson.isPresent()) {
+            model.addAttribute("lesson", lesson.get());
+        } else {
+            model.addAttribute("lesson", new Lesson());
+        }
         model.addAttribute("allGroups", groupService.getAll());
         model.addAttribute("allTeachers", teacherService.getAll());
         model.addAttribute("allAudiences", audienceService.getAll());
@@ -71,9 +75,9 @@ public class LessonController {
     }
 
     @GetMapping("groups/{id}")
-    public String showSubjects(@PathVariable("id") int id, Model model) {
+    public String showSubjects(@PathVariable int id, Model model) {
         Optional<Lesson> lesson = lessonService.getById(id);
-        model.addAttribute("groups", lesson.get().getGroups());
+        lesson.ifPresent(currentLesson -> model.addAttribute("groups", currentLesson.getGroups()));
         return "lessons/groups";
     }
 }
