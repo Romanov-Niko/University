@@ -44,26 +44,20 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void givenLessonsTimesUrl_whenShowAll_thenReturnedLessonsTimesHtmlAndModelWithAllLessonsTimes() throws Exception {
+    void whenShowAll_thenAddedModelWithAllLessonsTimesAndRedirectedToFormWithListOfLessonsTimes() throws Exception {
         when(lessonTimeService.getAll()).thenReturn(singletonList(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/lessonstimes"))
                 .andExpect(model().attribute("lessonstimes", hasSize(1)))
-                .andExpect(model().attribute("lessonstimes", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("begin", is(LocalTime.parse("08:00:00"))),
-                                hasProperty("end", is(LocalTime.parse("09:00:00")))
-                        )
-                )));
+                .andExpect(model().attribute("lessonstimes", is(singletonList(retrievedLessonTime))));
 
         verify(lessonTimeService, times(1)).getAll();
     }
 
     @Test
-    void givenLessonsTimesNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyLessonTimeModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyLessonTimeModelAndRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/lessonstimes/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/new"))
@@ -73,15 +67,13 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void givenLessonsTimesEditUrl_whenEdit_thenReturnedEditHtmlAndLessonTimeModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedLessonTimeModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(lessonTimeService.getById(anyInt())).thenReturn(Optional.of(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/edit"))
-                .andExpect(model().attribute("lessontime", hasProperty("id", is(1))))
-                .andExpect(model().attribute("lessontime", hasProperty("begin", is(LocalTime.parse("08:00:00")))))
-                .andExpect(model().attribute("lessontime", hasProperty("end", is(LocalTime.parse("09:00:00")))));
+                .andExpect(model().attribute("lessontime", is(retrievedLessonTime)));
 
         verify(lessonTimeService, times(1)).getById(anyInt());
     }

@@ -49,32 +49,47 @@
                 <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
                 <form action="#" th:action="@{/lessons/update/{id}(id=${lesson.getId()})}" th:object="${lesson}" method="post">
                     <div class="row">
-                        <div th:each="currSubject : ${allSubjects}">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" th:field="*{subject}" th:value="${currSubject}" class="custom-control-input">
-                                <label class="custom-control-label" th:text="${currSubject.name}"></label>
-                            </div>
-                        </div>
-                        <div th:each="currTeacher : ${allTeachers}">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" th:field="*{teacher}" th:value="${currTeacher}" class="custom-control-input">
-                                <label class="custom-control-label" th:text="${currTeacher.surname}"></label>
-                            </div>
-                        </div>
-                        <div th:each="currAudience : ${allAudiences}">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" th:field="*{audience}" th:value="${currAudience}" class="custom-control-input">
-                                <label class="custom-control-label" th:text="${currAudience.roomNumber}">model</label>
-                            </div>
-                        </div>
-                        <div th:each="currLessonTime : ${allLessonsTimes}">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" th:field="*{lessonTime}" th:value="${currLessonTime}" class="custom-control-input">
-                                <label class="custom-control-label" th:time="${currLessonTime.begin}">model</label>
+                        <div class="form-group col-md-8">
+                            <label class="col-form-label">SUBJECT:</label>
+                            <div th:each="currSubject : ${allSubjects}">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" th:field="*{subject}" th:value="${currSubject}" class="custom-control-input">
+                                    <label class="custom-control-label" th:for="${#ids.prev('subject')}" th:text="${currSubject.name}"></label>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="date" class="col-form-label">DATE</label> <input type="text" th:field="*{date}" class="form-control" id="date">
+                            <label class="col-form-label">TEACHER:</label>
+                            <div th:each="currTeacher : ${allTeachers}">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" th:field="*{teacher}" th:value="${currTeacher}" class="custom-control-input"
+                                           th:checked="${lesson.teacher.id==currTeacher.id}">
+                                    <label class="custom-control-label" th:for="${#ids.prev('teacher')}" th:text="${currTeacher.surname}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label class="col-form-label">AUDIENCE:</label>
+                            <div th:each="currAudience : ${allAudiences}">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" th:field="*{audience}" th:value="${currAudience}" class="custom-control-input"
+                                           th:checked="${lesson.audience.id==currAudience.id}">
+                                    <label class="custom-control-label" th:for="${#ids.prev('audience')}" th:text="${currAudience.roomNumber}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label class="col-form-label">BEGIN TIME:</label>
+                            <div th:each="currLessonTime : ${allLessonsTimes}">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" th:field="*{lessonTime}" th:value="${currLessonTime}" class="custom-control-input"
+                                           th:checked="${lesson.lessonTime.id==currLessonTime.id}">
+                                    <label class="custom-control-label" th:for="${#ids.prev('lessonTime')}" th:text="${currLessonTime.begin}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="date" class="col-form-label">DATE</label> <input type="date" th:field="*{date}" class="form-control" id="date">
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">GROUPS:</label>

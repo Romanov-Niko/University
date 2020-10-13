@@ -32,12 +32,12 @@ public class SubjectController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Subject> subject = subjectService.getById(id);
-        if(subject.isPresent()) {
+        if (subject.isPresent()) {
             model.addAttribute("subject", subject.get());
         } else {
-            model.addAttribute("subject", new Subject());
+            redirectAttributes.addFlashAttribute("error", "Subject is not present");
         }
         return "subjects/edit";
     }

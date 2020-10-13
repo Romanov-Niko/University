@@ -39,21 +39,21 @@ public class GroupController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Group> group = groupService.getById(id);
-        if(group.isPresent()) {
+        if (group.isPresent()) {
             model.addAttribute("group", group.get());
         } else {
-            model.addAttribute("group", new Group());
+            redirectAttributes.addFlashAttribute("error", "Group is not present");
         }
         model.addAttribute("allStudents", studentService.getAll());
         return "groups/edit";
     }
 
-    @GetMapping("students/{id}")
-    public String showSubjects(@PathVariable int id, Model model) {
-        Optional<Group> group = groupService.getById(id);
-        group.ifPresent(currentGroup ->  model.addAttribute("students", currentGroup.getStudents()));
+    @GetMapping("students/{groupId}")
+    public String showSubjects(@PathVariable int groupId, Model model) {
+        Optional<Group> group = groupService.getById(groupId);
+        group.ifPresent(currentGroup -> model.addAttribute("students", currentGroup.getStudents()));
         return "groups/students";
     }
 }

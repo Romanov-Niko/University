@@ -43,35 +43,20 @@ class StudentControllerTest {
     }
 
     @Test
-    void givenStudentsUrl_whenShowAll_thenReturnedStudentsHtmlAndModelWithAllStudents() throws Exception {
+    void whenShowAll_thenAddedModelWithAllStudentsAndRedirectedToFormWithListOfStudents() throws Exception {
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("students/students"))
                 .andExpect(model().attribute("students", hasSize(1)))
-                .andExpect(model().attribute("students", hasItem(
-                        allOf(
-                                hasProperty("name", is("first")),
-                                hasProperty("surname", is("student")),
-                                hasProperty("dateOfBirth", is(LocalDate.parse("1990-01-01"))),
-                                hasProperty("gender", is("male")),
-                                hasProperty("email", is("first@gmail.com")),
-                                hasProperty("phoneNumber", is("11111")),
-                                hasProperty("id", is(1)),
-                                hasProperty("groupId", is(1)),
-                                hasProperty("specialty", is("math")),
-                                hasProperty("course", is(1)),
-                                hasProperty("admission", is(LocalDate.parse("2015-06-01"))),
-                                hasProperty("graduation", is(LocalDate.parse("2020-06-01")))
-                        )
-                )));
+                .andExpect(model().attribute("students", is(singletonList(retrievedStudent))));
 
         verify(studentService, times(1)).getAll();
     }
 
     @Test
-    void givenStudentsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyStudentModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyStudentModelAndRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/students/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("students/new"))
@@ -90,24 +75,13 @@ class StudentControllerTest {
     }
 
     @Test
-    void givenStudentsEditUrl_whenEdit_thenReturnedEditHtmlAndStudentModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedStudentModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(studentService.getById(anyInt())).thenReturn(Optional.of(retrievedStudent));
 
         mockMvc.perform(get("/students/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("students/edit"))
-                .andExpect(model().attribute("student", hasProperty("name", is("first"))))
-                .andExpect(model().attribute("student", hasProperty("surname", is("student"))))
-                .andExpect(model().attribute("student", hasProperty("dateOfBirth", is(LocalDate.parse("1990-01-01")))))
-                .andExpect(model().attribute("student", hasProperty("gender", is("male"))))
-                .andExpect(model().attribute("student", hasProperty("email", is("first@gmail.com"))))
-                .andExpect(model().attribute("student", hasProperty("phoneNumber", is("11111"))))
-                .andExpect(model().attribute("student", hasProperty("id", is(1))))
-                .andExpect(model().attribute("student", hasProperty("groupId", is(1))))
-                .andExpect(model().attribute("student", hasProperty("specialty", is("math"))))
-                .andExpect(model().attribute("student", hasProperty("course", is(1))))
-                .andExpect(model().attribute("student", hasProperty("admission", is(LocalDate.parse("2015-06-01")))))
-                .andExpect(model().attribute("student", hasProperty("graduation", is(LocalDate.parse("2020-06-01")))));
+                .andExpect(model().attribute("student", is(retrievedStudent)));
 
         verify(studentService, times(1)).getById(anyInt());
     }

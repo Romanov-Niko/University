@@ -48,29 +48,20 @@ class TeacherControllerTest {
     }
 
     @Test
-    void givenTeachersUrl_whenShowAll_thenReturnedTeachersHtmlAndModelWithAllTeachers() throws Exception {
+    void whenShowAll_thenAddedModelWithAllTeachersAndRedirectedToFormWithListOfTeachers() throws Exception {
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
 
         mockMvc.perform(get("/teachers"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/teachers"))
                 .andExpect(model().attribute("teachers", hasSize(1)))
-                .andExpect(model().attribute("teachers", hasItem(
-                        allOf(
-                                hasProperty("name", is("first")),
-                                hasProperty("surname", is("teacher")),
-                                hasProperty("dateOfBirth", is(LocalDate.parse("1990-01-01"))),
-                                hasProperty("gender", is("male")),
-                                hasProperty("email", is("first@gmail.com")),
-                                hasProperty("phoneNumber", is("11111"))
-                        )
-                )));
+                .andExpect(model().attribute("teachers", is(singletonList(retrievedTeacher))));
 
         verify(teacherService, times(1)).getAll();
     }
 
     @Test
-    void givenTeachersNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyTeacherModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyTeacherModelAndRedirectedToAddingForm() throws Exception {
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/teachers/new"))
@@ -87,26 +78,21 @@ class TeacherControllerTest {
     }
 
     @Test
-    void givenTeachersEditUrl_whenEdit_thenReturnedEditHtmlAndTeacherModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedTeacherModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/teachers/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/edit"))
-                .andExpect(model().attribute("teacher", hasProperty("name", is("first"))))
-                .andExpect(model().attribute("teacher", hasProperty("surname", is("teacher"))))
-                .andExpect(model().attribute("teacher", hasProperty("dateOfBirth", is(LocalDate.parse("1990-01-01")))))
-                .andExpect(model().attribute("teacher", hasProperty("gender", is("male"))))
-                .andExpect(model().attribute("teacher", hasProperty("email", is("first@gmail.com"))))
-                .andExpect(model().attribute("teacher", hasProperty("phoneNumber", is("11111"))));
+                .andExpect(model().attribute("teacher", is(retrievedTeacher)));
 
         verify(teacherService, times(1)).getById(anyInt());
         verify(subjectService, times(1)).getAll();
     }
 
     @Test
-    void givenTeachersSubjectsUrl_whenShowSubjects_thenReturnedSubjectsHtmlAndModelWithListOfSubjectsOfGivenTeacherId() throws Exception {
+    void whenShowSubjects_thenAddedModelWithSubjectsListOfTeacherWithGivenIdAndRedirectedToSubjectsViewingPage() throws Exception {
         when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
 
         mockMvc.perform(get("/teachers/subjects/1"))

@@ -42,7 +42,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesSearchTeacherUrl_whenSearchScheduleForTeacher_thenReturnedSearchHtml() throws Exception {
+    void whenSearchScheduleForTeacher_thenRedirectToSearchPage() throws Exception {
         mockMvc.perform(get("/daysschedules/search/teacher/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("daysschedules/search"))
@@ -51,7 +51,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void sgivenDaysschedulesSearchStudentUrl_whenSearchScheduleForStudent_thenReturnedSearchHtml() throws Exception {
+    void givenDaysschedulesSearchStudentUrl_whenSearchScheduleForStudent_thenReturnedSearchHtml() throws Exception {
         mockMvc.perform(get("/daysschedules/search/student/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("daysschedules/search"))

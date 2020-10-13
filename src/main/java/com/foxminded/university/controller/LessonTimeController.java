@@ -32,12 +32,12 @@ public class LessonTimeController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<LessonTime> lessonTime = lessonTimeService.getById(id);
         if (lessonTime.isPresent()) {
             model.addAttribute("lessontime", lessonTime.get());
         } else {
-            model.addAttribute("lessontime", new LessonTime());
+            redirectAttributes.addFlashAttribute("error", "Lesson time is not present");
         }
         return "lessonstimes/edit";
     }

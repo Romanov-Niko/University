@@ -43,28 +43,20 @@ class SubjectControllerTest {
     }
 
     @Test
-    void givenSubjectsUrl_whenShowAll_thenReturnedSubjectsHtmlAndModelWithAllSubjects() throws Exception {
+    void whenShowAll_thenAddedModelWithAllSubjectsAndRedirectedToFormWithListOfSubjects() throws Exception {
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/subjects"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/subjects"))
                 .andExpect(model().attribute("subjects", hasSize(1)))
-                .andExpect(model().attribute("subjects", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("name", is("Calculus")),
-                                hasProperty("creditHours", is(120)),
-                                hasProperty("course", is(1)),
-                                hasProperty("specialty", is("math"))
-                        )
-                )));
+                .andExpect(model().attribute("subjects", is(singletonList(retrievedSubject))));
 
         verify(subjectService, times(1)).getAll();
     }
 
     @Test
-    void givenSubjectsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptySubjectModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptySubjectModelAndRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/subjects/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/new"))
@@ -76,17 +68,13 @@ class SubjectControllerTest {
     }
 
     @Test
-    void givenSubjectsEditUrl_whenEdit_thenReturnedEditHtmlAndSubjectModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedSubjectModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(subjectService.getById(anyInt())).thenReturn(Optional.of(retrievedSubject));
 
         mockMvc.perform(get("/subjects/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/edit"))
-                .andExpect(model().attribute("subject", hasProperty("id", is(1))))
-                .andExpect(model().attribute("subject", hasProperty("name", is("Calculus"))))
-                .andExpect(model().attribute("subject", hasProperty("creditHours", is(120))))
-                .andExpect(model().attribute("subject", hasProperty("course", is(1))))
-                .andExpect(model().attribute("subject", hasProperty("specialty", is("math"))));
+                .andExpect(model().attribute("subject", is(retrievedSubject)));
 
         verify(subjectService, times(1)).getById(anyInt());
     }

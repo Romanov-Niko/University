@@ -1,5 +1,6 @@
 package com.foxminded.university.controller;
 
+import com.foxminded.university.domain.Group;
 import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
@@ -45,25 +46,20 @@ class GroupControllerTest {
     }
 
     @Test
-    void givenGroupsUrl_whenShowAll_thenReturnedGroupsHtmlAndModelWithAllGroups() throws Exception {
+    void whenShowAll_thenAddedModelWithAllGroupsAndRedirectedToFormWithListOfGroups() throws Exception {
         when(groupService.getAll()).thenReturn(singletonList(retrievedGroup));
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/groups"))
                 .andExpect(model().attribute("groups", hasSize(1)))
-                .andExpect(model().attribute("groups", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("name", is("AA-11"))
-                        )
-                )));
+                .andExpect(model().attribute("groups", is(singletonList(retrievedGroup))));
 
         verify(groupService, times(1)).getAll();
     }
 
     @Test
-    void givenGroupsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyGroupModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyGroupModelAndRedirectedToAddingForm() throws Exception {
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/new"))
@@ -76,15 +72,14 @@ class GroupControllerTest {
     }
 
     @Test
-    void givenGroupsEditUrl_whenEdit_thenReturnedEditHtmlAndGroupModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedGroupModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/edit"))
-                .andExpect(model().attribute("group", hasProperty("id", is(1))))
-                .andExpect(model().attribute("group", hasProperty("name", is("AA-11"))))
+                .andExpect(model().attribute("group", is(retrievedGroup)))
                 .andExpect(model().attribute("allStudents", is(singletonList(retrievedStudent))));
 
         verify(groupService, times(1)).getById(anyInt());
@@ -92,7 +87,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void givenGroupsStudentsUrl_whenShowStudents_thenReturnedSubjectsHtmlAndModelWithListOfStudentsOfGivenGroupId() throws Exception {
+    void whenShowStudents_thenAddedModelWithStudentsListOfGroupWithGivenIdAndRedirectedToStudentsViewingPage() throws Exception {
         when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
 
         mockMvc.perform(get("/groups/students/1"))

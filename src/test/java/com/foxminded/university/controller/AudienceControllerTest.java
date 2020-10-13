@@ -1,6 +1,7 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.config.ApplicationTestConfig;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.service.AudienceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,26 +43,20 @@ class AudienceControllerTest {
     }
 
     @Test
-    void givenAudiencesUrl_whenShowAll_thenReturnedAudiencesHtmlAndModelWithAllAudiences() throws Exception {
+    void whenShowAll_thenAddedModelWithAllAudiencesAndRedirectedToFormWithListOfAudiences() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
 
         mockMvc.perform(get("/audiences"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/audiences"))
                 .andExpect(model().attribute("audiences", hasSize(1)))
-                .andExpect(model().attribute("audiences", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("roomNumber", is(101)),
-                                hasProperty("capacity", is(100))
-                        )
-                )));
+                .andExpect(model().attribute("audiences", is(singletonList(retrievedAudience))));
 
         verify(audienceService, times(1)).getAll();
     }
 
     @Test
-    void givenAudiencesNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyAudienceModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyAudienceModelAndRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/audiences/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/new"))
@@ -71,15 +66,13 @@ class AudienceControllerTest {
     }
 
     @Test
-    void givenAudiencesEditUrl_whenEdit_thenReturnedEditHtmlAndAudienceModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedAudienceModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(audienceService.getById(anyInt())).thenReturn(Optional.of(retrievedAudience));
 
         mockMvc.perform(get("/audiences/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/edit"))
-                .andExpect(model().attribute("audience", hasProperty("id", is(1))))
-                .andExpect(model().attribute("audience", hasProperty("roomNumber", is(101))))
-                .andExpect(model().attribute("audience", hasProperty("capacity", is(100))));
+                .andExpect(model().attribute("audience", is(retrievedAudience)));
 
         verify(audienceService, times(1)).getById(anyInt());
     }

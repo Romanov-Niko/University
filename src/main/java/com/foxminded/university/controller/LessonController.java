@@ -35,10 +35,10 @@ public class LessonController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceService));
+        /*binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceService));
         binder.registerCustomEditor(LessonTime.class, new LessonTimeEditor(lessonTimeService));
         binder.registerCustomEditor(Subject.class, new SubjectEditor(subjectService));
-        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherService));
+        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherService));*/
     }
 
     @GetMapping
@@ -59,12 +59,12 @@ public class LessonController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Lesson> lesson = lessonService.getById(id);
         if (lesson.isPresent()) {
             model.addAttribute("lesson", lesson.get());
         } else {
-            model.addAttribute("lesson", new Lesson());
+            redirectAttributes.addFlashAttribute("error", "Lesson is not present");
         }
         model.addAttribute("allGroups", groupService.getAll());
         model.addAttribute("allTeachers", teacherService.getAll());
@@ -74,9 +74,9 @@ public class LessonController {
         return "lessons/edit";
     }
 
-    @GetMapping("groups/{id}")
-    public String showSubjects(@PathVariable int id, Model model) {
-        Optional<Lesson> lesson = lessonService.getById(id);
+    @GetMapping("groups/{lessonId}")
+    public String showSubjects(@PathVariable int lessonId, Model model) {
+        Optional<Lesson> lesson = lessonService.getById(lessonId);
         lesson.ifPresent(currentLesson -> model.addAttribute("groups", currentLesson.getGroups()));
         return "lessons/groups";
     }

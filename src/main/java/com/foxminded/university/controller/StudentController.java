@@ -32,12 +32,12 @@ public class StudentController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Student> student = studentService.getById(id);
-        if(student.isPresent()) {
+        if (student.isPresent()) {
             model.addAttribute("student", student.get());
         } else {
-            model.addAttribute("student", new Student());
+            redirectAttributes.addFlashAttribute("error", "Student is not present");
         }
         return "students/edit";
     }

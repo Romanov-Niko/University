@@ -32,12 +32,12 @@ public class AudienceController {
     }
 
     @GetMapping("edit/{id}")
-    public String edit(@PathVariable int id, Model model) {
+    public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Audience> audience = audienceService.getById(id);
-        if(audience.isPresent()) {
+        if (audience.isPresent()) {
             model.addAttribute("audience", audience.get());
         } else {
-            model.addAttribute("audience", new Audience());
+            redirectAttributes.addFlashAttribute("error", "Audience is not present");
         }
         return "audiences/edit";
     }

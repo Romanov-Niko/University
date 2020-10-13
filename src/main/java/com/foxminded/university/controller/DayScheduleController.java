@@ -41,15 +41,15 @@ public class DayScheduleController {
     }
 
     @PostMapping(value = "/student", params = "action=day")
-    public String viewLessonsForDayForStudent(@RequestParam(value = "date")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id")int id, Model model) {
-        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForStudent(id, date);
+    public String viewDailyStudentSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int studentId, Model model) {
+        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForStudent(studentId, date);
         daySchedule.ifPresent(schedule -> model.addAttribute("lessons", schedule.getLessons()));
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/student", params = "action=month")
-    public String viewLessonsForMonthForStudent(@RequestParam(value = "date")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id")int id, Model model) {
-        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForStudent(id, date);
+    public String viewMonthlyStudentSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int studentId, Model model) {
+        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForStudent(studentId, date);
         List<Lesson> lessons = new ArrayList<>();
         daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
         model.addAttribute("lessons", lessons);
@@ -57,15 +57,15 @@ public class DayScheduleController {
     }
 
     @PostMapping(value = "/teacher", params = "action=day")
-    public String viewLessonsForDayForTeacher(@RequestParam(value = "date")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id")int id, Model model) {
-        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForTeacher(id, date);
+    public String viewDailyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
+        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForTeacher(teacherId, date);
         daySchedule.ifPresent(schedule -> model.addAttribute("lessons", schedule.getLessons()));
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/teacher", params = "action=month")
-    public String viewLessonsForMonthForTeacher(@RequestParam(value = "date")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id")int id, Model model) {
-        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForTeacher(id, date);
+    public String viewMonthlyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
+        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForTeacher(teacherId, date);
         List<Lesson> lessons = new ArrayList<>();
         daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
         model.addAttribute("lessons", lessons);

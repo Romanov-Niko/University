@@ -58,29 +58,20 @@ class LessonControllerTest {
     }
 
     @Test
-    void givenLessonsUrl_whenShowAll_thenReturnedLessonsHtmlAndModelWithAllLessons() throws Exception {
+    void whenShowAll_thenAddedModelWithAllLessonsAndRedirectedToFormWithListOfLessons() throws Exception {
         when(lessonService.getAll()).thenReturn(singletonList(retrievedLesson));
 
         mockMvc.perform(get("/lessons"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/lessons"))
                 .andExpect(model().attribute("lessons", hasSize(1)))
-                .andExpect(model().attribute("lessons", hasItem(
-                        allOf(
-                                hasProperty("id", is(1)),
-                                hasProperty("subject", is(retrievedSubject)),
-                                hasProperty("teacher", is(retrievedTeacher)),
-                                hasProperty("audience", is(retrievedAudience)),
-                                hasProperty("lessonTime", is(retrievedLessonTime)),
-                                hasProperty("date", is(LocalDate.parse("2017-06-01")))
-                        )
-                )));
+                .andExpect(model().attribute("lessons", is(singletonList(retrievedLesson))));
 
         verify(lessonService, times(1)).getAll();
     }
 
     @Test
-    void givenLessonsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyLessonModel() throws Exception {
+    void whenRedirectToSaveForm_thenAddedEmptyLessonModelAndRedirectedToAddingForm() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
@@ -99,7 +90,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void givenLessonsEditUrl_whenEdit_thenReturnedEditHtmlAndLessonModelWithGivenId() throws Exception {
+    void whenEdit_thenAddedLessonModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
         when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
@@ -110,18 +101,13 @@ class LessonControllerTest {
         mockMvc.perform(get("/lessons/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/edit"))
-                .andExpect(model().attribute("lesson", hasProperty("id", is(1))))
-                .andExpect(model().attribute("lesson", hasProperty("subject", is(retrievedSubject))))
-                .andExpect(model().attribute("lesson", hasProperty("teacher", is(retrievedTeacher))))
-                .andExpect(model().attribute("lesson", hasProperty("audience", is(retrievedAudience))))
-                .andExpect(model().attribute("lesson", hasProperty("lessonTime", is(retrievedLessonTime))))
-                .andExpect(model().attribute("lesson", hasProperty("date", is(LocalDate.parse("2017-06-01")))));
+                .andExpect(model().attribute("lesson", is(retrievedLesson)));
 
         verify(lessonService, times(1)).getById(anyInt());
     }
 
     @Test
-    void givenLessonsGroupsUrl_whenShowGroups_thenReturnedSubjectsHtmlAndModelWithListOfGroupsOfGivenLessonId() throws Exception {
+    void whenShowGroups_thenAddedModelWithGroupsListOfLessonWithGivenIdAndRedirectedToGroupsViewingPage() throws Exception {
         when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
 
         mockMvc.perform(get("/lessons/groups/1"))
