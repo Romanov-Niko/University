@@ -71,7 +71,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyLessonModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
@@ -80,13 +80,7 @@ class LessonControllerTest {
 
         mockMvc.perform(get("/lessons/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("lessons/new"))
-                .andExpect(model().attribute("lesson", hasProperty("id", is(0))))
-                .andExpect(model().attribute("lesson", hasProperty("subject", is(nullValue()))))
-                .andExpect(model().attribute("lesson", hasProperty("teacher", is(nullValue()))))
-                .andExpect(model().attribute("lesson", hasProperty("audience", is(nullValue()))))
-                .andExpect(model().attribute("lesson", hasProperty("lessonTime", is(nullValue()))))
-                .andExpect(model().attribute("lesson", hasProperty("date", is(nullValue()))));
+                .andExpect(forwardedUrl("lessons/new"));
     }
 
     @Test

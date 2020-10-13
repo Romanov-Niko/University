@@ -56,22 +56,10 @@ class StudentControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyStudentModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/students/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("students/new"))
-                .andExpect(model().attribute("student", hasProperty("name", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("surname", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("dateOfBirth", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("gender", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("email", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("phoneNumber", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("id", is(0))))
-                .andExpect(model().attribute("student", hasProperty("groupId", is(0))))
-                .andExpect(model().attribute("student", hasProperty("specialty", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("course", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("admission", is(nullValue()))))
-                .andExpect(model().attribute("student", hasProperty("graduation", is(nullValue()))));
+                .andExpect(forwardedUrl("students/new"));
     }
 
     @Test

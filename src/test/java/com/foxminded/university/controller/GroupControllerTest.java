@@ -59,14 +59,12 @@ class GroupControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyGroupModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("groups/new"))
-                .andExpect(model().attribute("group", hasProperty("id", is(0))))
-                .andExpect(model().attribute("group", hasProperty("name", is(nullValue()))));
+                .andExpect(forwardedUrl("groups/new"));
 
         verify(studentService, times(1)).getAll();
     }

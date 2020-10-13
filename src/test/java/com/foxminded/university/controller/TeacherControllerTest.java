@@ -61,18 +61,12 @@ class TeacherControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyTeacherModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/teachers/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("teachers/new"))
-                .andExpect(model().attribute("teacher", hasProperty("name", is(nullValue()))))
-                .andExpect(model().attribute("teacher", hasProperty("surname", is(nullValue()))))
-                .andExpect(model().attribute("teacher", hasProperty("dateOfBirth", is(nullValue()))))
-                .andExpect(model().attribute("teacher", hasProperty("gender", is(nullValue()))))
-                .andExpect(model().attribute("teacher", hasProperty("email", is(nullValue()))))
-                .andExpect(model().attribute("teacher", hasProperty("phoneNumber", is(nullValue()))));
+                .andExpect(forwardedUrl("teachers/new"));
 
         verify(subjectService, times(1)).getAll();
     }

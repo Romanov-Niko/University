@@ -42,7 +42,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void whenSearchScheduleForTeacher_thenRedirectToSearchPage() throws Exception {
+    void whenSearchScheduleForTeacher_thenRedirectedToSearchPage() throws Exception {
         mockMvc.perform(get("/daysschedules/search/teacher/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("daysschedules/search"))
@@ -51,7 +51,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesSearchStudentUrl_whenSearchScheduleForStudent_thenReturnedSearchHtml() throws Exception {
+    void whenSearchScheduleForStudent_thenRedirectedToSearchPage() throws Exception {
         mockMvc.perform(get("/daysschedules/search/student/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("daysschedules/search"))
@@ -60,7 +60,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesStudentUrlAndParametersForDaySchedule_whenViewLessonsForDayForStudent_thenReturnedDaysschedulesHtmlWithDayScheduleModelForDay() throws Exception {
+    void whenViewDailyStudentSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
         when(dayScheduleService.getByDateForStudent(anyInt(), any())).thenReturn(Optional.of(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/student")
@@ -73,7 +73,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesStudentUrlAndParametersForMonthSchedule_whenViewLessonsForMonthForStudent_thenReturnedDaysschedulesHtmlWithDayScheduleModelWithListOfSchedules() throws Exception {
+    void whenViewMonthlyStudentSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
         when(dayScheduleService.getByMonthForStudent(anyInt(), any())).thenReturn(singletonList(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/student")
@@ -86,7 +86,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesTeacherUrlAndParametersForDaySchedule_whenViewLessonsForDayForTeacher_thenReturnedDaysschedulesHtmlWithDayScheduleModelForDay() throws Exception {
+    void whenViewDailyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
         when(dayScheduleService.getByDateForTeacher(anyInt(), any())).thenReturn(Optional.of(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/teacher")
@@ -99,7 +99,7 @@ class DayScheduleControllerTest {
     }
 
     @Test
-    void givenDaysschedulesTeacherUrlAndParametersForMonthSchedule_whenViewLessonsForMonthForTeacher_thenReturnedDaysschedulesHtmlWithDayScheduleModelWithListOfSchedules() throws Exception {
+    void whenViewMonthlyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
         when(dayScheduleService.getByMonthForTeacher(anyInt(), any())).thenReturn(singletonList(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/teacher")

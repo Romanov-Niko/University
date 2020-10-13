@@ -56,13 +56,10 @@ class AudienceControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyAudienceModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/audiences/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("audiences/new"))
-                .andExpect(model().attribute("audience", hasProperty("id", is(0))))
-                .andExpect(model().attribute("audience", hasProperty("roomNumber", is(0))))
-                .andExpect(model().attribute("audience", hasProperty("capacity", is(0))));
+                .andExpect(forwardedUrl("audiences/new"));
     }
 
     @Test

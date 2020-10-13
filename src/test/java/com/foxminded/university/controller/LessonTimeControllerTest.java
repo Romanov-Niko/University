@@ -57,13 +57,10 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptyLessonTimeModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/lessonstimes/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("lessonstimes/new"))
-                .andExpect(model().attribute("lessontime", hasProperty("id", is(0))))
-                .andExpect(model().attribute("lessontime", hasProperty("begin", is(nullValue()))))
-                .andExpect(model().attribute("lessontime", hasProperty("end", is(nullValue()))));
+                .andExpect(forwardedUrl("lessonstimes/new"));
     }
 
     @Test

@@ -56,15 +56,10 @@ class SubjectControllerTest {
     }
 
     @Test
-    void whenRedirectToSaveForm_thenAddedEmptySubjectModelAndRedirectedToAddingForm() throws Exception {
+    void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         mockMvc.perform(get("/subjects/new"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("subjects/new"))
-                .andExpect(model().attribute("subject", hasProperty("id", is(0))))
-                .andExpect(model().attribute("subject", hasProperty("name", is(nullValue()))))
-                .andExpect(model().attribute("subject", hasProperty("creditHours", is(nullValue()))))
-                .andExpect(model().attribute("subject", hasProperty("course", is(nullValue()))))
-                .andExpect(model().attribute("subject", hasProperty("specialty", is(nullValue()))));
+                .andExpect(forwardedUrl("subjects/new"));
     }
 
     @Test
