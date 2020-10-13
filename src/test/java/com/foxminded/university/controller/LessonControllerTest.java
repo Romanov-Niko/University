@@ -58,11 +58,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void initBinder() {
-    }
-
-    @Test
-    void showAll() throws Exception {
+    void givenLessonsUrl_whenShowAll_thenReturnedLessonsHtmlAndModelWithAllLessons() throws Exception {
         when(lessonService.getAll()).thenReturn(singletonList(retrievedLesson));
 
         mockMvc.perform(get("/lessons"))
@@ -84,7 +80,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenLessonsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyLessonModel() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
@@ -103,7 +99,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenLessonsEditUrl_whenEdit_thenReturnedEditHtmlAndLessonModelWithGivenId() throws Exception {
         when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
@@ -125,7 +121,7 @@ class LessonControllerTest {
     }
 
     @Test
-    void showGroups() throws Exception {
+    void givenLessonsGroupsUrl_whenShowGroups_thenReturnedSubjectsHtmlAndModelWithListOfGroupsOfGivenLessonId() throws Exception {
         when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
 
         mockMvc.perform(get("/lessons/groups/1"))

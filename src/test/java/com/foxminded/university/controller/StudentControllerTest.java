@@ -43,7 +43,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenStudentsUrl_whenShowAll_thenReturnedStudentsHtmlAndModelWithAllStudents() throws Exception {
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/students"))
@@ -71,7 +71,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenStudentsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyStudentModel() throws Exception {
         mockMvc.perform(get("/students/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("students/new"))
@@ -90,7 +90,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenStudentsEditUrl_whenEdit_thenReturnedEditHtmlAndStudentModelWithGivenId() throws Exception {
         when(studentService.getById(anyInt())).thenReturn(Optional.of(retrievedStudent));
 
         mockMvc.perform(get("/students/edit/1"))

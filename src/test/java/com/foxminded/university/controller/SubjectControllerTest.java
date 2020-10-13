@@ -43,7 +43,7 @@ class SubjectControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenSubjectsUrl_whenShowAll_thenReturnedSubjectsHtmlAndModelWithAllSubjects() throws Exception {
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/subjects"))
@@ -64,7 +64,7 @@ class SubjectControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenSubjectsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptySubjectModel() throws Exception {
         mockMvc.perform(get("/subjects/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/new"))
@@ -76,7 +76,7 @@ class SubjectControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenSubjectsEditUrl_whenEdit_thenReturnedEditHtmlAndSubjectModelWithGivenId() throws Exception {
         when(subjectService.getById(anyInt())).thenReturn(Optional.of(retrievedSubject));
 
         mockMvc.perform(get("/subjects/edit/1"))

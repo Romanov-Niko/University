@@ -45,7 +45,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenGroupsUrl_whenShowAll_thenReturnedGroupsHtmlAndModelWithAllGroups() throws Exception {
         when(groupService.getAll()).thenReturn(singletonList(retrievedGroup));
 
         mockMvc.perform(get("/groups"))
@@ -63,7 +63,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenGroupsNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyGroupModel() throws Exception {
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/new"))
@@ -76,7 +76,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenGroupsEditUrl_whenEdit_thenReturnedEditHtmlAndGroupModelWithGivenId() throws Exception {
         when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
@@ -92,7 +92,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void showSubjects() throws Exception {
+    void givenGroupsStudentsUrl_whenShowStudents_thenReturnedSubjectsHtmlAndModelWithListOfStudentsOfGivenGroupId() throws Exception {
         when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
 
         mockMvc.perform(get("/groups/students/1"))

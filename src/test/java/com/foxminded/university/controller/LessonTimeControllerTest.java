@@ -44,7 +44,7 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenLessonsTimesUrl_whenShowAll_thenReturnedLessonsTimesHtmlAndModelWithAllLessonsTimes() throws Exception {
         when(lessonTimeService.getAll()).thenReturn(singletonList(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes"))
@@ -63,7 +63,7 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenLessonsTimesNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyLessonTimeModel() throws Exception {
         mockMvc.perform(get("/lessonstimes/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/new"))
@@ -73,7 +73,7 @@ class LessonTimeControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenLessonsTimesEditUrl_whenEdit_thenReturnedEditHtmlAndLessonTimeModelWithGivenId() throws Exception {
         when(lessonTimeService.getById(anyInt())).thenReturn(Optional.of(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes/edit/1"))

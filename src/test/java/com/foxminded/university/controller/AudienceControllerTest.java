@@ -42,7 +42,7 @@ class AudienceControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenAudiencesUrl_whenShowAll_thenReturnedAudiencesHtmlAndModelWithAllAudiences() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
 
         mockMvc.perform(get("/audiences"))
@@ -61,7 +61,7 @@ class AudienceControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenAudiencesNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyAudienceModel() throws Exception {
         mockMvc.perform(get("/audiences/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/new"))
@@ -71,7 +71,7 @@ class AudienceControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenAudiencesEditUrl_whenEdit_thenReturnedEditHtmlAndAudienceModelWithGivenId() throws Exception {
         when(audienceService.getById(anyInt())).thenReturn(Optional.of(retrievedAudience));
 
         mockMvc.perform(get("/audiences/edit/1"))

@@ -48,7 +48,7 @@ class TeacherControllerTest {
     }
 
     @Test
-    void showAll() throws Exception {
+    void givenTeachersUrl_whenShowAll_thenReturnedTeachersHtmlAndModelWithAllTeachers() throws Exception {
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
 
         mockMvc.perform(get("/teachers"))
@@ -70,7 +70,7 @@ class TeacherControllerTest {
     }
 
     @Test
-    void redirectToSaveForm() throws Exception {
+    void givenTeachersNewUrl_whenRedirectToSaveForm_thenReturnedNewHtmlAndEmptyTeacherModel() throws Exception {
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/teachers/new"))
@@ -87,7 +87,7 @@ class TeacherControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    void givenTeachersEditUrl_whenEdit_thenReturnedEditHtmlAndTeacherModelWithGivenId() throws Exception {
         when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
@@ -106,7 +106,7 @@ class TeacherControllerTest {
     }
 
     @Test
-    void showSubjects() throws Exception {
+    void givenTeachersSubjectsUrl_whenShowSubjects_thenReturnedSubjectsHtmlAndModelWithListOfSubjectsOfGivenTeacherId() throws Exception {
         when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
 
         mockMvc.perform(get("/teachers/subjects/1"))
