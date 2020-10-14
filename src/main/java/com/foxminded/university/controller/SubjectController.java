@@ -26,8 +26,7 @@ public class SubjectController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("subject", new Subject());
+    public String redirectToSaveForm(Subject subjectModel) {
         return "subjects/new";
     }
 

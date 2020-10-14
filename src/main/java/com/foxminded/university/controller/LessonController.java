@@ -1,7 +1,6 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.domain.*;
-import com.foxminded.university.editor.*;
 import com.foxminded.university.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,14 +32,6 @@ public class LessonController {
         this.lessonTimeService = lessonTimeService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        /*binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceService));
-        binder.registerCustomEditor(LessonTime.class, new LessonTimeEditor(lessonTimeService));
-        binder.registerCustomEditor(Subject.class, new SubjectEditor(subjectService));
-        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherService));*/
-    }
-
     @GetMapping
     public String showAll(Model model) {
         model.addAttribute("lessons", lessonService.getAll());
@@ -48,8 +39,7 @@ public class LessonController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("lesson", new Lesson());
+    public String redirectToSaveForm(Model model, Lesson lessonModel) {
         model.addAttribute("allGroups", groupService.getAll());
         model.addAttribute("allTeachers", teacherService.getAll());
         model.addAttribute("allAudiences", audienceService.getAll());
@@ -75,7 +65,7 @@ public class LessonController {
     }
 
     @GetMapping("groups/{lessonId}")
-    public String showSubjects(@PathVariable int lessonId, Model model) {
+    public String showGroups(@PathVariable int lessonId, Model model) {
         Optional<Lesson> lesson = lessonService.getById(lessonId);
         lesson.ifPresent(currentLesson -> model.addAttribute("groups", currentLesson.getGroups()));
         return "lessons/groups";

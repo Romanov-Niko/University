@@ -50,7 +50,7 @@ class StudentServiceTest {
     @Test
     void givenStudent_whenSave_thenCalledStudentDaoSave() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.save(createdStudent);
 
@@ -60,8 +60,8 @@ class StudentServiceTest {
     @Test
     void givenStudent_whenUpdate_thenCalledStudentDaoUpdate() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.update(updatedStudent);
 
@@ -77,7 +77,7 @@ class StudentServiceTest {
 
     @Test
     void givenGroupId_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupId(anyInt())).willReturn(singletonList(retrievedStudent));
+        given(studentDao.getAllByGroupId(1)).willReturn(singletonList(retrievedStudent));
 
         List<Student> actualStudents = studentService.getAllByGroupId(1);
 
@@ -87,7 +87,7 @@ class StudentServiceTest {
 
     @Test
     void givenGroupName_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupName(anyString())).willReturn(singletonList(retrievedStudent));
+        given(studentDao.getAllByGroupName("AA-11")).willReturn(singletonList(retrievedStudent));
 
         List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
 
@@ -117,7 +117,7 @@ class StudentServiceTest {
     @Test
     void givenStudentWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(anyInt())).willReturn(Optional.empty());
+        given(studentDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent));
         assertEquals("Student with id 1 is not present", exception.getMessage());
@@ -127,7 +127,7 @@ class StudentServiceTest {
     @Test
     void givenStudentWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.update(updatedStudent));
         assertEquals("Course number is out of bounds", exception.getMessage());
@@ -136,7 +136,7 @@ class StudentServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupId(anyInt())).willReturn(emptyList());
+        given(studentDao.getAllByGroupId(1)).willReturn(emptyList());
 
         List<Student> actualStudents = studentService.getAllByGroupId(1);
 
@@ -146,7 +146,7 @@ class StudentServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupName(anyString())).willReturn(emptyList());
+        given(studentDao.getAllByGroupName("AA-11")).willReturn(emptyList());
 
         List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
 

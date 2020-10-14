@@ -26,8 +26,7 @@ public class AudienceController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("audience", new Audience());
+    public String redirectToSaveForm(Audience audienceModel) {
         return "audiences/new";
     }
 

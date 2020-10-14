@@ -62,8 +62,7 @@
                             <label class="col-form-label">TEACHER:</label>
                             <div th:each="currTeacher : ${allTeachers}">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" th:field="*{teacher}" th:value="${currTeacher}" class="custom-control-input"
-                                           th:checked="${lesson.teacher.id==currTeacher.id}">
+                                    <input type="radio" th:field="*{teacher}" th:value="${currTeacher}" class="custom-control-input">
                                     <label class="custom-control-label" th:for="${#ids.prev('teacher')}" th:text="${currTeacher.surname}"></label>
                                 </div>
                             </div>
@@ -72,8 +71,7 @@
                             <label class="col-form-label">AUDIENCE:</label>
                             <div th:each="currAudience : ${allAudiences}">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" th:field="*{audience}" th:value="${currAudience}" class="custom-control-input"
-                                           th:checked="${lesson.audience.id==currAudience.id}">
+                                    <input type="radio" th:field="*{audience}" th:value="${currAudience}" class="custom-control-input">
                                     <label class="custom-control-label" th:for="${#ids.prev('audience')}" th:text="${currAudience.roomNumber}"></label>
                                 </div>
                             </div>
@@ -82,8 +80,7 @@
                             <label class="col-form-label">BEGIN TIME:</label>
                             <div th:each="currLessonTime : ${allLessonsTimes}">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" th:field="*{lessonTime}" th:value="${currLessonTime}" class="custom-control-input"
-                                           th:checked="${lesson.lessonTime.id==currLessonTime.id}">
+                                    <input type="radio" th:field="*{lessonTime}" th:value="${currLessonTime}" class="custom-control-input">
                                     <label class="custom-control-label" th:for="${#ids.prev('lessonTime')}" th:text="${currLessonTime.begin}"></label>
                                 </div>
                             </div>

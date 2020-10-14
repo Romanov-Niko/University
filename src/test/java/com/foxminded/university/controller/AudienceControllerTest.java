@@ -49,10 +49,7 @@ class AudienceControllerTest {
         mockMvc.perform(get("/audiences"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/audiences"))
-                .andExpect(model().attribute("audiences", hasSize(1)))
                 .andExpect(model().attribute("audiences", is(singletonList(retrievedAudience))));
-
-        verify(audienceService, times(1)).getAll();
     }
 
     @Test
@@ -64,13 +61,11 @@ class AudienceControllerTest {
 
     @Test
     void whenEdit_thenAddedAudienceModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(audienceService.getById(anyInt())).thenReturn(Optional.of(retrievedAudience));
+        when(audienceService.getById(1)).thenReturn(Optional.of(retrievedAudience));
 
         mockMvc.perform(get("/audiences/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/edit"))
                 .andExpect(model().attribute("audience", is(retrievedAudience)));
-
-        verify(audienceService, times(1)).getById(anyInt());
     }
 }

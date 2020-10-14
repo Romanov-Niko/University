@@ -26,8 +26,7 @@ public class LessonTimeController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("lessontime", new LessonTime());
+    public String redirectToSaveForm(@ModelAttribute("lessontime") LessonTime lessonTimeModel) {
         return "lessonstimes/new";
     }
 

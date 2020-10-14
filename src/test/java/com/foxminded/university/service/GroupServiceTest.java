@@ -49,8 +49,8 @@ class GroupServiceTest {
     @Test
     void givenGroup_whenSave_thenCalledGroupDaoSave() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(groupDao.getByName(anyString())).willReturn(Optional.empty());
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(groupDao.getByName("DD-44")).willReturn(Optional.empty());
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
 
         groupService.save(createdGroup);
 
@@ -60,8 +60,8 @@ class GroupServiceTest {
     @Test
     void givenGroup_whenUpdate_thenCalledGroupDaoUpdate() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
 
         groupService.update(updatedGroup);
 
@@ -77,7 +77,7 @@ class GroupServiceTest {
 
     @Test
     void givenLessonId_whenGetAllByLessonId_thenCalledGroupDaoGetAllByLessonIdAndReturnedAllGroupsOfGivenLesson() {
-        given(groupDao.getAllByLessonId(anyInt())).willReturn(singletonList(retrievedGroup));
+        given(groupDao.getAllByLessonId(1)).willReturn(singletonList(retrievedGroup));
 
         List<Group> actualGroups = groupService.getAllByLessonId(1);
 
@@ -98,7 +98,7 @@ class GroupServiceTest {
     @Test
     void givenGroupWithExistingName_whenSave_thenGroupNameNotUniqueExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(groupDao.getByName(anyString())).willReturn(Optional.of(retrievedGroup));
+        given(groupDao.getByName("DD-44")).willReturn(Optional.of(retrievedGroup));
 
         Throwable exception = assertThrows(GroupNameNotUniqueException.class, () -> groupService.save(createdGroup));
         assertEquals("Group with name DD-44 already exist", exception.getMessage());
@@ -117,7 +117,7 @@ class GroupServiceTest {
     @Test
     void givenNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(groupDao.getById(anyInt())).willReturn(Optional.empty());
+        given(groupDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup));
         assertEquals("Group with id 1 is not present", exception.getMessage());
@@ -127,7 +127,7 @@ class GroupServiceTest {
     @Test
     void givenNonExistentStudentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 30);
-        given(groupDao.getById(anyInt())).willReturn(Optional.empty());
+        given(groupDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> groupService.update(updatedGroup));
         assertEquals("Group with id 1 is not present", exception.getMessage());
@@ -137,7 +137,7 @@ class GroupServiceTest {
     @Test
     void givenGroupWithGreaterStudentNumberThatMaxGroupCapacity_whenUpdate_thenGroupSizeTooLargeExceptionThrown() {
         ReflectionTestUtils.setField(groupService, "maxGroupCapacity", 0);
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
 
         Throwable exception = assertThrows(GroupSizeTooLargeException.class, () -> groupService.update(updatedGroup));
         assertEquals("Group with id 1 have too many students", exception.getMessage());
@@ -146,7 +146,7 @@ class GroupServiceTest {
 
     @Test
     void givenDataThatProducesEmptyResult_whenGetAllByLessonId_thenCalledGroupDaoGetAllByLessonIdAndReturnedEmptyList() {
-        given(groupDao.getAllByLessonId(anyInt())).willReturn(emptyList());
+        given(groupDao.getAllByLessonId(1)).willReturn(emptyList());
 
         List<Group> actualGroups = groupService.getAllByLessonId(1);
 

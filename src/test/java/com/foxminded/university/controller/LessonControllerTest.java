@@ -64,10 +64,7 @@ class LessonControllerTest {
         mockMvc.perform(get("/lessons"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/lessons"))
-                .andExpect(model().attribute("lessons", hasSize(1)))
                 .andExpect(model().attribute("lessons", is(singletonList(retrievedLesson))));
-
-        verify(lessonService, times(1)).getAll();
     }
 
     @Test
@@ -85,7 +82,7 @@ class LessonControllerTest {
 
     @Test
     void whenEdit_thenAddedLessonModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
+        when(lessonService.getById(1)).thenReturn(Optional.of(retrievedLesson));
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
         when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
@@ -96,19 +93,15 @@ class LessonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/edit"))
                 .andExpect(model().attribute("lesson", is(retrievedLesson)));
-
-        verify(lessonService, times(1)).getById(anyInt());
     }
 
     @Test
     void whenShowGroups_thenAddedModelWithGroupsListOfLessonWithGivenIdAndRedirectedToGroupsViewingPage() throws Exception {
-        when(lessonService.getById(anyInt())).thenReturn(Optional.of(retrievedLesson));
+        when(lessonService.getById(1)).thenReturn(Optional.of(retrievedLesson));
 
         mockMvc.perform(get("/lessons/groups/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/groups"))
                 .andExpect(model().attribute("groups", is(singletonList(retrievedGroup))));
-
-        verify(lessonService, times(1)).getById(anyInt());
     }
 }

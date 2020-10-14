@@ -46,7 +46,7 @@ class TeacherServiceTest {
 
     @Test
     void givenTeacher_whenSave_thenCalledTeacherDaoSave() {
-        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
+        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
 
         teacherService.save(createdTeacher);
 
@@ -55,8 +55,8 @@ class TeacherServiceTest {
 
     @Test
     void givenTeacher_whenUpdate_thenCalledTeacherDaoUpdate() {
-        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
-        given(teacherDao.getById(anyInt())).willReturn(Optional.of(updatedTeacher));
+        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(teacherDao.getById(1)).willReturn(Optional.of(updatedTeacher));
 
         teacherService.update(updatedTeacher);
 
@@ -82,7 +82,7 @@ class TeacherServiceTest {
 
     @Test
     void givenNonExistentSubjectId_whenSave_thenEntityNotFoundExceptionThrown() {
-        given(subjectDao.getById(anyInt())).willReturn(Optional.empty());
+        given(subjectDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.save(createdTeacher));
         assertEquals("Subject with id 1 is not present", exception.getMessage());
@@ -91,7 +91,7 @@ class TeacherServiceTest {
 
     @Test
     void givenNonExistentTeacherId_whenUpdate_thenEntityNotFoundExceptionThrown() {
-        given(teacherDao.getById(anyInt())).willReturn(Optional.empty());
+        given(teacherDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher));
         assertEquals("Teacher with id 1 is not present", exception.getMessage());

@@ -26,8 +26,7 @@ public class StudentController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("student", new Student());
+    public String redirectToSaveForm(Student studentModel) {
         return "students/new";
     }
 

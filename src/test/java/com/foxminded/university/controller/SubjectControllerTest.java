@@ -49,10 +49,7 @@ class SubjectControllerTest {
         mockMvc.perform(get("/subjects"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/subjects"))
-                .andExpect(model().attribute("subjects", hasSize(1)))
                 .andExpect(model().attribute("subjects", is(singletonList(retrievedSubject))));
-
-        verify(subjectService, times(1)).getAll();
     }
 
     @Test
@@ -64,13 +61,11 @@ class SubjectControllerTest {
 
     @Test
     void whenEdit_thenAddedSubjectModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(subjectService.getById(anyInt())).thenReturn(Optional.of(retrievedSubject));
+        when(subjectService.getById(1)).thenReturn(Optional.of(retrievedSubject));
 
         mockMvc.perform(get("/subjects/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/edit"))
                 .andExpect(model().attribute("subject", is(retrievedSubject)));
-
-        verify(subjectService, times(1)).getById(anyInt());
     }
 }

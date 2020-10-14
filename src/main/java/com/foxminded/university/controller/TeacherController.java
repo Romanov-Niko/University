@@ -32,8 +32,7 @@ public class TeacherController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("teacher", new Teacher());
+    public String redirectToSaveForm(Model model, Teacher teacherModel) {
         model.addAttribute("allSubjects", subjectService.getAll());
         return "teachers/new";
     }

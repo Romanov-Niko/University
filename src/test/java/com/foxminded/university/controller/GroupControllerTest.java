@@ -52,10 +52,7 @@ class GroupControllerTest {
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/groups"))
-                .andExpect(model().attribute("groups", hasSize(1)))
                 .andExpect(model().attribute("groups", is(singletonList(retrievedGroup))));
-
-        verify(groupService, times(1)).getAll();
     }
 
     @Test
@@ -65,13 +62,11 @@ class GroupControllerTest {
         mockMvc.perform(get("/groups/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/new"));
-
-        verify(studentService, times(1)).getAll();
     }
 
     @Test
     void whenEdit_thenAddedGroupModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
+        when(groupService.getById(1)).thenReturn(Optional.of(retrievedGroup));
         when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/edit/1"))
@@ -79,20 +74,15 @@ class GroupControllerTest {
                 .andExpect(forwardedUrl("groups/edit"))
                 .andExpect(model().attribute("group", is(retrievedGroup)))
                 .andExpect(model().attribute("allStudents", is(singletonList(retrievedStudent))));
-
-        verify(groupService, times(1)).getById(anyInt());
-        verify(studentService, times(1)).getAll();
     }
 
     @Test
     void whenShowStudents_thenAddedModelWithStudentsListOfGroupWithGivenIdAndRedirectedToStudentsViewingPage() throws Exception {
-        when(groupService.getById(anyInt())).thenReturn(Optional.of(retrievedGroup));
+        when(groupService.getById(1)).thenReturn(Optional.of(retrievedGroup));
 
         mockMvc.perform(get("/groups/students/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/students"))
                 .andExpect(model().attribute("students", is(singletonList(retrievedStudent))));
-
-        verify(groupService, times(1)).getById(anyInt());
     }
 }

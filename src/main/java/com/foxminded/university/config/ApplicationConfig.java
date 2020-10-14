@@ -14,7 +14,6 @@ import java.util.Objects;
 
 @Configuration
 @ComponentScan("com.foxminded.university.dao")
-@ComponentScan("com.foxminded.university.domain")
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 

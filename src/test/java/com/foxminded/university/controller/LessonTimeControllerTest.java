@@ -50,10 +50,7 @@ class LessonTimeControllerTest {
         mockMvc.perform(get("/lessonstimes"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/lessonstimes"))
-                .andExpect(model().attribute("lessonstimes", hasSize(1)))
                 .andExpect(model().attribute("lessonstimes", is(singletonList(retrievedLessonTime))));
-
-        verify(lessonTimeService, times(1)).getAll();
     }
 
     @Test
@@ -65,13 +62,11 @@ class LessonTimeControllerTest {
 
     @Test
     void whenEdit_thenAddedLessonTimeModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(lessonTimeService.getById(anyInt())).thenReturn(Optional.of(retrievedLessonTime));
+        when(lessonTimeService.getById(1)).thenReturn(Optional.of(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessonstimes/edit"))
                 .andExpect(model().attribute("lessontime", is(retrievedLessonTime)));
-
-        verify(lessonTimeService, times(1)).getById(anyInt());
     }
 }

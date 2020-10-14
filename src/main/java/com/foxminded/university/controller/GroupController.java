@@ -32,8 +32,7 @@ public class GroupController {
     }
 
     @GetMapping("/new")
-    public String redirectToSaveForm(Model model) {
-        model.addAttribute("group", new Group());
+    public String redirectToSaveForm(Model model, Group groupModel) {
         model.addAttribute("allStudents", studentService.getAll());
         return "groups/new";
     }

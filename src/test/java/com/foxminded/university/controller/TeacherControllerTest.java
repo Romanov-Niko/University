@@ -54,10 +54,7 @@ class TeacherControllerTest {
         mockMvc.perform(get("/teachers"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/teachers"))
-                .andExpect(model().attribute("teachers", hasSize(1)))
                 .andExpect(model().attribute("teachers", is(singletonList(retrievedTeacher))));
-
-        verify(teacherService, times(1)).getAll();
     }
 
     @Test
@@ -67,33 +64,26 @@ class TeacherControllerTest {
         mockMvc.perform(get("/teachers/new"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/new"));
-
-        verify(subjectService, times(1)).getAll();
     }
 
     @Test
     void whenEdit_thenAddedTeacherModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
+        when(teacherService.getById(1)).thenReturn(Optional.of(retrievedTeacher));
         when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/teachers/edit/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/edit"))
                 .andExpect(model().attribute("teacher", is(retrievedTeacher)));
-
-        verify(teacherService, times(1)).getById(anyInt());
-        verify(subjectService, times(1)).getAll();
     }
 
     @Test
     void whenShowSubjects_thenAddedModelWithSubjectsListOfTeacherWithGivenIdAndRedirectedToSubjectsViewingPage() throws Exception {
-        when(teacherService.getById(anyInt())).thenReturn(Optional.of(retrievedTeacher));
+        when(teacherService.getById(1)).thenReturn(Optional.of(retrievedTeacher));
 
         mockMvc.perform(get("/teachers/subjects/1"))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/subjects"))
                 .andExpect(model().attribute("subjects", is(singletonList(retrievedSubject))));
-
-        verify(teacherService, times(1)).getById(anyInt());
     }
 }
