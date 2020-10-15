@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -85,5 +86,34 @@ class TeacherControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("teachers/subjects"))
                 .andExpect(model().attribute("subjects", is(singletonList(retrievedSubject))));
+    }
+
+    @Test
+    void whenDelete_thenCalledTeacherServiceDeleteWithGivenIdAndRedirectedToPageWithListOfTeachers() throws Exception {
+        mockMvc.perform(get("/teachers/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teachers"));
+
+        verify(teacherService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledTeacherServiceSaveWithGivenTeacherAndRedirectedToPageWithListOfTeachers() throws Exception {
+        mockMvc.perform(post("/teachers/save")
+                .flashAttr("teacher", retrievedTeacher))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teachers"));
+
+        verify(teacherService, times(1)).save(retrievedTeacher);
+    }
+
+    @Test
+    void whenUpdate_thenCalledTeacherServiceSaveWithGivenTeacherAndRedirectedToPageWithListOfTeachers() throws Exception {
+        mockMvc.perform(post("/teachers/update/1")
+                .flashAttr("teacher", updatedTeacher))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teachers"));
+
+        verify(teacherService, times(1)).update(updatedTeacher);
     }
 }

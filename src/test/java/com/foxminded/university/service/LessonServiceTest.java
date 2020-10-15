@@ -77,7 +77,7 @@ class LessonServiceTest {
 
     @Test
     void givenLesson_whenUpdate_thenCalledLessonDaoUpdate() {
-        given(lessonDao.getById(2)).willReturn(Optional.of(retrievedLesson));
+        given(lessonDao.getById(1)).willReturn(Optional.of(retrievedLesson));
         given(teacherDao.getById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
                 LocalDate.parse("1990-02-01"), "male", "second@gmail.com", "22222", singletonList(retrievedSubject))));
         given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
@@ -129,7 +129,7 @@ class LessonServiceTest {
     @Test
     void givenLessonWithConflictingData_whenUpdate_thenEntityNotFoundExceptionThrown() {
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonService.update(updatedLesson));
-        assertEquals("Lesson with id 2 is not present", exception.getMessage());
+        assertEquals("Lesson with id 1 is not present", exception.getMessage());
         verify(lessonDao, never()).update(updatedLesson);
     }
 

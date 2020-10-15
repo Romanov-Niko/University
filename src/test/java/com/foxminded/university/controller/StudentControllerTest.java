@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.retrievedAudience;
-import static com.foxminded.university.TestData.retrievedStudent;
+import static com.foxminded.university.TestData.*;
+import static com.foxminded.university.TestData.updatedGroup;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -67,5 +68,34 @@ class StudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("students/edit"))
                 .andExpect(model().attribute("student", is(retrievedStudent)));
+    }
+
+    @Test
+    void whenDelete_thenCalledStudentServiceDeleteWithGivenIdAndRedirectedToPageWithListOfStudents() throws Exception {
+        mockMvc.perform(get("/students/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/students"));
+
+        verify(studentService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledStudentServiceSaveWithGivenStudentAndRedirectedToPageWithListOfStudents() throws Exception {
+        mockMvc.perform(post("/students/save")
+                .flashAttr("student", retrievedStudent))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/students"));
+
+        verify(studentService, times(1)).save(retrievedStudent);
+    }
+
+    @Test
+    void whenUpdate_thenCalledStudentServiceSaveWithGivenStudentAndRedirectedToPageWithListOfStudents() throws Exception {
+        mockMvc.perform(post("/students/update/1")
+                .flashAttr("student", updatedStudent))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/students"));
+
+        verify(studentService, times(1)).update(updatedStudent);
     }
 }

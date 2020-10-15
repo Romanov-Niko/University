@@ -40,4 +40,33 @@ public class AudienceController {
         }
         return "audiences/edit";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+        try {
+            audienceService.save(audience);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/audiences/new";
+        }
+        return "redirect:/audiences";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        audienceService.delete(id);
+        return "redirect:/audiences";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+        try {
+            audienceService.update(audience);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/audiences/edit/"+audience.getId();
+        }
+        return "redirect:/audiences";
+    }
+
 }

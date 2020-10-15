@@ -55,4 +55,50 @@ public class TeacherController {
         teacher.ifPresent(currentTeacher -> model.addAttribute("subjects", currentTeacher.getSubjects()));
         return "teachers/subjects";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher , RedirectAttributes redirectAttributes) {
+        List<Subject> subjects = new ArrayList<>();
+        if(subjectsOfTeacher != null) {
+            for (int id: subjectsOfTeacher){
+                Optional<Subject> subject = subjectService.getById(id);
+                subject.ifPresent(subjects::add);
+            }
+            teacher.setSubjects(subjects);
+        }
+
+        try {
+            teacherService.save(teacher);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/teachers/new";
+        }
+        return "redirect:/teachers";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        teacherService.delete(id);
+        return "redirect:/teachers";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher, RedirectAttributes redirectAttributes) {
+        List<Subject> subjects = new ArrayList<>();
+        if(subjectsOfTeacher != null) {
+            for (int id: subjectsOfTeacher){
+                Optional<Subject> subject = subjectService.getById(id);
+                subject.ifPresent(subjects::add);
+            }
+            teacher.setSubjects(subjects);
+        }
+        try {
+            teacherService.update(teacher);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/teachers/edit/"+teacher.getId();
+        }
+        return "redirect:/teachers";
+    }
+
 }

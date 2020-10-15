@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,5 +85,34 @@ class GroupControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("groups/students"))
                 .andExpect(model().attribute("students", is(singletonList(retrievedStudent))));
+    }
+
+    @Test
+    void whenDelete_thenCalledGroupServiceDeleteWithGivenIdAndRedirectedToPageWithListOfGroups() throws Exception {
+        mockMvc.perform(get("/groups/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/groups"));
+
+        verify(groupService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledGroupServiceSaveWithGivenGroupAndRedirectedToPageWithListOfGroups() throws Exception {
+        mockMvc.perform(post("/groups/save")
+                .flashAttr("group", retrievedGroup))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/groups"));
+
+        verify(groupService, times(1)).save(retrievedGroup);
+    }
+
+    @Test
+    void whenUpdate_thenCalledGroupServiceSaveWithGivenGroupAndRedirectedToPageWithListOfGroups() throws Exception {
+        mockMvc.perform(post("/groups/update/1")
+                .flashAttr("group", updatedGroup))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/groups"));
+
+        verify(groupService, times(1)).update(updatedGroup);
     }
 }

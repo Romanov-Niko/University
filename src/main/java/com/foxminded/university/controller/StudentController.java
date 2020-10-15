@@ -40,4 +40,33 @@ public class StudentController {
         }
         return "students/edit";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("student") Student student, RedirectAttributes redirectAttributes) {
+        try {
+            studentService.save(student);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/students/new";
+        }
+        return "redirect:/students";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        studentService.delete(id);
+        return "redirect:/students";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("student") Student student, RedirectAttributes redirectAttributes) {
+        try {
+            studentService.update(student);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/students/edit/"+student.getId();
+        }
+        return "redirect:/students";
+    }
+
 }

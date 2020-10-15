@@ -40,4 +40,33 @@ public class SubjectController {
         }
         return "subjects/edit";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
+        try {
+            subjectService.save(subject);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/subjects/new";
+        }
+        return "redirect:/subjects";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        subjectService.delete(id);
+        return "redirect:/subjects";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
+        try {
+            subjectService.update(subject);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/subjects/edit/"+subject.getId();
+        }
+        return "redirect:/subjects";
+    }
+
 }
