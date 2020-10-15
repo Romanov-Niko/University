@@ -1,5 +1,7 @@
 package com.foxminded.university.domain;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Objects;
 

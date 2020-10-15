@@ -3,25 +3,22 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupMapper;
-import com.foxminded.university.domain.Audience;
-import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Group;
+import com.foxminded.university.domain.Student;
+import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.EntityNotDeletedException;
 import com.foxminded.university.exception.EntityNotSavedException;
 import com.foxminded.university.exception.EntityNotUpdatedException;
 import com.foxminded.university.exception.GroupIdNotUpdatedInStudentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -44,13 +41,16 @@ public class JdbcGroupDao implements GroupDao {
             "WHERE lessons.id = ?";
     private static final String SQL_UPDATE_STUDENT_GROUP = "UPDATE students SET group_id = ? WHERE id = ?";
     private static final String SQL_GET_GROUP_BY_NAME = "SELECT * FROM groups WHERE name = ?";
+    private static final String SQL_REMOVE_STUDENT_FROM_GROUP = "UPDATE students SET group_id = NULL WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GroupMapper groupMapper;
+    private final StudentDao studentDao;
 
-    public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper) {
+    public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupMapper groupMapper, StudentDao studentDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.groupMapper = groupMapper;
+        this.studentDao = studentDao;
     }
 
     @Override
@@ -89,9 +89,21 @@ public class JdbcGroupDao implements GroupDao {
         });
     }
 
+    @Transactional
     @Override
     public void update(Group group) {
         logger.debug("Updating group with id {}", group.getId());
+        List<Student> oldStudents = studentDao.getAllByGroupId(group.getId());
+        oldStudents.stream()
+                .filter(student -> !group.getStudents().contains(student))
+                .forEach(student -> removeStudentFromGroup(student.getId()));
+
+        group.getStudents().stream()
+                .filter(student -> !oldStudents.contains(student)).
+                forEach(student -> {
+            updateStudentGroup(student.getId(), group.getId());
+            student.setGroupId(group.getId());
+        });
         if (jdbcTemplate.update(SQL_UPDATE_GROUP, group.getName(), group.getId()) == 0) {
             throw new EntityNotUpdatedException(String.format("Group with id %d was not updated", group.getId()));
         }
@@ -126,5 +138,10 @@ public class JdbcGroupDao implements GroupDao {
         if (jdbcTemplate.update(SQL_UPDATE_STUDENT_GROUP, groupId, studentId) == 0) {
             throw new GroupIdNotUpdatedInStudentException(String.format("Group id to %d for student with id %d was not updated", groupId, studentId));
         }
+    }
+
+    private void removeStudentFromGroup(int studentId) {
+        logger.debug("Removing group id for student with id {}", studentId);
+        jdbcTemplate.update(SQL_REMOVE_STUDENT_FROM_GROUP, studentId);
     }
 }

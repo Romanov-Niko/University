@@ -1,13 +1,16 @@
 package com.foxminded.university.domain;
 
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Teacher extends Person {
 
     private int id;
-    private List<Subject> subjects;
+    private List<Subject> subjects = new ArrayList<>();
 
     public Teacher() {
     }

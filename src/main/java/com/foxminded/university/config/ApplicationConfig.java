@@ -1,5 +1,6 @@
 package com.foxminded.university.config;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
@@ -12,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.Objects;
 
 @Configuration
-@ComponentScan("com.foxminded.university")
+@ComponentScan("com.foxminded.university.dao")
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 

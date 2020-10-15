@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubjectService {
@@ -22,6 +24,10 @@ public class SubjectService {
 
     public SubjectService(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
+    }
+
+    public Optional<Subject> getById(int id) {
+        return subjectDao.getById(id);
     }
 
     public List<Subject> getAll() {

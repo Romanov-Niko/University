@@ -5,7 +5,6 @@ import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,10 +15,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-
-import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,14 +61,14 @@ class LessonServiceTest {
 
     @Test
     void givenLesson_whenSave_thenCalledLessonDaoSave() {
-        given(teacherDao.getById(anyInt())).willReturn(Optional.of(new Teacher(2, "second", "teacher",
+        given(teacherDao.getById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
                 LocalDate.parse("1990-02-01"), "male", "second@gmail.com", "22222", singletonList(retrievedSubject))));
-        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
-        given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
-        given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
-        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
-        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(createdLesson));
+        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(audienceDao.getById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
+        given(lessonTimeDao.getById(1)).willReturn(Optional.of(retrievedLessonTime));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
+        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
 
         lessonService.save(createdLesson);
 
@@ -79,15 +77,15 @@ class LessonServiceTest {
 
     @Test
     void givenLesson_whenUpdate_thenCalledLessonDaoUpdate() {
-        given(lessonDao.getById(anyInt())).willReturn(Optional.of(retrievedLesson));
-        given(teacherDao.getById(anyInt())).willReturn(Optional.of(new Teacher(2, "second", "teacher",
+        given(lessonDao.getById(2)).willReturn(Optional.of(retrievedLesson));
+        given(teacherDao.getById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
                 LocalDate.parse("1990-02-01"), "male", "second@gmail.com", "22222", singletonList(retrievedSubject))));
-        given(subjectDao.getById(anyInt())).willReturn(Optional.of(retrievedSubject));
-        given(audienceDao.getById(anyInt())).willReturn(Optional.of(new Audience(2, 102, 100)));
-        given(lessonTimeDao.getById(anyInt())).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getById(anyInt())).willReturn(Optional.of(retrievedGroup));
-        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
-        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(anyInt(), any(), anyInt())).willReturn(singletonList(updatedLesson));
+        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(audienceDao.getById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
+        given(lessonTimeDao.getById(1)).willReturn(Optional.of(retrievedLessonTime));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
+        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
 
         lessonService.update(updatedLesson);
 

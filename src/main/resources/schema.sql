@@ -28,7 +28,7 @@ CREATE TABLE students
     gender        VARCHAR(255),
     email         VARCHAR(255),
     phone_number  VARCHAR(255),
-    CONSTRAINT FK_students_to_groups FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT FK_students_to_groups FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE teachers

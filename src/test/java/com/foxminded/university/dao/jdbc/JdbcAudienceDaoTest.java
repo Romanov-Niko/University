@@ -3,15 +3,9 @@ package com.foxminded.university.dao.jdbc;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
-import com.foxminded.university.domain.Lesson;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +16,6 @@ import java.util.Optional;
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)

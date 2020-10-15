@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.*;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.*;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GroupService {
@@ -26,6 +28,10 @@ public class GroupService {
     public GroupService(GroupDao groupDao, StudentDao studentDao) {
         this.groupDao = groupDao;
         this.studentDao = studentDao;
+    }
+
+    public Optional<Group> getById(int id) {
+        return groupDao.getById(id);
     }
 
     public List<Group> getAll() {

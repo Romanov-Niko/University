@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeacherService {
@@ -23,6 +25,10 @@ public class TeacherService {
     public TeacherService(TeacherDao teacherDao, SubjectDao subjectDao) {
         this.teacherDao = teacherDao;
         this.subjectDao = subjectDao;
+    }
+
+    public Optional<Teacher> getById(int id) {
+        return teacherDao.getById(id);
     }
 
     public List<Teacher> getAll() {

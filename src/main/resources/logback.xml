@@ -11,6 +11,10 @@
         </layout>
     </appender>
 
+    <logger name="org.springframework" level="trace" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${HOME_LOG}</file>
         <append>true</append>

@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.DayScheduleDao;
-import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,16 +12,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.foxminded.university.TestData.retrievedDaySchedule;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static com.foxminded.university.TestData.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +34,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedScheduleOfGivenDate() {
-        given(dayScheduleService.getByDateForStudent(anyInt(), any())).willReturn(Optional.of(retrievedDaySchedule));
+        given(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.of(retrievedDaySchedule));
 
         Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
@@ -46,7 +44,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForTeacher_thenCalledDayScheduleDaoGetByDateForTeacherAndReturnedScheduleOfGivenDate() {
-        given(dayScheduleService.getByDateForTeacher(anyInt(), any())).willReturn(Optional.of(retrievedDaySchedule));
+        given(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.of(retrievedDaySchedule));
 
         Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
@@ -56,7 +54,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedAllSchedulesOfGivenMonth() {
-        given(dayScheduleService.getByMonthForStudent(anyInt(), any())).willReturn(singletonList(retrievedDaySchedule));
+        given(dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedDaySchedule));
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
@@ -66,7 +64,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForTeacherAndReturnedAllSchedulesOfGivenMonth() {
-        given(dayScheduleService.getByMonthForTeacher(anyInt(), any())).willReturn(singletonList(retrievedDaySchedule));
+        given(dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedDaySchedule));
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 
@@ -76,7 +74,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedOptionalEmpty() {
-        given(dayScheduleService.getByDateForStudent(anyInt(), any())).willReturn(Optional.empty());
+        given(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.empty());
 
         Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
@@ -86,7 +84,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByDayForTeacher_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedOptionalEmpty() {
-        given(dayScheduleService.getByDateForTeacher(anyInt(), any())).willReturn(Optional.empty());
+        given(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.empty());
 
         Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
@@ -96,7 +94,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(dayScheduleService.getByMonthForStudent(anyInt(), any())).willReturn(emptyList());
+        given(dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
@@ -106,7 +104,7 @@ class DayScheduleServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(dayScheduleService.getByMonthForTeacher(anyInt(), any())).willReturn(emptyList());
+        given(dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 

@@ -1,12 +1,10 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,11 +15,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
-
-import static com.foxminded.university.TestData.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -32,6 +30,9 @@ class StudentServiceTest {
 
     @Mock
     private StudentDao studentDao;
+
+    @Mock
+    private GroupDao groupDao;
 
     @InjectMocks
     private StudentService studentService;
@@ -49,6 +50,7 @@ class StudentServiceTest {
     @Test
     void givenStudent_whenSave_thenCalledStudentDaoSave() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.save(createdStudent);
 
@@ -58,7 +60,8 @@ class StudentServiceTest {
     @Test
     void givenStudent_whenUpdate_thenCalledStudentDaoUpdate() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
+        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.update(updatedStudent);
 
@@ -74,7 +77,7 @@ class StudentServiceTest {
 
     @Test
     void givenGroupId_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupId(anyInt())).willReturn(singletonList(retrievedStudent));
+        given(studentDao.getAllByGroupId(1)).willReturn(singletonList(retrievedStudent));
 
         List<Student> actualStudents = studentService.getAllByGroupId(1);
 
@@ -84,7 +87,7 @@ class StudentServiceTest {
 
     @Test
     void givenGroupName_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupName(anyString())).willReturn(singletonList(retrievedStudent));
+        given(studentDao.getAllByGroupName("AA-11")).willReturn(singletonList(retrievedStudent));
 
         List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
 
@@ -114,7 +117,7 @@ class StudentServiceTest {
     @Test
     void givenStudentWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(anyInt())).willReturn(Optional.empty());
+        given(studentDao.getById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent));
         assertEquals("Student with id 1 is not present", exception.getMessage());
@@ -124,7 +127,7 @@ class StudentServiceTest {
     @Test
     void givenStudentWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
-        given(studentDao.getById(anyInt())).willReturn(Optional.of(retrievedStudent));
+        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.update(updatedStudent));
         assertEquals("Course number is out of bounds", exception.getMessage());
@@ -133,7 +136,7 @@ class StudentServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupId(anyInt())).willReturn(emptyList());
+        given(studentDao.getAllByGroupId(1)).willReturn(emptyList());
 
         List<Student> actualStudents = studentService.getAllByGroupId(1);
 
@@ -143,7 +146,7 @@ class StudentServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupName(anyString())).willReturn(emptyList());
+        given(studentDao.getAllByGroupName("AA-11")).willReturn(emptyList());
 
         List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
 

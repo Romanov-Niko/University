@@ -5,7 +5,6 @@ import com.foxminded.university.domain.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;

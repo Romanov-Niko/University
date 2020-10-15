@@ -1,5 +1,8 @@
 package com.foxminded.university.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +15,7 @@ public class Lesson {
     private List<Group> groups;
     private Audience audience;
     private LessonTime lessonTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     public Lesson() {
