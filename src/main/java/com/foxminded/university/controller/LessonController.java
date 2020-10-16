@@ -1,6 +1,10 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.domain.*;
+import com.foxminded.university.editor.AudienceEditor;
+import com.foxminded.university.editor.LessonTimeEditor;
+import com.foxminded.university.editor.SubjectEditor;
+import com.foxminded.university.editor.TeacherEditor;
 import com.foxminded.university.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +35,15 @@ public class LessonController {
         this.audienceService = audienceService;
         this.lessonTimeService = lessonTimeService;
     }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Audience.class, new AudienceEditor(audienceService));
+        binder.registerCustomEditor(LessonTime.class, new LessonTimeEditor(lessonTimeService));
+        binder.registerCustomEditor(Subject.class, new SubjectEditor(subjectService));
+        binder.registerCustomEditor(Teacher.class, new TeacherEditor(teacherService));
+    }
+
 
     @GetMapping
     public String showAll(Model model) {
@@ -70,4 +83,50 @@ public class LessonController {
         lesson.ifPresent(currentLesson -> model.addAttribute("groups", currentLesson.getGroups()));
         return "lessons/groups";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
+        List<Group> groups = new ArrayList<>();
+        if (groupsOfLesson != null) {
+            for (int id : groupsOfLesson) {
+                Optional<Group> group = groupService.getById(id);
+                group.ifPresent(groups::add);
+            }
+            lesson.setGroups(groups);
+        }
+
+        try {
+            lessonService.save(lesson);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/lessons/new";
+        }
+        return "redirect:/lessons";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        lessonService.delete(id);
+        return "redirect:/lessons";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
+        List<Group> groups = new ArrayList<>();
+        if (groupsOfLesson != null) {
+            for (int id : groupsOfLesson) {
+                Optional<Group> group = groupService.getById(id);
+                group.ifPresent(groups::add);
+            }
+            lesson.setGroups(groups);
+        }
+        try {
+            lessonService.update(lesson);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/lessons/edit/" + lesson.getId();
+        }
+        return "redirect:/lessons";
+    }
+
 }

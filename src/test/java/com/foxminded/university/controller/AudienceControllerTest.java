@@ -23,7 +23,10 @@ import java.util.Optional;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import org.springframework.test.web.servlet.request.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,5 +70,34 @@ class AudienceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("audiences/edit"))
                 .andExpect(model().attribute("audience", is(retrievedAudience)));
+    }
+
+    @Test
+    void whenDelete_thenCalledAudienceServiceDeleteWithGivenIdAndRedirectedToPageWithListOfAudiences() throws Exception {
+        mockMvc.perform(get("/audiences/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/audiences"));
+
+        verify(audienceService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledAudienceServiceSaveWithGivenAudienceAndRedirectedToPageWithListOfAudiences() throws Exception {
+        mockMvc.perform(post("/audiences/save")
+                .flashAttr("audience", retrievedAudience))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/audiences"));
+
+        verify(audienceService, times(1)).save(retrievedAudience);
+    }
+
+    @Test
+    void whenUpdate_thenCalledAudienceServiceSaveWithGivenAudienceAndRedirectedToPageWithListOfAudiences() throws Exception {
+        mockMvc.perform(post("/audiences/update/1")
+                .flashAttr("audience", updatedAudience))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/audiences"));
+
+        verify(audienceService, times(1)).update(updatedAudience);
     }
 }

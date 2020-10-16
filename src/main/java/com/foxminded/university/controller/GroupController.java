@@ -55,4 +55,49 @@ public class GroupController {
         group.ifPresent(currentGroup -> model.addAttribute("students", currentGroup.getStudents()));
         return "groups/students";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
+        List<Student> students = new ArrayList<>();
+        if(studentsOfGroup != null) {
+            for (int id: studentsOfGroup){
+                Optional<Student> student = studentService.getById(id);
+                student.ifPresent(students::add);
+            }
+            group.setStudents(students);
+        }
+        try {
+            groupService.save(group);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/groups/new";
+        }
+        return "redirect:/groups";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        groupService.delete(id);
+        return "redirect:/groups";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
+        List<Student> students = new ArrayList<>();
+        if(studentsOfGroup != null) {
+            for (int id: studentsOfGroup){
+                Optional<Student> student = studentService.getById(id);
+                student.ifPresent(students::add);
+            }
+            group.setStudents(students);
+        }
+        try {
+            groupService.update(group);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/groups/edit/"+group.getId();
+        }
+        return "redirect:/groups";
+    }
+
 }

@@ -40,4 +40,33 @@ public class LessonTimeController {
         }
         return "lessonstimes/edit";
     }
+
+    @PostMapping("/save")
+    public String save(@ModelAttribute("lessontime") LessonTime lessonTime, RedirectAttributes redirectAttributes) {
+        try {
+            lessonTimeService.save(lessonTime);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/lessonstimes/new";
+        }
+        return "redirect:/lessonstimes";
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id) {
+        lessonTimeService.delete(id);
+        return "redirect:/lessonstimes";
+    }
+
+    @PostMapping("update/{id}")
+    public String update(@ModelAttribute("lessontime") LessonTime lessonTime, RedirectAttributes redirectAttributes) {
+        try {
+            lessonTimeService.update(lessonTime);
+        } catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+            return "redirect:/lessonstimes/edit/"+lessonTime.getId();
+        }
+        return "redirect:/lessonstimes";
+    }
+
 }

@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -103,5 +104,34 @@ class LessonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("lessons/groups"))
                 .andExpect(model().attribute("groups", is(singletonList(retrievedGroup))));
+    }
+
+    @Test
+    void whenDelete_thenCalledLessonServiceDeleteWithGivenIdAndRedirectedToPageWithListOfLessons() throws Exception {
+        mockMvc.perform(get("/lessons/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/lessons"));
+
+        verify(lessonService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledLessonServiceSaveWithGivenLessonAndRedirectedToPageWithListOfLessons() throws Exception {
+        mockMvc.perform(post("/lessons/save")
+                .flashAttr("lesson", retrievedLesson))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/lessons"));
+
+        verify(lessonService, times(1)).save(retrievedLesson);
+    }
+
+    @Test
+    void whenUpdate_thenCalledLessonServiceSaveWithGivenLessonAndRedirectedToPageWithListOfLessons() throws Exception {
+        mockMvc.perform(post("/lessons/update/1")
+                .flashAttr("lesson", updatedLesson))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/lessons"));
+
+        verify(lessonService, times(1)).update(updatedLesson);
     }
 }

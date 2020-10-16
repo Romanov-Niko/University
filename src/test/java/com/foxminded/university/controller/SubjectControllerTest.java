@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.retrievedSubject;
-import static com.foxminded.university.TestData.retrievedTeacher;
+import static com.foxminded.university.TestData.*;
+import static com.foxminded.university.TestData.updatedStudent;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -67,5 +68,34 @@ class SubjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("subjects/edit"))
                 .andExpect(model().attribute("subject", is(retrievedSubject)));
+    }
+
+    @Test
+    void whenDelete_thenCalledSubjectServiceDeleteWithGivenIdAndRedirectedToPageWithListOfSubjects() throws Exception {
+        mockMvc.perform(get("/subjects/delete/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subjects"));
+
+        verify(subjectService, times(1)).delete(1);
+    }
+
+    @Test
+    void whenSave_thenCalledSubjectServiceSaveWithGivenSubjectAndRedirectedToPageWithListOfSubjects() throws Exception {
+        mockMvc.perform(post("/subjects/save")
+                .flashAttr("subject", retrievedSubject))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subjects"));
+
+        verify(subjectService, times(1)).save(retrievedSubject);
+    }
+
+    @Test
+    void whenUpdate_thenCalledSubjectServiceSaveWithGivenSubjectAndRedirectedToPageWithListOfSubjects() throws Exception {
+        mockMvc.perform(post("/subjects/update/1")
+                .flashAttr("subject", updatedSubject))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subjects"));
+
+        verify(subjectService, times(1)).update(updatedSubject);
     }
 }
