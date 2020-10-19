@@ -3,6 +3,7 @@ package com.foxminded.university.config;
 import com.foxminded.university.service.AudienceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -22,18 +23,12 @@ import java.util.Objects;
 @PropertySource("classpath:config.properties")
 public class ApplicationConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
+    @Value("${jndiLookup}")
+    private String name;
 
     @Bean
-    DataSource dataSource() {
-        DataSource dataSource = null;
-        JndiTemplate jndi = new JndiTemplate();
-        try {
-            dataSource = jndi.lookup("java:comp/env/jdbc/PostgreSQLDatabase", DataSource.class);
-        } catch (NamingException e) {
-            logger.error("NamingException for java:comp/env/jdbc/PostgreSQLDatabase", e);
-        }
-        return dataSource;
+    DataSource dataSource() throws NamingException {
+        return new JndiTemplate().lookup(name, DataSource.class);
     }
 
     @Bean
