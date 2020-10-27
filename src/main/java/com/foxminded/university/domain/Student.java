@@ -3,13 +3,19 @@ package com.foxminded.university.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "students")
 public class Student extends Person {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int groupId;
+    @Column(name = "group_id")
+    private Integer groupId;
     private String specialty;
     private Integer course;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -21,7 +27,7 @@ public class Student extends Person {
     }
 
     public Student(String name, String surname, LocalDate dateOfBirth, String gender, String email,
-                   String phoneNumber, int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   String phoneNumber, Integer groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         super(name, surname, dateOfBirth, gender, email, phoneNumber);
         this.groupId = groupId;
         this.specialty = specialty;
@@ -44,11 +50,11 @@ public class Student extends Person {
         this.id = id;
     }
 
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 

@@ -3,17 +3,24 @@ package com.foxminded.university.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@MappedSuperclass
 public class Person {
 
     private String name;
     private String surname;
+    @Column(name = "date_of_birth")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     private String gender;
     private String email;
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Person() {

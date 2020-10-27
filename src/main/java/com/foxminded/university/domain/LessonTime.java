@@ -3,13 +3,20 @@ package com.foxminded.university.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "lessons_times")
 public class LessonTime {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "begin_time")
     private LocalTime begin;
+    @Column(name = "end_time")
     private LocalTime end;
 
     public LessonTime() {

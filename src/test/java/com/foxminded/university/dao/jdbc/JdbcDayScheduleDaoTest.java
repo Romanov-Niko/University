@@ -53,17 +53,17 @@ class JdbcDayScheduleDaoTest {
     }
 
     @Test
-    void givenWrongData_whenGetByDayForStudent_thenReturnedOptionalEmpty() {
+    void givenWrongData_whenGetByDayForStudent_thenReturnedScheduleWithoutLessons() {
         Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForStudent(5, LocalDate.parse("2017-06-01"));
 
-        assertEquals(Optional.empty(), actualDaySchedule);
+        assertEquals(true, actualDaySchedule.get().getLessons().isEmpty());
     }
 
     @Test
     void givenWrongData_whenGetByDayForTeacher_thenReturnedOptionalEmpty() {
         Optional<DaySchedule> actualDaySchedule = dayScheduleDao.getByDateForTeacher(5, LocalDate.parse("2017-06-01"));
 
-        assertEquals(Optional.empty(), actualDaySchedule);
+        assertEquals(true, actualDaySchedule.get().getLessons().isEmpty());
     }
 
     @Test

@@ -2,11 +2,17 @@ package com.foxminded.university.domain;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "audiences")
 public class Audience {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "room_number")
     private int roomNumber;
     private int capacity;
 

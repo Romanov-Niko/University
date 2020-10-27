@@ -1,14 +1,24 @@
 package com.foxminded.university.domain;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @OneToMany
+    @JoinColumn(name = "group_id")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
 
     public Group() {

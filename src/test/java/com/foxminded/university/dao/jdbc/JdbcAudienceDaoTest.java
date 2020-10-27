@@ -1,15 +1,20 @@
 package com.foxminded.university.dao.jdbc;
 
+import ch.qos.logback.classic.util.JNDIUtil;
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +66,7 @@ class JdbcAudienceDaoTest {
                 "id = %d AND room_number = %d AND capacity = %d",
                 updatedAudience.getId(), updatedAudience.getRoomNumber(), updatedAudience.getCapacity()
         ));
+
         assertEquals(1, actualNumber);
     }
 
