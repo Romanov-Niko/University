@@ -1,8 +1,10 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Group;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,59 +19,62 @@ import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
-class JdbcGroupDaoTest {
+class HibernateGroupDaoTest {
 
     @Autowired
     private GroupDao groupDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstGroup() {
+        Group expectedGroup = sessionFactory.getCurrentSession().find(Group.class, 1);
+
         Group actualGroup = groupDao.getById(1).orElse(null);
 
-        assertEquals(retrievedGroup, actualGroup);
+        assertEquals(expectedGroup, actualGroup);
     }
 
     @Test
     void givenNothing_whenGetAll_thenReturnedListOfAllGroups() {
-        int expectedRows = groupDao.getAll().size();
+        List<Group> expectedGroups = sessionFactory.getCurrentSession().createNativeQuery(
+                "SELECT * FROM groups", Group.class).getResultList();
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "groups");
-        assertEquals(expectedRows, actualRows);
+        List<Group> actualGroups = groupDao.getAll();
+
+        assertEquals(expectedGroups, actualGroups);
     }
 
     @Test
     void givenGroup_whenSave_thenAddedGivenGroup() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "groups") + 1;
-
         groupDao.save(createdGroup);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "groups");
-        assertEquals(expectedRows, actualRows);
+        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, 4);
+
+        assertEquals(createdGroup, actualGroup);
     }
 
     @Test
     void givenGroup_whenUpdate_thenUpdatedGroupWithEqualId() {
         groupDao.update(updatedGroup);
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "groups", String.format(
-                "id = %d AND name = '%s'", updatedGroup.getId(), updatedGroup.getName()));
-        assertEquals(1, actualNumber);
+        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, 1);
+
+        assertEquals(updatedGroup, actualGroup);
     }
 
     @Test
     void givenId3_whenDelete_thenDeletedThirdGroup() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "groups") - 1;
-
         groupDao.delete(3);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "groups");
-        assertEquals(expectedRows, actualRows);
+        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, 3);
+
+        assertNull(actualGroup);
     }
 
     @Test
@@ -96,8 +101,8 @@ class JdbcGroupDaoTest {
     }
 
     @Test
-    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "groups");
+    void givenEmptyTable_whenGetAll_thenReturnedEmptyList() {
+        sessionFactory.getCurrentSession().createNativeQuery("DELETE FROM groups").executeUpdate();
 
         List<Group> actualGroups = groupDao.getAll();
 

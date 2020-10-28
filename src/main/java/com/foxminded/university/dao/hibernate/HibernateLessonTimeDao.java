@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.LessonTimeDao;
 import com.foxminded.university.domain.LessonTime;
@@ -17,16 +17,16 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcLessonTimeDao implements LessonTimeDao {
+public class HibernateLessonTimeDao implements LessonTimeDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcLessonTimeDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateLessonTimeDao.class);
 
     private static final String SQL_GET_ALL_LESSONS_TIMES = "SELECT * FROM lessons_times";
     private static final String SQL_GET_LESSON_TIME_BY_START_AND_END_TIME = "SELECT * FROM lessons_times WHERE begin_time = :start AND end_time = :end";
 
     private final SessionFactory sessionFactory;
 
-    public JdbcLessonTimeDao(SessionFactory sessionFactory) {
+    public HibernateLessonTimeDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -47,7 +47,6 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
         logger.debug("Saving lesson");
         try {
             sessionFactory.getCurrentSession().persist(lessonTime);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Lesson time was not saved");
         }
@@ -58,7 +57,6 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
         logger.debug("Updating lesson time with id {}", lessonTime.getId());
         try {
             sessionFactory.getCurrentSession().merge(lessonTime);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Lesson time with id %d was not updated", lessonTime.getId()));
         }
@@ -70,7 +68,6 @@ public class JdbcLessonTimeDao implements LessonTimeDao {
         try {
             Optional<LessonTime> lessonTimeForDelete = getById(id);
             lessonTimeForDelete.ifPresent(lessonTime -> sessionFactory.getCurrentSession().remove(lessonTime));
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotDeletedException(String.format("Lesson time with id %d was not deleted", id));
         }

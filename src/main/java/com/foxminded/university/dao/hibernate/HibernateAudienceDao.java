@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
@@ -16,16 +16,16 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcAudienceDao implements AudienceDao {
+public class HibernateAudienceDao implements AudienceDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
     private static final String SQL_GET_ALL_AUDIENCES = "SELECT * FROM audiences";
     private static final String SQL_AUDIENCE_BY_ROOM_NUMBER = "SELECT * FROM audiences WHERE room_number = :roomNumber";
 
     private final SessionFactory sessionFactory;
 
-    public JdbcAudienceDao(SessionFactory sessionFactory) {
+    public HibernateAudienceDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -46,7 +46,6 @@ public class JdbcAudienceDao implements AudienceDao {
         logger.debug("Saving audience");
         try {
             sessionFactory.getCurrentSession().persist(audience);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Audience was not saved");
         }
@@ -57,7 +56,6 @@ public class JdbcAudienceDao implements AudienceDao {
         logger.debug("Updating audience with id {}", audience.getId());
         try {
             sessionFactory.getCurrentSession().update(audience);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Audience with id %d was not updated", audience.getId()));
         }
@@ -69,7 +67,6 @@ public class JdbcAudienceDao implements AudienceDao {
         try {
             Optional<Audience> audienceForDelete = getById(id);
             audienceForDelete.ifPresent(audience -> sessionFactory.getCurrentSession().remove(audience));
-            sessionFactory.getCurrentSession().flush();
         } catch(Exception exception) {
             throw new EntityNotDeletedException(String.format("Audience with id %d was not deleted", id));
         }

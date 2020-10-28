@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface LessonDao extends Dao<Lesson> {
 
@@ -14,4 +15,12 @@ public interface LessonDao extends Dao<Lesson> {
     List<Lesson> getAllByTeacherIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
 
     List<Lesson> getAllByAudienceIdDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
+
+    List<Lesson> getByDateForStudent(int id, LocalDate date);
+
+    List<Lesson> getByDateForTeacher(int id, LocalDate date);
+
+    List<Lesson> getByMonthForStudent(int id, LocalDate startDate);
+
+    List<Lesson> getByMonthForTeacher(int id, LocalDate startDate);
 }

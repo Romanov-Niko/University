@@ -1,8 +1,12 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.domain.Audience;
+import com.foxminded.university.domain.Lesson;
+import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Student;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,64 +20,62 @@ import java.util.Optional;
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
-class JdbcStudentDaoTest {
+class HibernateStudentDaoTest {
 
     @Autowired
     private StudentDao studentDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstStudent() {
+        Student expectedStudent = sessionFactory.getCurrentSession().find(Student.class, 1);
+
         Student actualStudent = studentDao.getById(1).orElse(null);
 
-        assertEquals(retrievedStudent, actualStudent);
+        assertEquals(expectedStudent, actualStudent);
     }
 
     @Test
     void givenNothing_whenGetAll_thenReturnedListOfAllStudents() {
-        int expectedRows = studentDao.getAll().size();
+        List<Student> expectedStudents = sessionFactory.getCurrentSession().createNativeQuery(
+                "SELECT * FROM students", Student.class).getResultList();
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "students");
-        assertEquals(expectedRows, actualRows);
+        List<Student> actualStudents = studentDao.getAll();
+
+        assertEquals(expectedStudents, actualStudents);
     }
 
     @Test
     void givenStudent_whenSave_thenAddedGivenStudent() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "students") + 1;
-
         studentDao.save(createdStudent);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "students");
-        assertEquals(expectedRows, actualRows);
+        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, 4);
+
+        assertEquals(createdStudent, actualStudent);
     }
 
     @Test
     void givenStudent_whenUpdate_thenUpdatedStudentWithEqualId() {
         studentDao.update(updatedStudent);
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "students", String.format(
-                "id = %d AND group_id = %d AND specialty = '%s' AND course = %d AND admission = '%s' " +
-                        "AND graduation = '%s' AND name = '%s' AND surname = '%s' AND date_of_birth = '%s' AND gender = '%s' " +
-                        "AND email = '%s' AND phone_number = '%s'", updatedStudent.getId(), updatedStudent.getGroupId(),
-                updatedStudent.getSpecialty(), updatedStudent.getCourse(), updatedStudent.getAdmission(),
-                updatedStudent.getGraduation(), updatedStudent.getName(), updatedStudent.getSurname(),
-                updatedStudent.getDateOfBirth(), updatedStudent.getGender(), updatedStudent.getEmail(), updatedStudent.getPhoneNumber()));
-        assertEquals(1, actualNumber);
+        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, 1);
+
+        assertEquals(updatedStudent, actualStudent);
     }
 
     @Test
     void givenId3_whenDelete_thenDeletedThirdStudent() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "students") - 1;
-
         studentDao.delete(3);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "students");
-        assertEquals(expectedRows, actualRows);
+        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, 3);
+
+        assertNull(actualStudent);
     }
 
     @Test
@@ -98,8 +100,8 @@ class JdbcStudentDaoTest {
     }
 
     @Test
-    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "students");
+    void givenEmptyTable_whenGetAll_thenReturnedEmptyList() {
+        sessionFactory.getCurrentSession().createNativeQuery("DELETE FROM students").executeUpdate();
 
         List<Student> actualStudents = studentDao.getAll();
 

@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Student;
@@ -16,9 +16,9 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcStudentDao implements StudentDao {
+public class HibernateStudentDao implements StudentDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcStudentDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateStudentDao.class);
 
     private static final String SQL_GET_ALL_STUDENTS = "SELECT * FROM students";
     private static final String SQL_GET_ALL_STUDENTS_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = :groupId";
@@ -28,7 +28,7 @@ public class JdbcStudentDao implements StudentDao {
 
     private final SessionFactory sessionFactory;
 
-    public JdbcStudentDao(SessionFactory sessionFactory) {
+    public HibernateStudentDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -49,7 +49,6 @@ public class JdbcStudentDao implements StudentDao {
         logger.debug("Saving student");
         try {
             sessionFactory.getCurrentSession().persist(student);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Student was not saved");
         }
@@ -60,7 +59,6 @@ public class JdbcStudentDao implements StudentDao {
         logger.debug("Updating student with id {}", student.getId());
         try {
             sessionFactory.getCurrentSession().merge(student);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Student with id %d was not updated", student.getId()));
         }
@@ -72,7 +70,6 @@ public class JdbcStudentDao implements StudentDao {
         try {
             Optional<Student> studentForDelete = getById(id);
             studentForDelete.ifPresent(student -> sessionFactory.getCurrentSession().remove(student));
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotDeletedException(String.format("Student with id %d was not deleted", id));
         }

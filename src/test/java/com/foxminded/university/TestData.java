@@ -56,7 +56,7 @@ public class TestData {
             retrievedAudience, retrievedLessonTime, LocalDate.parse("2017-06-01"));
     public static Lesson createdLesson = new Lesson(retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
             retrievedAudience, retrievedLessonTime, LocalDate.parse("2017-06-01"));
-    public static Lesson updatedLesson = new Lesson(2, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
+    public static Lesson updatedLesson = new Lesson(1, retrievedSubject, retrievedTeacher, singletonList(retrievedGroup),
             retrievedAudience, retrievedLessonTime, LocalDate.parse("3000-01-01"));
 
     public static DaySchedule retrievedDaySchedule = new DaySchedule(LocalDate.parse("2017-06-01"), singletonList(retrievedLesson));

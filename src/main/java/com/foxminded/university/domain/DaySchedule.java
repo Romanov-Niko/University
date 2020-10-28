@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class DaySchedule {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate day;
-    private List<Lesson> lessons;
+    private List<Lesson> lessons = new ArrayList<>();
 
     public DaySchedule() {
     }
@@ -20,6 +21,10 @@ public class DaySchedule {
     public DaySchedule(LocalDate day, List<Lesson> lessons) {
         this.day = day;
         this.lessons = lessons;
+    }
+
+    public DaySchedule(LocalDate day) {
+        this.day = day;
     }
 
     public LocalDate getDay() {

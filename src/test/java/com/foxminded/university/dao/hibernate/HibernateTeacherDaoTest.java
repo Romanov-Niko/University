@@ -1,8 +1,10 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,62 +18,62 @@ import java.util.Optional;
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
-class JdbcTeacherDaoTest {
+class HibernateTeacherDaoTest {
 
     @Autowired
     private TeacherDao teacherDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstTeacher() {
+        Teacher expectedTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 1);
+
         Teacher actualTeacher = teacherDao.getById(1).orElse(null);
 
-        assertEquals(retrievedTeacher, actualTeacher);
+        assertEquals(expectedTeacher, actualTeacher);
     }
 
     @Test
     void givenNothing_whenGetAll_thenReturnedListOfAllTeachers() {
-        int expectedRows = teacherDao.getAll().size();
+        List<Teacher> expectedTeachers = sessionFactory.getCurrentSession().createNativeQuery(
+                "SELECT * FROM teachers", Teacher.class).getResultList();
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers");
-        assertEquals(expectedRows, actualRows);
+        List<Teacher> actualTeachers = teacherDao.getAll();
+
+        assertEquals(expectedTeachers, actualTeachers);
     }
 
     @Test
     void givenTeacher_whenSave_thenAddedGivenTeacher() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers") + 1;
-
         teacherDao.save(createdTeacher);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers");
-        assertEquals(expectedRows, actualRows);
+        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 4);
+
+        assertEquals(createdTeacher, actualTeacher);
     }
 
     @Test
     void givenTeacher_whenUpdate_thenUpdatedTeacherWithEqualId() {
         teacherDao.update(updatedTeacher);
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "teachers", String.format(
-                "id = %d AND name = '%s' AND surname = '%s' AND date_of_birth = '%s' AND gender = '%s'" +
-                        "AND email = '%s' AND phone_number = '%s'", updatedTeacher.getId(), updatedTeacher.getName(), updatedTeacher.getSurname(),
-                updatedTeacher.getDateOfBirth(), updatedTeacher.getGender(), updatedTeacher.getEmail(), updatedTeacher.getPhoneNumber()));
+        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 1);
 
-        assertEquals(1, actualNumber);
+        assertEquals(updatedTeacher, actualTeacher);
     }
 
     @Test
     void givenId3_whenDelete_thenDeletedThirdTeacher() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers") - 1;
-
         teacherDao.delete(3);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers");
-        assertEquals(expectedRows, actualRows);
+        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 3);
+
+        assertNull(actualTeacher);
     }
 
     @Test
@@ -82,11 +84,11 @@ class JdbcTeacherDaoTest {
     }
 
     @Test
-    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
+    void givenEmptyTable_whenGetAll_thenReturnedEmptyList() {
+        sessionFactory.getCurrentSession().createNativeQuery("DELETE FROM teachers").executeUpdate();
 
-        List<Teacher> actualTeachers = teacherDao.getAll();
+        List<Teacher> actualTeacherts = teacherDao.getAll();
 
-        assertEquals(emptyList(), actualTeachers);
+        assertEquals(emptyList(), actualTeacherts);
     }
 }

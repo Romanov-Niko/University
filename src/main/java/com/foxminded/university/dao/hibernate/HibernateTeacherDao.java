@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.domain.Teacher;
@@ -16,15 +16,15 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcTeacherDao implements TeacherDao {
+public class HibernateTeacherDao implements TeacherDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateTeacherDao.class);
 
     private static final String SQL_GET_ALL_TEACHERS = "SELECT * FROM teachers";
 
     private final SessionFactory sessionFactory;
 
-    public JdbcTeacherDao(SessionFactory sessionFactory) {
+    public HibernateTeacherDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -45,7 +45,6 @@ public class JdbcTeacherDao implements TeacherDao {
         logger.debug("Saving teacher");
         try {
             sessionFactory.getCurrentSession().persist(teacher);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Teacher was not saved");
         }
@@ -56,7 +55,6 @@ public class JdbcTeacherDao implements TeacherDao {
         logger.error("Updating teacher with id {}", teacher.getId());
         try {
             sessionFactory.getCurrentSession().merge(teacher);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Teacher with id %d was not updated", teacher.getId()));
         }

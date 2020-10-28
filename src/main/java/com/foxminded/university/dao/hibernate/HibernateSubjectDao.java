@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.domain.Subject;
@@ -16,9 +16,9 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcSubjectDao implements SubjectDao {
+public class HibernateSubjectDao implements SubjectDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateSubjectDao.class);
 
     private static final String SQL_GET_ALL_SUBJECTS = "SELECT * FROM subjects";
     private static final String SQL_GET_ALL_SUBJECTS_BY_TEACHER_ID = "SELECT teachers_subjects.teacher_id, subjects.id, subjects.name, " +
@@ -31,7 +31,7 @@ public class JdbcSubjectDao implements SubjectDao {
 
     private final SessionFactory sessionFactory;
 
-    public JdbcSubjectDao(SessionFactory sessionFactory) {
+    public HibernateSubjectDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -52,7 +52,6 @@ public class JdbcSubjectDao implements SubjectDao {
         logger.debug("Saving subject");
         try {
             sessionFactory.getCurrentSession().persist(subject);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Subject was not saved");
         }
@@ -63,7 +62,6 @@ public class JdbcSubjectDao implements SubjectDao {
         logger.debug("Updating subject with id {}", subject.getId());
         try {
             sessionFactory.getCurrentSession().merge(subject);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Subject with id %d was not updated", subject.getId()));
         }
@@ -75,7 +73,6 @@ public class JdbcSubjectDao implements SubjectDao {
         try {
             Optional<Subject> subjectForDelete = getById(id);
             subjectForDelete.ifPresent(subject -> sessionFactory.getCurrentSession().remove(subject));
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotDeletedException(String.format("Subject with id %d was not deleted", id));
         }

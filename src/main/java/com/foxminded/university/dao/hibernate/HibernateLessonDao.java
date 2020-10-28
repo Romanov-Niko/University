@@ -1,6 +1,7 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.LessonDao;
+import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.exception.EntityNotDeletedException;
 import com.foxminded.university.exception.EntityNotSavedException;
@@ -12,14 +13,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 @Transactional
 @Repository
-public class JdbcLessonDao implements LessonDao {
+public class HibernateLessonDao implements LessonDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcLessonDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateLessonDao.class);
 
     private static final String SQL_GET_ALL_LESSONS = "SELECT * FROM lessons";
     private static final String SQL_GET_ALL_LESSONS_BY_DAY = "SELECT * FROM lessons WHERE date = :date";
@@ -27,10 +31,22 @@ public class JdbcLessonDao implements LessonDao {
             "WHERE teacher_id = :teacherId AND date = :date AND lesson_time_id = :lessonTimeId";
     private static final String SQL_GET_ALL_BY_AUDIENCE_ID_DATE_AND_TIME_ID = "SELECT * FROM lessons " +
             "WHERE audience_id = :audienceId AND date = :date AND lesson_time_id = :lessonTimeId";
+    private static final String SQL_GET_LESSONS_BY_DAY_FOR_STUDENT = "SELECT * FROM lessons " +
+            "LEFT JOIN lessons_groups ON lessons.id = lessons_groups.lesson_id " +
+            "LEFT JOIN students ON lessons_groups.group_id = students.group_id " +
+            "WHERE students.id = :studentId AND lessons.date = :day";
+    private static final String SQL_GET_LESSONS_BY_MONTH_FOR_STUDENT = "SELECT * FROM lessons " +
+            "LEFT JOIN lessons_groups ON lessons.id = lessons_groups.lesson_id " +
+            "LEFT JOIN students ON lessons_groups.group_id = students.group_id " +
+            "WHERE students.id = :studentId AND lessons.date >= :startDay AND lessons.date < :endDay";
+    private static final String SQL_GET_LESSONS_BY_DAY_FOR_TEACHER = "SELECT * FROM lessons " +
+            "WHERE lessons.teacher_id = :teacherId AND lessons.date = :day";
+    private static final String SQL_GET_LESSONS_BY_MONTH_FOR_TEACHER = "SELECT * FROM lessons " +
+            "WHERE lessons.teacher_id = :teacherId AND lessons.date >= :startDay AND lessons.date < :endDay";
 
     private final SessionFactory sessionFactory;
 
-    public JdbcLessonDao(SessionFactory sessionFactory) {
+    public HibernateLessonDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -51,7 +67,6 @@ public class JdbcLessonDao implements LessonDao {
         logger.debug("Saving lesson");
         try {
             sessionFactory.getCurrentSession().persist(lesson);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Lesson was not saved");
         }
@@ -62,7 +77,6 @@ public class JdbcLessonDao implements LessonDao {
         logger.debug("Updating lesson with id {}", lesson.getId());
         try {
             sessionFactory.getCurrentSession().merge(lesson);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Lesson with id %d was not updated", lesson.getId()));
         }
@@ -74,7 +88,6 @@ public class JdbcLessonDao implements LessonDao {
         try {
             Optional<Lesson> lessonForDelete = getById(id);
             lessonForDelete.ifPresent(lesson -> sessionFactory.getCurrentSession().remove(lesson));
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotDeletedException(String.format("Lesson with id %d was not deleted", id));
         }
@@ -105,6 +118,44 @@ public class JdbcLessonDao implements LessonDao {
                 .setParameter("audienceId", id)
                 .setParameter("date", date)
                 .setParameter("lessonTimeId", lessonTimeId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Lesson> getByDateForStudent(int id, LocalDate day) {
+        logger.debug("Retrieving lessons for date {} for student with id {}", day, id);
+        return sessionFactory.getCurrentSession().createNativeQuery(SQL_GET_LESSONS_BY_DAY_FOR_STUDENT, Lesson.class)
+                .setParameter("studentId", id)
+                .setParameter("day", day)
+                .getResultList();
+    }
+
+    @Override
+    public List<Lesson> getByDateForTeacher(int id, LocalDate day) {
+        logger.debug("Retrieving lessons for date {} for teacher with id {}", day, id);
+        return sessionFactory.getCurrentSession().createNativeQuery(SQL_GET_LESSONS_BY_DAY_FOR_TEACHER, Lesson.class)
+                .setParameter("teacherId", id)
+                .setParameter("day", day)
+                .getResultList();
+    }
+
+    @Override
+    public List<Lesson> getByMonthForStudent(int id, LocalDate startDay) {
+        logger.debug("Retrieving lessons for month from {} for student with id {}", startDay, id);
+        return sessionFactory.getCurrentSession().createNativeQuery(SQL_GET_LESSONS_BY_MONTH_FOR_STUDENT, Lesson.class)
+                .setParameter("studentId", id)
+                .setParameter("startDay", startDay)
+                .setParameter("endDay", startDay.plusMonths(1))
+                .getResultList();
+    }
+
+    @Override
+    public List<Lesson> getByMonthForTeacher(int id, LocalDate startDay) {
+        logger.debug("Retrieving lessons for month from {} for teacher with id {}", startDay, id);
+        return sessionFactory.getCurrentSession().createNativeQuery(SQL_GET_LESSONS_BY_MONTH_FOR_TEACHER, Lesson.class)
+                .setParameter("teacherId", id)
+                .setParameter("startDay", startDay)
+                .setParameter("endDay", startDay.plusMonths(1))
                 .getResultList();
     }
 }

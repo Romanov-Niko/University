@@ -42,8 +42,8 @@ public class DayScheduleController {
 
     @PostMapping(value = "/student", params = "action=day")
     public String viewDailyStudentSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int studentId, Model model) {
-        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForStudent(studentId, date);
-        daySchedule.ifPresent(schedule -> model.addAttribute("lessons", schedule.getLessons()));
+        DaySchedule daySchedule = dayScheduleService.getByDateForStudent(studentId, date);
+        model.addAttribute("lessons", daySchedule.getLessons());
         return "daysschedules/daysschedules";
     }
 
@@ -58,8 +58,8 @@ public class DayScheduleController {
 
     @PostMapping(value = "/teacher", params = "action=day")
     public String viewDailyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        Optional<DaySchedule> daySchedule = dayScheduleService.getByDateForTeacher(teacherId, date);
-        daySchedule.ifPresent(schedule -> model.addAttribute("lessons", schedule.getLessons()));
+        DaySchedule daySchedule = dayScheduleService.getByDateForTeacher(teacherId, date);
+        model.addAttribute("lessons", daySchedule.getLessons());
         return "daysschedules/daysschedules";
     }
 

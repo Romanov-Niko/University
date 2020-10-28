@@ -19,7 +19,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-public class JPAConfig {
+public class HibernateConfig {
 
     @Bean
     public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {

@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.domain.Group;
@@ -16,9 +16,9 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class JdbcGroupDao implements GroupDao {
+public class HibernateGroupDao implements GroupDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcGroupDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateGroupDao.class);
 
     private static final String SQL_GET_ALL_GROUPS = "SELECT * FROM groups";
     private static final String SQL_GET_ALL_GROUPS_BY_LESSON_ID = "SELECT lessons_groups.lesson_id, groups.id, groups.name " +
@@ -30,7 +30,7 @@ public class JdbcGroupDao implements GroupDao {
 
     private final SessionFactory sessionFactory;
 
-    public JdbcGroupDao(SessionFactory sessionFactory) {
+    public HibernateGroupDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -51,7 +51,6 @@ public class JdbcGroupDao implements GroupDao {
         logger.debug("Saving group");
         try {
             sessionFactory.getCurrentSession().persist(group);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotSavedException("Group was not saved");
         }
@@ -62,7 +61,6 @@ public class JdbcGroupDao implements GroupDao {
         logger.debug("Updating group with id {}", group.getId());
         try {
             sessionFactory.getCurrentSession().merge(group);
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotUpdatedException(String.format("Group with id %d was not updated", group.getId()));
         }
@@ -74,7 +72,6 @@ public class JdbcGroupDao implements GroupDao {
         try {
             Optional<Group> groupForDelete = getById(id);
             groupForDelete.ifPresent(group -> sessionFactory.getCurrentSession().remove(group));
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception exception) {
             throw new EntityNotDeletedException(String.format("Group with id %d was not deleted", id));
         }
