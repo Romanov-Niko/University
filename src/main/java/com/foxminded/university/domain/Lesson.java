@@ -19,7 +19,7 @@ public class Lesson {
     private int id;
     @OneToOne
     private Subject subject;
-    @OneToOne(targetEntity = Teacher.class)
+    @OneToOne
     private Teacher teacher;
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)

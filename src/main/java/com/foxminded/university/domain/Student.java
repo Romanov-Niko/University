@@ -96,7 +96,7 @@ public class Student extends Person {
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
         return id == student.id &&
-                groupId == student.groupId &&
+                groupId.equals(student.groupId) &&
                 specialty.equals(student.specialty) &&
                 course.equals(student.course) &&
                 admission.equals(student.admission) &&
