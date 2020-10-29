@@ -1,8 +1,11 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.LessonTimeDao;
+import com.foxminded.university.domain.Group;
+import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.LessonTime;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,60 +20,62 @@ import java.util.Optional;
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
-class JdbcLessonTimeDaoTest {
+class HibernateLessonTimeDaoTest {
 
     @Autowired
     private LessonTimeDao lessonTimeDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstLessonTime() {
+        LessonTime expectedLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, 1);
+
         LessonTime actualLessonTime = lessonTimeDao.getById(1).orElse(null);
 
-        assertEquals(retrievedLessonTime, actualLessonTime);
+        assertEquals(expectedLessonTime, actualLessonTime);
     }
 
     @Test
     void givenNothing_whenGetAll_thenReturnedListOfAllLessonsTimes() {
-        int expectedRows = lessonTimeDao.getAll().size();
+        List<LessonTime> expectedLessonsTimes = sessionFactory.getCurrentSession().createNativeQuery(
+                "SELECT * FROM lessons_times", LessonTime.class).getResultList();
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
-        assertEquals(expectedRows, actualRows);
+        List<LessonTime> actualLessonsTimes = lessonTimeDao.getAll();
+
+        assertEquals(expectedLessonsTimes, actualLessonsTimes);
     }
 
     @Test
     void givenLessonTime_whenSave_thenAddedGivenLessonTime() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times") + 1;
-
         lessonTimeDao.save(createdLessonTime);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
-        assertEquals(expectedRows, actualRows);
+        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, createdLessonTime.getId());
+
+        assertEquals(createdLessonTime, actualLessonTime);
     }
 
     @Test
     void givenLessonTime_whenUpdate_thenUpdatedLessonTimeWithEqualId() {
         lessonTimeDao.update(updatedLessonTime);
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "lessons_times", String.format(
-                "id = %d AND begin_time = '%s' AND end_time = '%s'", updatedLessonTime.getId(),
-                updatedLessonTime.getBegin(), updatedLessonTime.getEnd()));
-        assertEquals(1, actualNumber);
+        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, updatedLessonTime.getId());
+
+        assertEquals(updatedLessonTime, actualLessonTime);
     }
 
     @Test
     void givenId3_whenDelete_thenDeletedThirdLessonTime() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times") - 1;
-
         lessonTimeDao.delete(3);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "lessons_times");
-        assertEquals(expectedRows, actualRows);
+        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, 3);
+
+        assertNull(actualLessonTime);
     }
 
     @Test
@@ -88,8 +93,8 @@ class JdbcLessonTimeDaoTest {
     }
 
     @Test
-    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "lessons_times");
+    void givenEmptyTable_whenGetAll_thenReturnedEmptyList() {
+        sessionFactory.getCurrentSession().createNativeQuery("DELETE FROM lessons_times").executeUpdate();
 
         List<LessonTime> actualLessonsTimes = lessonTimeDao.getAll();
 

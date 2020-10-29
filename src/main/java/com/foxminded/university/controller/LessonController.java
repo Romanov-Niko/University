@@ -7,6 +7,7 @@ import com.foxminded.university.editor.SubjectEditor;
 import com.foxminded.university.editor.TeacherEditor;
 import com.foxminded.university.service.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,7 @@ public class LessonController {
         return "lessons/new";
     }
 
+    @Transactional
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
         Optional<Lesson> lesson = lessonService.getById(id);

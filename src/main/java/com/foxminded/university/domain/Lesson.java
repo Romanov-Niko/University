@@ -1,19 +1,37 @@
 package com.foxminded.university.domain;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "lessons")
 public class Lesson {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @OneToOne
     private Subject subject;
+    @OneToOne
     private Teacher teacher;
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "lessons_groups",
+            joinColumns = @JoinColumn(name = "lesson_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups;
+    @OneToOne
     private Audience audience;
+    @OneToOne
+    @JoinColumn(name = "lesson_time_id")
     private LessonTime lessonTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

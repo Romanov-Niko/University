@@ -61,7 +61,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewDailyStudentSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(Optional.of(retrievedDaySchedule));
+        when(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
 
         mockMvc.perform(post("/daysschedules/student")
                 .param("action", "day")
@@ -87,7 +87,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewDailyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(Optional.of(retrievedDaySchedule));
+        when(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
 
         mockMvc.perform(post("/daysschedules/teacher")
                 .param("action", "day")

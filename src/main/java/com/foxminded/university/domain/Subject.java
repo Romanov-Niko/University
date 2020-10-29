@@ -2,12 +2,18 @@ package com.foxminded.university.domain;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "subjects")
 public class Subject {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @Column(name = "credit_hours")
     private Integer creditHours;
     private Integer course;
     private String specialty;

@@ -15,6 +15,9 @@ import org.springframework.jndi.JndiTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.util.Objects;
 
@@ -34,11 +37,6 @@ public class ApplicationConfig {
     @Bean
     public JdbcTemplate jdbcTemplate(final DataSource dataSource) {
         return new JdbcTemplate(dataSource);
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(final DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean

@@ -1,8 +1,10 @@
-package com.foxminded.university.dao.jdbc;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.ApplicationTestConfig;
 import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.domain.Student;
 import com.foxminded.university.domain.Subject;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,61 +19,62 @@ import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringJUnitConfig(ApplicationTestConfig.class)
-class JdbcSubjectDaoTest {
+class HibernateSubjectDaoTest {
 
     @Autowired
     private SubjectDao subjectDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     @Test
     void givenId1_whenGetById_thenReturnedFirstSubject() {
+        Subject expectedSubject = sessionFactory.getCurrentSession().find(Subject.class, 1);
+
         Subject actualSubject = subjectDao.getById(1).orElse(null);
 
-        assertEquals(retrievedSubject, actualSubject);
+        assertEquals(expectedSubject, actualSubject);
     }
 
     @Test
     void givenNothing_whenGetAll_thenReturnedListOfAllSubjects() {
-        int expectedRows = subjectDao.getAll().size();
+        List<Subject> expectedSubjects = sessionFactory.getCurrentSession().createNativeQuery(
+                "SELECT * FROM subjects", Subject.class).getResultList();
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
-        assertEquals(expectedRows, actualRows);
+        List<Subject> actualSubjects = subjectDao.getAll();
+
+        assertEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
     void givenSubject_whenSave_thenAddedGivenSubject() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects") + 1;
-
         subjectDao.save(createdSubject);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
-        assertEquals(expectedRows, actualRows);
+        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, createdSubject.getId());
+
+        assertEquals(createdSubject, actualSubject);
     }
 
     @Test
     void givenSubject_whenUpdate_thenUpdatedSubjectWithEqualId() {
         subjectDao.update(updatedSubject);
 
-        int actualNumber = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "subjects", String.format(
-                "id = %d AND name = '%s' AND credit_hours = %d AND specialty = '%s'",
-                updatedSubject.getId(), updatedSubject.getName(), updatedSubject.getCreditHours(), updatedSubject.getSpecialty()
-        ));
-        assertEquals(1, actualNumber);
+        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, updatedSubject.getId());
+
+        assertEquals(updatedSubject, actualSubject);
     }
 
     @Test
     void givenId3_whenDelete_thenDeletedThirdSubject() {
-        int expectedRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects") - 1;
-
         subjectDao.delete(3);
 
-        int actualRows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "subjects");
-        assertEquals(expectedRows, actualRows);
+        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, 3);
+
+        assertNull(actualSubject);
     }
 
     @Test
@@ -98,8 +101,8 @@ class JdbcSubjectDaoTest {
     }
 
     @Test
-    void givenNonExistentTable_whenGetAll_thenReturnedEmptyList() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+    void givenEmptyTable_whenGetAll_thenReturnedEmptyList() {
+        sessionFactory.getCurrentSession().createNativeQuery("DELETE FROM subjects").executeUpdate();
 
         List<Subject> actualSubjects = subjectDao.getAll();
 

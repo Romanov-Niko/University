@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.DayScheduleDao;
+import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,88 +26,86 @@ import static org.mockito.Mockito.verify;
 class DayScheduleServiceTest {
 
     @Mock
-    private DayScheduleDao dayScheduleDao;
+    private LessonDao lessonDao;
 
     @InjectMocks
     private DayScheduleService dayScheduleService;
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedScheduleOfGivenDate() {
-        given(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.of(retrievedDaySchedule));
+        given(lessonDao.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
 
-        Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
+        DaySchedule actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByDateForStudent(1, LocalDate.parse("2017-06-01"));
-        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
+        assertEquals(retrievedDaySchedule, actualDaySchedule);
     }
 
     @Test
     void givenId1AndFirstDay_whenGetByDayForTeacher_thenCalledDayScheduleDaoGetByDateForTeacherAndReturnedScheduleOfGivenDate() {
-        given(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.of(retrievedDaySchedule));
+        given(lessonDao.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
 
-        Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
+        DaySchedule actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
-        assertEquals(retrievedDaySchedule, actualDaySchedule.get());
+        assertEquals(retrievedDaySchedule, actualDaySchedule);
     }
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedAllSchedulesOfGivenMonth() {
-        given(dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedDaySchedule));
+        given(lessonDao.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
+        verify(lessonDao, times(1)).getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
         assertEquals(singletonList(retrievedDaySchedule), actualDaySchedules);
     }
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForTeacherAndReturnedAllSchedulesOfGivenMonth() {
-        given(dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedDaySchedule));
+        given(lessonDao.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
+        verify(lessonDao, times(1)).getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
         assertEquals(singletonList(retrievedDaySchedule), actualDaySchedules);
     }
 
     @Test
-    void givenDataThatProducesEmptyReturn_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedOptionalEmpty() {
-        given(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.empty());
+    void givenDataThatProducesEmptyReturn_whenGetByDayForStudent_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedScheduleWithoutLessons() {
+        given(lessonDao.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
-        Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
+        DaySchedule actualDaySchedule = dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByDateForStudent(1, LocalDate.parse("2017-06-01"));
-        assertEquals(Optional.empty(), actualDaySchedule);
+        verify(lessonDao, times(1)).getByDateForStudent(1, LocalDate.parse("2017-06-01"));
+        assertEquals(new DaySchedule(LocalDate.parse("2017-06-01")), actualDaySchedule);
     }
 
     @Test
-    void givenDataThatProducesEmptyReturn_whenGetByDayForTeacher_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedOptionalEmpty() {
-        given(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(Optional.empty());
+    void givenDataThatProducesEmptyReturn_whenGetByDayForTeacher_thenCalledDayScheduleDaoGetByDateForStudentAndReturnedScheduleWithoutLessons() {
+        given(lessonDao.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
-        Optional<DaySchedule> actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
+        DaySchedule actualDaySchedule = dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
-        assertEquals(Optional.empty(), actualDaySchedule);
+        verify(lessonDao, times(1)).getByDateForTeacher(1, LocalDate.parse("2017-06-01"));
+        assertEquals(new DaySchedule(LocalDate.parse("2017-06-01")), actualDaySchedule);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+        given(lessonDao.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
+        verify(lessonDao, times(1)).getByMonthForStudent(1, LocalDate.parse("2017-06-01"));
         assertEquals(emptyList(), actualDaySchedules);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+        given(lessonDao.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(dayScheduleDao, times(1)).getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
+        verify(lessonDao, times(1)).getByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
         assertEquals(emptyList(), actualDaySchedules);
     }
 }
