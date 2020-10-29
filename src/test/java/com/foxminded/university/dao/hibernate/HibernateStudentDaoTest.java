@@ -55,7 +55,7 @@ class HibernateStudentDaoTest {
     void givenStudent_whenSave_thenAddedGivenStudent() {
         studentDao.save(createdStudent);
 
-        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, 4);
+        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, createdStudent.getId());
 
         assertEquals(createdStudent, actualStudent);
     }
@@ -64,7 +64,7 @@ class HibernateStudentDaoTest {
     void givenStudent_whenUpdate_thenUpdatedStudentWithEqualId() {
         studentDao.update(updatedStudent);
 
-        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, 1);
+        Student actualStudent = sessionFactory.getCurrentSession().find(Student.class, updatedStudent.getId());
 
         assertEquals(updatedStudent, actualStudent);
     }

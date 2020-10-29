@@ -53,7 +53,7 @@ class HibernateAudienceDaoTest {
     void givenAudience_whenSave_thenAddedGivenAudience() {
         audienceDao.save(createdAudience);
 
-        Audience actualAudience = sessionFactory.getCurrentSession().find(Audience.class, 4);
+        Audience actualAudience = sessionFactory.getCurrentSession().find(Audience.class, createdAudience.getId());
 
         assertEquals(createdAudience, actualAudience);
     }
@@ -62,7 +62,7 @@ class HibernateAudienceDaoTest {
     void givenAudience_whenUpdate_thenUpdatedAudienceWithEqualId() {
         audienceDao.update(updatedAudience);
 
-        Audience actualAudience = sessionFactory.getCurrentSession().find(Audience.class, 1);
+        Audience actualAudience = sessionFactory.getCurrentSession().find(Audience.class, updatedAudience.getId());
 
         assertEquals(updatedAudience, actualAudience);
     }

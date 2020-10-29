@@ -53,7 +53,7 @@ class HibernateTeacherDaoTest {
     void givenTeacher_whenSave_thenAddedGivenTeacher() {
         teacherDao.save(createdTeacher);
 
-        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 4);
+        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, createdTeacher.getId());
 
         assertEquals(createdTeacher, actualTeacher);
     }
@@ -62,7 +62,7 @@ class HibernateTeacherDaoTest {
     void givenTeacher_whenUpdate_thenUpdatedTeacherWithEqualId() {
         teacherDao.update(updatedTeacher);
 
-        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, 1);
+        Teacher actualTeacher = sessionFactory.getCurrentSession().find(Teacher.class, updatedTeacher.getId());
 
         assertEquals(updatedTeacher, actualTeacher);
     }

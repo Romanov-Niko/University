@@ -54,7 +54,7 @@ class HibernateSubjectDaoTest {
     void givenSubject_whenSave_thenAddedGivenSubject() {
         subjectDao.save(createdSubject);
 
-        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, 4);
+        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, createdSubject.getId());
 
         assertEquals(createdSubject, actualSubject);
     }
@@ -63,7 +63,7 @@ class HibernateSubjectDaoTest {
     void givenSubject_whenUpdate_thenUpdatedSubjectWithEqualId() {
         subjectDao.update(updatedSubject);
 
-        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, 1);
+        Subject actualSubject = sessionFactory.getCurrentSession().find(Subject.class, updatedSubject.getId());
 
         assertEquals(updatedSubject, actualSubject);
     }

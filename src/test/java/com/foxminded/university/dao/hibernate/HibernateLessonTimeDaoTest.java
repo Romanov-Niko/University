@@ -55,7 +55,7 @@ class HibernateLessonTimeDaoTest {
     void givenLessonTime_whenSave_thenAddedGivenLessonTime() {
         lessonTimeDao.save(createdLessonTime);
 
-        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, 4);
+        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, createdLessonTime.getId());
 
         assertEquals(createdLessonTime, actualLessonTime);
     }
@@ -64,7 +64,7 @@ class HibernateLessonTimeDaoTest {
     void givenLessonTime_whenUpdate_thenUpdatedLessonTimeWithEqualId() {
         lessonTimeDao.update(updatedLessonTime);
 
-        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, 1);
+        LessonTime actualLessonTime = sessionFactory.getCurrentSession().find(LessonTime.class, updatedLessonTime.getId());
 
         assertEquals(updatedLessonTime, actualLessonTime);
     }

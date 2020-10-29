@@ -54,7 +54,7 @@ class HibernateGroupDaoTest {
     void givenGroup_whenSave_thenAddedGivenGroup() {
         groupDao.save(createdGroup);
 
-        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, 4);
+        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, createdGroup.getId());
 
         assertEquals(createdGroup, actualGroup);
     }
@@ -63,7 +63,7 @@ class HibernateGroupDaoTest {
     void givenGroup_whenUpdate_thenUpdatedGroupWithEqualId() {
         groupDao.update(updatedGroup);
 
-        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, 1);
+        Group actualGroup = sessionFactory.getCurrentSession().find(Group.class, updatedGroup.getId());
 
         assertEquals(updatedGroup, actualGroup);
     }
