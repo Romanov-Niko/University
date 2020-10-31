@@ -1,14 +1,12 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.*;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;

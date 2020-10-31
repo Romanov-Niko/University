@@ -9,7 +9,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
 @Configuration
-@Import({ApplicationConfig.class, HibernateConfig.class})
+@Import({DataSourceConfig.class, HibernateConfig.class})
 public class ApplicationTestConfig {
 
     @Bean

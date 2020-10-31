@@ -4,7 +4,6 @@ import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

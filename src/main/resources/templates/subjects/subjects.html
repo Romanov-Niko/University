@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/audiences">AUDIENCES<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/groups">GROUPS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/lessons">LESSONS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/lessonstimes">LESSONS TIMES</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/students">STUDENTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/subjects">SUBJECTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/teachers">TEACHERS</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container my-2">
+    <div class="card">
+        <div class="card-body">
+            <div th:switch="${subjects}" class="container my-5">
+                <p class="my-5">
+                    <a href="/subjects/new" class="btn btn-primary"><i class="fas fa-user-plus ml-2"> ADD SUBJECT</i></a>
+                </p>
+                <div class="col-md-10">
+                    <h2 th:case="null">NO SUBJECTS YET!</h2>
+                    <div th:case="*">
+                        <table class="table table-striped table-responsive-md">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>NAME</th>
+                                <th>CREDIT HOURS</th>
+                                <th>COURSE</th>
+                                <th>SPECIALTY</th>
+                                <th>EDIT</th>
+                                <th>DELETE</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="subject : ${subjects}">
+                                <td th:text="${subject.getId()}"></td>
+                                <td th:text="${subject.getName()}"></td>
+                                <td th:text="${subject.getCreditHours()}"></td>
+                                <td th:text="${subject.getCourse()}"></td>
+                                <td th:text="${subject.getSpecialty()}"></td>
+                                <td><a th:href="@{/subjects/edit/{id}(id=${subject.getId()})}" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                <td><a th:href="@{/subjects/delete/{id}(id=${subject.getId()})}" class="btn btn-primary"><i class="fas fa-trash-alt"></i></a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,6 +1,5 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.service.DayScheduleService;
@@ -8,13 +7,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/daysschedules")

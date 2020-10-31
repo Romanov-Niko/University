@@ -1,9 +1,10 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Subject;
-import com.foxminded.university.exception.*;
+import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.SubjectNameNotUniqueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
