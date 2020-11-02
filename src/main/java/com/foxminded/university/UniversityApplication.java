@@ -14,10 +14,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @SpringBootApplication(exclude = {
-        DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class })
-@PropertySource("classpath:config.properties")
 public class UniversityApplication {
 
     public static void main(String[] args) {

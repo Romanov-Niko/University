@@ -1,5 +1,6 @@
 package com.foxminded.university.config;
 
+import com.foxminded.university.UniversityApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -9,7 +10,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
 @Configuration
-@Import({DataSourceConfig.class, HibernateConfig.class})
+@Import(HibernateConfig.class)
 public class ApplicationTestConfig {
 
     @Bean
