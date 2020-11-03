@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.repository.SubjectRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -20,8 +20,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -29,76 +27,76 @@ import static org.mockito.Mockito.*;
 class SubjectServiceTest {
 
     @Mock
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
 
     @InjectMocks
     private SubjectService subjectService;
 
     @Test
     void givenNothing_whenGetAll_thenCalledSubjectDaoGetAllAndReturnedAllSubjects() {
-        given(subjectDao.getAll()).willReturn(singletonList(retrievedSubject));
+        given(subjectRepository.findAll()).willReturn(singletonList(retrievedSubject));
 
-        List<Subject> actualSubjects = subjectService.getAll();
+        List<Subject> actualSubjects = subjectService.findAll();
 
-        verify(subjectDao, times(1)).getAll();
+        verify(subjectRepository, times(1)).findAll();
         assertEquals(singletonList(retrievedSubject), actualSubjects);
     }
 
     @Test
     void givenSubject_whenSave_thenCalledSubjectDaoSave() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
-        given(subjectDao.getByName("NEW")).willReturn(Optional.empty());
+        given(subjectRepository.findByName("NEW")).willReturn(Optional.empty());
 
         subjectService.save(createdSubject);
 
-        verify(subjectDao, times(1)).save(createdSubject);
+        verify(subjectRepository, times(1)).save(createdSubject);
     }
 
     @Test
     void givenSubject_whenUpdate_thenCalledSubjectDaoUpdate() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
 
         subjectService.update(updatedSubject);
 
-        verify(subjectDao, times(1)).update(updatedSubject);
+        verify(subjectRepository, times(1)).save(updatedSubject);
     }
 
     @Test
     void givenSubjectId_whenDelete_thenCalledSubjectDaoDelete() {
         subjectService.delete(1);
 
-        verify(subjectDao, times(1)).delete(1);
+        verify(subjectRepository, times(1)).deleteById(1);
     }
 
     @Test
     void givenTeacherId_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
-        given(subjectDao.getAllByTeacherId(1)).willReturn(singletonList(retrievedSubject));
+        given(subjectRepository.findAllByTeacherId(1)).willReturn(singletonList(retrievedSubject));
 
-        List<Subject> actualSubjects = subjectService.getAllByTeacherId(1);
+        List<Subject> actualSubjects = subjectService.findAllByTeacherId(1);
 
-        verify(subjectDao, times(1)).getAllByTeacherId(1);
+        verify(subjectRepository, times(1)).findAllByTeacherId(1);
         assertEquals(singletonList(retrievedSubject), actualSubjects);
     }
 
     @Test
     void givenEmptyTable_whenGetAll_thenCalledSubjectDaoGetAllAndReturnedEmptyList() {
-        given(subjectDao.getAll()).willReturn(emptyList());
+        given(subjectRepository.findAll()).willReturn(emptyList());
 
-        List<Subject> actualSubjects = subjectService.getAll();
+        List<Subject> actualSubjects = subjectService.findAll();
 
-        verify(subjectDao, times(1)).getAll();
+        verify(subjectRepository, times(1)).findAll();
         assertEquals(emptyList(), actualSubjects);
     }
 
     @Test
     void givenSubjectWithExistingName_whenSave_thenSubjectNameNotUniqueExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
-        given(subjectDao.getByName("NEW")).willReturn(Optional.of(retrievedSubject));
+        given(subjectRepository.findByName("NEW")).willReturn(Optional.of(retrievedSubject));
 
         Throwable exception = assertThrows(SubjectNameNotUniqueException.class, () -> subjectService.save(createdSubject));
         assertEquals("Subject with name NEW already exist", exception.getMessage());
-        verify(subjectDao, never()).save(createdSubject);
+        verify(subjectRepository, never()).save(createdSubject);
     }
 
     @Test
@@ -107,36 +105,36 @@ class SubjectServiceTest {
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> subjectService.save(createdSubject));
         assertEquals("Course number is out of bounds", exception.getMessage());
-        verify(subjectDao, never()).save(createdSubject);
+        verify(subjectRepository, never()).save(createdSubject);
     }
 
     @Test
     void givenSubjectWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 6);
-        given(subjectDao.getById(1)).willReturn(Optional.empty());
+        given(subjectRepository.findById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> subjectService.update(updatedSubject));
         assertEquals("Subject with id 1 is not present", exception.getMessage());
-        verify(subjectDao, never()).update(updatedSubject);
+        verify(subjectRepository, never()).save(updatedSubject);
     }
 
     @Test
     void givenSubjectWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(subjectService, "maxCourse", 0);
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> subjectService.update(updatedSubject));
         assertEquals("Course number is out of bounds", exception.getMessage());
-        verify(subjectDao, never()).update(updatedSubject);
+        verify(subjectRepository, never()).save(updatedSubject);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
-        given(subjectDao.getAllByTeacherId(1)).willReturn(emptyList());
+        given(subjectRepository.findAllByTeacherId(1)).willReturn(emptyList());
 
-        List<Subject> actualSubjects = subjectService.getAllByTeacherId(1);
+        List<Subject> actualSubjects = subjectService.findAllByTeacherId(1);
 
-        verify(subjectDao, times(1)).getAllByTeacherId(1);
+        verify(subjectRepository, times(1)).findAllByTeacherId(1);
         assertEquals(emptyList(), actualSubjects);
     }
 }

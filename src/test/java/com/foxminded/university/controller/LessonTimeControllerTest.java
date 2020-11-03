@@ -1,7 +1,6 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.service.LessonTimeService;
-import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,16 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
-import static com.foxminded.university.TestData.updatedLesson;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +40,7 @@ class LessonTimeControllerTest {
 
     @Test
     void whenShowAll_thenAddedModelWithAllLessonsTimesAndRedirectedToFormWithListOfLessonsTimes() throws Exception {
-        when(lessonTimeService.getAll()).thenReturn(singletonList(retrievedLessonTime));
+        when(lessonTimeService.findAll()).thenReturn(singletonList(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes"))
                 .andExpect(status().isOk())
@@ -63,7 +57,7 @@ class LessonTimeControllerTest {
 
     @Test
     void whenEdit_thenAddedLessonTimeModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(lessonTimeService.getById(1)).thenReturn(Optional.of(retrievedLessonTime));
+        when(lessonTimeService.findById(1)).thenReturn(Optional.of(retrievedLessonTime));
 
         mockMvc.perform(get("/lessonstimes/edit/1"))
                 .andExpect(status().isOk())

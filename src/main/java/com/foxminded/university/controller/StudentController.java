@@ -21,7 +21,7 @@ public class StudentController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("students", studentService.getAll());
+        model.addAttribute("students", studentService.findAll());
         return "students/students";
     }
 
@@ -32,7 +32,7 @@ public class StudentController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<Student> student = studentService.getById(id);
+        Optional<Student> student = studentService.findById(id);
         if (student.isPresent()) {
             model.addAttribute("student", student.get());
         } else {

@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.AudienceDao;
+import com.foxminded.university.repository.AudienceRepository;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -16,44 +16,44 @@ public class AudienceService {
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceService.class);
 
-    private final AudienceDao audienceDao;
+    private final AudienceRepository audienceRepository;
 
-    public AudienceService(AudienceDao audienceDao) {
-        this.audienceDao = audienceDao;
+    public AudienceService(AudienceRepository audienceRepository) {
+        this.audienceRepository = audienceRepository;
     }
 
     public Optional<Audience> getById(int id) {
-        return audienceDao.getById(id);
+        return audienceRepository.findById(id);
     }
 
     public List<Audience> getAll() {
-        return audienceDao.getAll();
+        return (List<Audience>) audienceRepository.findAll();
     }
 
     public void save(Audience audience) {
         logger.debug("Saving audience: {}", audience);
         verifyAudienceUnique(audience);
-        audienceDao.save(audience);
+        audienceRepository.save(audience);
     }
 
     public void update(Audience audience) {
         logger.debug("Updating audience by id: {}", audience);
         verifyAudienceUnique(audience);
         verifyAudiencePresent(audience.getId());
-        audienceDao.update(audience);
+        audienceRepository.save(audience);
     }
 
     public void delete(int id) {
-        audienceDao.delete(id);
+        audienceRepository.deleteById(id);
     }
 
     private void verifyAudiencePresent(int id) {
-        audienceDao.getById(id).orElseThrow(() -> new EntityNotFoundException(
+        audienceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
                 String.format("Audience with id %d is not present", id)));
     }
 
     private void verifyAudienceUnique(Audience audience) {
-        audienceDao.getByRoomNumber(audience.getRoomNumber()).ifPresent(audienceWithSameRoomNumber -> {
+        audienceRepository.findByRoomNumber(audience.getRoomNumber()).ifPresent(audienceWithSameRoomNumber -> {
             if (audience.getId() != audienceWithSameRoomNumber.getId()) {
                 throw new AudienceRoomNumberNotUniqueException(String.format("Audience with room number %d already exist", audience.getRoomNumber()));
             }

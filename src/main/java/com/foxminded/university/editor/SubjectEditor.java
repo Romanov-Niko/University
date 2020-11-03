@@ -17,7 +17,7 @@ public class SubjectEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Optional<Subject> subject = subjectService.getById(parsedId);
+        Optional<Subject> subject = subjectService.findById(parsedId);
         subject.ifPresent(this::setValue);
     }
 }

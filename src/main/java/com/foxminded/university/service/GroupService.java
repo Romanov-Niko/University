@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -23,20 +23,20 @@ public class GroupService {
     @Value("${maxGroupCapacity}")
     private int maxGroupCapacity;
 
-    private final GroupDao groupDao;
-    private final StudentDao studentDao;
+    private final GroupRepository groupRepository;
+    private final StudentRepository studentRepository;
 
-    public GroupService(GroupDao groupDao, StudentDao studentDao) {
-        this.groupDao = groupDao;
-        this.studentDao = studentDao;
+    public GroupService(GroupRepository groupRepository, StudentRepository studentRepository) {
+        this.groupRepository = groupRepository;
+        this.studentRepository = studentRepository;
     }
 
-    public Optional<Group> getById(int id) {
-        return groupDao.getById(id);
+    public Optional<Group> findById(int id) {
+        return groupRepository.findById(id);
     }
 
-    public List<Group> getAll() {
-        return groupDao.getAll();
+    public List<Group> findAll() {
+        return (List<Group>) groupRepository.findAll();
     }
 
     public void save(Group group) {
@@ -44,7 +44,7 @@ public class GroupService {
         verifyGroupSizeConsistent(group);
         verifyGroupUnique(group);
         verifyStudentsPresent(group.getStudents());
-        groupDao.save(group);
+        groupRepository.save(group);
     }
 
     public void update(Group group) {
@@ -53,23 +53,23 @@ public class GroupService {
         verifyGroupUnique(group);
         verifyGroupSizeConsistent(group);
         verifyStudentsPresent(group.getStudents());
-        groupDao.update(group);
+        groupRepository.save(group);
     }
 
     public void delete(int id) {
-        groupDao.delete(id);
+        groupRepository.deleteById(id);
     }
 
-    public List<Group> getAllByLessonId(int id) {
-        return groupDao.getAllByLessonId(id);
+    public List<Group> findAllByLessonId(int id) {
+        return groupRepository.findAllByLessonId(id);
     }
 
     private void verifyGroupPresent(int id) {
-        groupDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
+        groupRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
     }
 
     private void verifyGroupUnique(Group group) {
-        groupDao.getByName(group.getName()).ifPresent(groupWithSameName -> {
+        groupRepository.findByName(group.getName()).ifPresent(groupWithSameName -> {
             if (group.getId() != groupWithSameName.getId()) {
                 throw new GroupNameNotUniqueException(String.format("Group with name %s already exist", group.getName()));
             }
@@ -77,7 +77,7 @@ public class GroupService {
     }
 
     private void verifyStudentsPresent(List<Student> students) {
-        students.forEach(student -> studentDao.getById(student.getId())
+        students.forEach(student -> studentRepository.findById(student.getId())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", student.getId()))));
     }
 

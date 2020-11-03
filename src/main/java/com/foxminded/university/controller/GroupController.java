@@ -27,31 +27,31 @@ public class GroupController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("groups", groupService.getAll());
+        model.addAttribute("groups", groupService.findAll());
         return "groups/groups";
     }
 
     @GetMapping("/new")
     public String redirectToSaveForm(Model model, Group groupModel) {
-        model.addAttribute("allStudents", studentService.getAll());
+        model.addAttribute("allStudents", studentService.findAll());
         return "groups/new";
     }
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<Group> group = groupService.getById(id);
+        Optional<Group> group = groupService.findById(id);
         if (group.isPresent()) {
             model.addAttribute("group", group.get());
         } else {
             redirectAttributes.addFlashAttribute("error", "Group is not present");
         }
-        model.addAttribute("allStudents", studentService.getAll());
+        model.addAttribute("allStudents", studentService.findAll());
         return "groups/edit";
     }
 
     @GetMapping("students/{groupId}")
     public String showSubjects(@PathVariable int groupId, Model model) {
-        Optional<Group> group = groupService.getById(groupId);
+        Optional<Group> group = groupService.findById(groupId);
         group.ifPresent(currentGroup -> model.addAttribute("students", currentGroup.getStudents()));
         return "groups/students";
     }
@@ -61,7 +61,7 @@ public class GroupController {
         List<Student> students = new ArrayList<>();
         if(studentsOfGroup != null) {
             for (int id: studentsOfGroup){
-                Optional<Student> student = studentService.getById(id);
+                Optional<Student> student = studentService.findById(id);
                 student.ifPresent(students::add);
             }
             group.setStudents(students);
@@ -86,7 +86,7 @@ public class GroupController {
         List<Student> students = new ArrayList<>();
         if(studentsOfGroup != null) {
             for (int id: studentsOfGroup){
-                Optional<Student> student = studentService.getById(id);
+                Optional<Student> student = studentService.findById(id);
                 student.ifPresent(students::add);
             }
             group.setStudents(students);

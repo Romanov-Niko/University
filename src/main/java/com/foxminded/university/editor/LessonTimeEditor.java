@@ -17,7 +17,7 @@ public class LessonTimeEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Optional<LessonTime> lessonTime = lessonTimeService.getById(parsedId);
+        Optional<LessonTime> lessonTime = lessonTimeService.findById(parsedId);
         lessonTime.ifPresent(this::setValue);
     }
 }

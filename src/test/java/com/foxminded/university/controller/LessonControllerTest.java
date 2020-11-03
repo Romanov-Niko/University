@@ -1,6 +1,5 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.domain.Subject;
 import com.foxminded.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,15 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -60,7 +55,7 @@ class LessonControllerTest {
 
     @Test
     void whenShowAll_thenAddedModelWithAllLessonsAndRedirectedToFormWithListOfLessons() throws Exception {
-        when(lessonService.getAll()).thenReturn(singletonList(retrievedLesson));
+        when(lessonService.findAll()).thenReturn(singletonList(retrievedLesson));
 
         mockMvc.perform(get("/lessons"))
                 .andExpect(status().isOk())
@@ -71,10 +66,10 @@ class LessonControllerTest {
     @Test
     void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
-        when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
-        when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
-        when(lessonTimeService.getAll()).thenReturn(singletonList(retrievedLessonTime));
-        when(groupService.getAll()).thenReturn(singletonList(retrievedGroup));
+        when(subjectService.findAll()).thenReturn(singletonList(retrievedSubject));
+        when(teacherService.findAll()).thenReturn(singletonList(retrievedTeacher));
+        when(lessonTimeService.findAll()).thenReturn(singletonList(retrievedLessonTime));
+        when(groupService.findAll()).thenReturn(singletonList(retrievedGroup));
 
         mockMvc.perform(get("/lessons/new"))
                 .andExpect(status().isOk())
@@ -83,12 +78,12 @@ class LessonControllerTest {
 
     @Test
     void whenEdit_thenAddedLessonModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(lessonService.getById(1)).thenReturn(Optional.of(retrievedLesson));
+        when(lessonService.findById(1)).thenReturn(Optional.of(retrievedLesson));
         when(audienceService.getAll()).thenReturn(singletonList(retrievedAudience));
-        when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
-        when(teacherService.getAll()).thenReturn(singletonList(retrievedTeacher));
-        when(lessonTimeService.getAll()).thenReturn(singletonList(retrievedLessonTime));
-        when(groupService.getAll()).thenReturn(singletonList(retrievedGroup));
+        when(subjectService.findAll()).thenReturn(singletonList(retrievedSubject));
+        when(teacherService.findAll()).thenReturn(singletonList(retrievedTeacher));
+        when(lessonTimeService.findAll()).thenReturn(singletonList(retrievedLessonTime));
+        when(groupService.findAll()).thenReturn(singletonList(retrievedGroup));
 
         mockMvc.perform(get("/lessons/edit/1"))
                 .andExpect(status().isOk())
@@ -98,7 +93,7 @@ class LessonControllerTest {
 
     @Test
     void whenShowGroups_thenAddedModelWithGroupsListOfLessonWithGivenIdAndRedirectedToGroupsViewingPage() throws Exception {
-        when(lessonService.getById(1)).thenReturn(Optional.of(retrievedLesson));
+        when(lessonService.findById(1)).thenReturn(Optional.of(retrievedLesson));
 
         mockMvc.perform(get("/lessons/groups/1"))
                 .andExpect(status().isOk())

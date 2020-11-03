@@ -3,6 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/database_university
     username: postgres
     password: fhbufnj8
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 maxGroupCapacity: 30
 maxCourse: 6

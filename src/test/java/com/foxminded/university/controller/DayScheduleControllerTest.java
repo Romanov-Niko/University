@@ -1,8 +1,6 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.service.DayScheduleService;
-import com.foxminded.university.service.SubjectService;
-import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +11,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -61,7 +57,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewDailyStudentSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByDateForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
+        when(dayScheduleService.findByDateForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
 
         mockMvc.perform(post("/daysschedules/student")
                 .param("action", "day")
@@ -74,7 +70,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewMonthlyStudentSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByMonthForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
+        when(dayScheduleService.findByMonthForStudent(1, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/student")
                 .param("action", "month")
@@ -87,7 +83,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewDailyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByDateForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
+        when(dayScheduleService.findByDateForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
 
         mockMvc.perform(post("/daysschedules/teacher")
                 .param("action", "day")
@@ -100,7 +96,7 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewMonthlyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.getByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
+        when(dayScheduleService.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
 
         mockMvc.perform(post("/daysschedules/teacher")
                 .param("action", "month")

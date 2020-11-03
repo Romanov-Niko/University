@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -20,8 +20,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -29,79 +27,79 @@ import static org.mockito.Mockito.*;
 class StudentServiceTest {
 
     @Mock
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @Mock
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @InjectMocks
     private StudentService studentService;
 
     @Test
     void givenNothing_whenGetAll_thenCalledStudentDaoGetAllAndReturnedAllStudents() {
-        given(studentDao.getAll()).willReturn(singletonList(retrievedStudent));
+        given(studentRepository.findAll()).willReturn(singletonList(retrievedStudent));
 
-        List<Student> actualStudents = studentService.getAll();
+        List<Student> actualStudents = studentService.findAll();
 
-        verify(studentDao, times(1)).getAll();
+        verify(studentRepository, times(1)).findAll();
         assertEquals(singletonList(retrievedStudent), actualStudents);
     }
 
     @Test
     void givenStudent_whenSave_thenCalledStudentDaoSave() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
+        given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.save(createdStudent);
 
-        verify(studentDao, times(1)).save(createdStudent);
+        verify(studentRepository, times(1)).save(createdStudent);
     }
 
     @Test
     void givenStudent_whenUpdate_thenCalledStudentDaoUpdate() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
-        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
+        given(studentRepository.findById(1)).willReturn(Optional.of(retrievedStudent));
+        given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
 
         studentService.update(updatedStudent);
 
-        verify(studentDao, times(1)).update(updatedStudent);
+        verify(studentRepository, times(1)).save(updatedStudent);
     }
 
     @Test
     void givenStudentId_whenDelete_thenCalledStudentDaoDelete() {
         studentService.delete(1);
 
-        verify(studentDao, times(1)).delete(1);
+        verify(studentRepository, times(1)).deleteById(1);
     }
 
     @Test
     void givenGroupId_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupId(1)).willReturn(singletonList(retrievedStudent));
+        given(studentRepository.findAllByGroupId(1)).willReturn(singletonList(retrievedStudent));
 
-        List<Student> actualStudents = studentService.getAllByGroupId(1);
+        List<Student> actualStudents = studentService.findAllByGroupId(1);
 
-        verify(studentDao, times(1)).getAllByGroupId(1);
+        verify(studentRepository, times(1)).findAllByGroupId(1);
         assertEquals(singletonList(retrievedStudent), actualStudents);
     }
 
     @Test
     void givenGroupName_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedStudentsOfGivenGroup() {
-        given(studentDao.getAllByGroupName("AA-11")).willReturn(singletonList(retrievedStudent));
+        given(studentRepository.findAllByGroupName("AA-11")).willReturn(singletonList(retrievedStudent));
 
-        List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
+        List<Student> actualStudents = studentService.findAllByGroupName("AA-11");
 
-        verify(studentDao, times(1)).getAllByGroupName(retrievedGroup.getName());
+        verify(studentRepository, times(1)).findAllByGroupName(retrievedGroup.getName());
         assertEquals(singletonList(retrievedStudent), actualStudents);
     }
 
     @Test
     void givenEmptyTable_whenGetAll_thenCalledStudentDaoGetAllAndReturnedEmptyList() {
-        given(studentDao.getAll()).willReturn(emptyList());
+        given(studentRepository.findAll()).willReturn(emptyList());
 
-        List<Student> actualStudents = studentService.getAll();
+        List<Student> actualStudents = studentService.findAll();
 
-        verify(studentDao, times(1)).getAll();
+        verify(studentRepository, times(1)).findAll();
         assertEquals(emptyList(), actualStudents);
     }
 
@@ -111,46 +109,46 @@ class StudentServiceTest {
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.save(createdStudent));
         assertEquals("Course number is out of bounds", exception.getMessage());
-        verify(studentDao, never()).save(createdStudent);
+        verify(studentRepository, never()).save(createdStudent);
     }
 
     @Test
     void givenStudentWithNonExistentId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 6);
-        given(studentDao.getById(1)).willReturn(Optional.empty());
+        given(studentRepository.findById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> studentService.update(updatedStudent));
         assertEquals("Student with id 1 is not present", exception.getMessage());
-        verify(studentDao, never()).update(updatedStudent);
+        verify(studentRepository, never()).save(updatedStudent);
     }
 
     @Test
     void givenStudentWithIncorrectCourse_whenUpdate_thenCourseNumberOutOfBoundsExceptionThrown() {
         ReflectionTestUtils.setField(studentService, "maxCourse", 0);
-        given(studentDao.getById(1)).willReturn(Optional.of(retrievedStudent));
+        given(studentRepository.findById(1)).willReturn(Optional.of(retrievedStudent));
 
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> studentService.update(updatedStudent));
         assertEquals("Course number is out of bounds", exception.getMessage());
-        verify(studentDao, never()).update(updatedStudent);
+        verify(studentRepository, never()).save(updatedStudent);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupId_thenCalledStudentDaoGetAllByGroupIdAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupId(1)).willReturn(emptyList());
+        given(studentRepository.findAllByGroupId(1)).willReturn(emptyList());
 
-        List<Student> actualStudents = studentService.getAllByGroupId(1);
+        List<Student> actualStudents = studentService.findAllByGroupId(1);
 
-        verify(studentDao, times(1)).getAllByGroupId(1);
+        verify(studentRepository, times(1)).findAllByGroupId(1);
         assertEquals(emptyList(), actualStudents);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedEmptyList() {
-        given(studentDao.getAllByGroupName("AA-11")).willReturn(emptyList());
+        given(studentRepository.findAllByGroupName("AA-11")).willReturn(emptyList());
 
-        List<Student> actualStudents = studentService.getAllByGroupName("AA-11");
+        List<Student> actualStudents = studentService.findAllByGroupName("AA-11");
 
-        verify(studentDao, times(1)).getAllByGroupName(retrievedGroup.getName());
+        verify(studentRepository, times(1)).findAllByGroupName(retrievedGroup.getName());
         assertEquals(emptyList(), actualStudents);
     }
 }

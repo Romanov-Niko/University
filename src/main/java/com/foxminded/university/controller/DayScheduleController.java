@@ -38,14 +38,14 @@ public class DayScheduleController {
 
     @PostMapping(value = "/student", params = "action=day")
     public String viewDailyStudentSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int studentId, Model model) {
-        DaySchedule daySchedule = dayScheduleService.getByDateForStudent(studentId, date);
+        DaySchedule daySchedule = dayScheduleService.findByDateForStudent(studentId, date);
         model.addAttribute("lessons", daySchedule.getLessons());
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/student", params = "action=month")
     public String viewMonthlyStudentSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int studentId, Model model) {
-        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForStudent(studentId, date);
+        List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForStudent(studentId, date);
         List<Lesson> lessons = new ArrayList<>();
         daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
         model.addAttribute("lessons", lessons);
@@ -54,14 +54,14 @@ public class DayScheduleController {
 
     @PostMapping(value = "/teacher", params = "action=day")
     public String viewDailyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        DaySchedule daySchedule = dayScheduleService.getByDateForTeacher(teacherId, date);
+        DaySchedule daySchedule = dayScheduleService.findByDateForTeacher(teacherId, date);
         model.addAttribute("lessons", daySchedule.getLessons());
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/teacher", params = "action=month")
     public String viewMonthlyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        List<DaySchedule> daysSchedules = dayScheduleService.getByMonthForTeacher(teacherId, date);
+        List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForTeacher(teacherId, date);
         List<Lesson> lessons = new ArrayList<>();
         daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
         model.addAttribute("lessons", lessons);

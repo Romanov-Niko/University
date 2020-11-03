@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.*;
+import com.foxminded.university.repository.*;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.Teacher;
@@ -21,7 +21,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -29,93 +28,93 @@ import static org.mockito.Mockito.*;
 class LessonServiceTest {
 
     @Mock
-    private LessonDao lessonDao;
+    private LessonRepository lessonRepository;
 
     @Mock
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
 
     @Mock
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
 
     @Mock
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Mock
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
 
     @Mock
-    private LessonTimeDao lessonTimeDao;
+    private LessonTimeRepository lessonTimeRepository;
 
     @InjectMocks
     private LessonService lessonService;
 
     @Test
     void givenNothing_whenGetAll_thenCalledLessonDaoGetAllAndReturnedAllLessons() {
-        given(lessonDao.getAll()).willReturn(singletonList(retrievedLesson));
+        given(lessonRepository.findAll()).willReturn(singletonList(retrievedLesson));
 
-        List<Lesson> actualLessons = lessonService.getAll();
+        List<Lesson> actualLessons = lessonService.findAll();
 
-        verify(lessonDao, times(1)).getAll();
+        verify(lessonRepository, times(1)).findAll();
         assertEquals(singletonList(retrievedLesson), actualLessons);
     }
 
     @Test
     void givenLesson_whenSave_thenCalledLessonDaoSave() {
-        given(teacherDao.getById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
+        given(teacherRepository.findById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
                 LocalDate.parse("1990-02-01"), "male", "second@gmail.com", "22222", singletonList(retrievedSubject))));
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
-        given(audienceDao.getById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
-        given(lessonTimeDao.getById(1)).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
-        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
+        given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
+        given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
+        given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
+        given(lessonRepository.findAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(lessonRepository.findAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
 
         lessonService.save(createdLesson);
 
-        verify(lessonDao, times(1)).save(createdLesson);
+        verify(lessonRepository, times(1)).save(createdLesson);
     }
 
     @Test
     void givenLesson_whenUpdate_thenCalledLessonDaoUpdate() {
-        given(lessonDao.getById(1)).willReturn(Optional.of(retrievedLesson));
-        given(teacherDao.getById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
+        given(lessonRepository.findById(1)).willReturn(Optional.of(retrievedLesson));
+        given(teacherRepository.findById(1)).willReturn(Optional.of(new Teacher(2, "second", "teacher",
                 LocalDate.parse("1990-02-01"), "male", "second@gmail.com", "22222", singletonList(retrievedSubject))));
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
-        given(audienceDao.getById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
-        given(lessonTimeDao.getById(1)).willReturn(Optional.of(retrievedLessonTime));
-        given(groupDao.getById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonDao.getAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
-        given(lessonDao.getAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
+        given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
+        given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
+        given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
+        given(lessonRepository.findAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(lessonRepository.findAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
 
         lessonService.update(updatedLesson);
 
-        verify(lessonDao, times(1)).update(updatedLesson);
+        verify(lessonRepository, times(1)).save(updatedLesson);
     }
 
     @Test
     void givenLessonId_whenDelete_thenCalledLessonDaoDelete() {
         lessonService.delete(1);
 
-        verify(lessonDao, times(1)).delete(1);
+        verify(lessonRepository, times(1)).deleteById(1);
     }
 
     @Test
     void givenFirstDay_whenGetAllByDate_thenCalledLessonDaoGetAllByDateAndReturnedLessonsOfGivenDate() {
-        given(lessonDao.getAllByDate(LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedLesson));
+        given(lessonRepository.findAllByDate(LocalDate.parse("2017-06-01"))).willReturn(singletonList(retrievedLesson));
 
-        List<Lesson> actualLessons = lessonService.getAllByDate(LocalDate.parse("2017-06-01"));
+        List<Lesson> actualLessons = lessonService.findAllByDate(LocalDate.parse("2017-06-01"));
 
-        verify(lessonDao, times(1)).getAllByDate(LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findAllByDate(LocalDate.parse("2017-06-01"));
         assertEquals(singletonList(retrievedLesson), actualLessons);
     }
 
     @Test
     void givenEmptyTable_whenGetAll_thenCalledLessonDaoGetAllAndReturnedEmptyList() {
-        given(lessonDao.getAll()).willReturn(emptyList());
+        given(lessonRepository.findAll()).willReturn(emptyList());
 
-        List<Lesson> actualLessons = lessonService.getAll();
+        List<Lesson> actualLessons = lessonService.findAll();
 
-        verify(lessonDao, times(1)).getAll();
+        verify(lessonRepository, times(1)).findAll();
         assertEquals(emptyList(), actualLessons);
     }
 
@@ -123,23 +122,23 @@ class LessonServiceTest {
     void givenLessonWithConflictingData_whenSave_thenEntityNotFoundExceptionThrown() {
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonService.save(createdLesson));
         assertEquals("Subject with id 1 is not present", exception.getMessage());
-        verify(lessonDao, never()).save(createdLesson);
+        verify(lessonRepository, never()).save(createdLesson);
     }
 
     @Test
     void givenLessonWithConflictingData_whenUpdate_thenEntityNotFoundExceptionThrown() {
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> lessonService.update(updatedLesson));
         assertEquals("Lesson with id 1 is not present", exception.getMessage());
-        verify(lessonDao, never()).update(updatedLesson);
+        verify(lessonRepository, never()).save(updatedLesson);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetAllByDate_thenCalledLessonDaoGetAllByDateAndReturnedEmptyList() {
-        given(lessonDao.getAllByDate(LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+        given(lessonRepository.findAllByDate(LocalDate.parse("2017-06-01"))).willReturn(emptyList());
 
-        List<Lesson> actualLessons = lessonService.getAllByDate(LocalDate.parse("2017-06-01"));
+        List<Lesson> actualLessons = lessonService.findAllByDate(LocalDate.parse("2017-06-01"));
 
-        verify(lessonDao, times(1)).getAllByDate(LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findAllByDate(LocalDate.parse("2017-06-01"));
         assertEquals(emptyList(), actualLessons);
     }
 }

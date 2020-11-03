@@ -48,40 +48,40 @@ public class LessonController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("lessons", lessonService.getAll());
+        model.addAttribute("lessons", lessonService.findAll());
         return "lessons/lessons";
     }
 
     @GetMapping("/new")
     public String redirectToSaveForm(Model model, Lesson lessonModel) {
-        model.addAttribute("allGroups", groupService.getAll());
-        model.addAttribute("allTeachers", teacherService.getAll());
+        model.addAttribute("allGroups", groupService.findAll());
+        model.addAttribute("allTeachers", teacherService.findAll());
         model.addAttribute("allAudiences", audienceService.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeService.getAll());
-        model.addAttribute("allSubjects", subjectService.getAll());
+        model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
+        model.addAttribute("allSubjects", subjectService.findAll());
         return "lessons/new";
     }
 
     @Transactional
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<Lesson> lesson = lessonService.getById(id);
+        Optional<Lesson> lesson = lessonService.findById(id);
         if (lesson.isPresent()) {
             model.addAttribute("lesson", lesson.get());
         } else {
             redirectAttributes.addFlashAttribute("error", "Lesson is not present");
         }
-        model.addAttribute("allGroups", groupService.getAll());
-        model.addAttribute("allTeachers", teacherService.getAll());
+        model.addAttribute("allGroups", groupService.findAll());
+        model.addAttribute("allTeachers", teacherService.findAll());
         model.addAttribute("allAudiences", audienceService.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeService.getAll());
-        model.addAttribute("allSubjects", subjectService.getAll());
+        model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
+        model.addAttribute("allSubjects", subjectService.findAll());
         return "lessons/edit";
     }
 
     @GetMapping("groups/{lessonId}")
     public String showGroups(@PathVariable int lessonId, Model model) {
-        Optional<Lesson> lesson = lessonService.getById(lessonId);
+        Optional<Lesson> lesson = lessonService.findById(lessonId);
         lesson.ifPresent(currentLesson -> model.addAttribute("groups", currentLesson.getGroups()));
         return "lessons/groups";
     }
@@ -91,7 +91,7 @@ public class LessonController {
         List<Group> groups = new ArrayList<>();
         if (groupsOfLesson != null) {
             for (int id : groupsOfLesson) {
-                Optional<Group> group = groupService.getById(id);
+                Optional<Group> group = groupService.findById(id);
                 group.ifPresent(groups::add);
             }
             lesson.setGroups(groups);
@@ -117,7 +117,7 @@ public class LessonController {
         List<Group> groups = new ArrayList<>();
         if (groupsOfLesson != null) {
             for (int id : groupsOfLesson) {
-                Optional<Group> group = groupService.getById(id);
+                Optional<Group> group = groupService.findById(id);
                 group.ifPresent(groups::add);
             }
             lesson.setGroups(groups);

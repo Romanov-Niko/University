@@ -21,7 +21,7 @@ public class SubjectController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("subjects", subjectService.getAll());
+        model.addAttribute("subjects", subjectService.findAll());
         return "subjects/subjects";
     }
 
@@ -32,7 +32,7 @@ public class SubjectController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<Subject> subject = subjectService.getById(id);
+        Optional<Subject> subject = subjectService.findById(id);
         if (subject.isPresent()) {
             model.addAttribute("subject", subject.get());
         } else {

@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.*;
+import com.foxminded.university.repository.*;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.exception.*;
@@ -17,74 +17,74 @@ public class LessonService {
 
     private static final Logger logger = LoggerFactory.getLogger(LessonService.class);
 
-    private final LessonDao lessonDao;
-    private final TeacherDao teacherDao;
-    private final SubjectDao subjectDao;
-    private final GroupDao groupDao;
-    private final AudienceDao audienceDao;
-    private final LessonTimeDao lessonTimeDao;
+    private final LessonRepository lessonRepository;
+    private final TeacherRepository teacherRepository;
+    private final SubjectRepository subjectRepository;
+    private final GroupRepository groupRepository;
+    private final AudienceRepository audienceRepository;
+    private final LessonTimeRepository lessonTimeRepository;
 
-    public LessonService(LessonDao lessonDao, TeacherDao teacherDao, SubjectDao subjectDao, GroupDao groupDao, AudienceDao audienceDao, LessonTimeDao lessonTimeDao) {
-        this.lessonDao = lessonDao;
-        this.teacherDao = teacherDao;
-        this.subjectDao = subjectDao;
-        this.groupDao = groupDao;
-        this.audienceDao = audienceDao;
-        this.lessonTimeDao = lessonTimeDao;
+    public LessonService(LessonRepository lessonRepository, TeacherRepository teacherRepository, SubjectRepository subjectRepository, GroupRepository groupRepository, AudienceRepository audienceRepository, LessonTimeRepository lessonTimeRepository) {
+        this.lessonRepository = lessonRepository;
+        this.teacherRepository = teacherRepository;
+        this.subjectRepository = subjectRepository;
+        this.groupRepository = groupRepository;
+        this.audienceRepository = audienceRepository;
+        this.lessonTimeRepository = lessonTimeRepository;
     }
 
-    public Optional<Lesson> getById(int id) {
-        return lessonDao.getById(id);
+    public Optional<Lesson> findById(int id) {
+        return lessonRepository.findById(id);
     }
 
-    public List<Lesson> getAll() {
-        return lessonDao.getAll();
+    public List<Lesson> findAll() {
+        return (List<Lesson>) lessonRepository.findAll();
     }
 
     public void save(Lesson lesson) {
         logger.debug("Saving lesson: {}", lesson);
         verifyDataConsistent(lesson);
-        lessonDao.save(lesson);
+        lessonRepository.save(lesson);
     }
 
     public void update(Lesson lesson) {
         logger.debug("Updating lesson by id: {}", lesson);
         verifyLessonPresent(lesson.getId());
         verifyDataConsistent(lesson);
-        lessonDao.update(lesson);
+        lessonRepository.save(lesson);
     }
 
     public void delete(int id) {
-        lessonDao.delete(id);
+        lessonRepository.deleteById(id);
     }
 
-    public List<Lesson> getAllByDate(LocalDate date) {
-        return lessonDao.getAllByDate(date);
+    public List<Lesson> findAllByDate(LocalDate date) {
+        return lessonRepository.findAllByDate(date);
     }
 
     private void verifyLessonPresent(int id) {
-        lessonDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson with id %d is not present", id)));
+        lessonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson with id %d is not present", id)));
     }
 
     private void verifyTeacherPresent(int id) {
-        teacherDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
+        teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
     private void verifySubjectPresent(int id) {
-        subjectDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
+        subjectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
     private void verifyGroupsPresent(List<Group> groups) {
-        groups.forEach(group -> groupDao.getById(group.getId())
+        groups.forEach(group -> groupRepository.findById(group.getId())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", group.getId()))));
     }
 
     private void verifyAudiencePresent(int id) {
-        audienceDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Audience with id %d is not present", id)));
+        audienceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Audience with id %d is not present", id)));
     }
 
     private void verifyLessonTimePresent(int id) {
-        lessonTimeDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
+        lessonTimeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
     private void verifyAudienceHasEnoughCapacity(Lesson lesson) {
@@ -102,7 +102,7 @@ public class LessonService {
     }
 
     private void verifyTeacherFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonDao.getAllByTeacherIdDateAndLessonTimeId(currentLesson.getTeacher().getId(),
+        List<Lesson> lessons = lessonRepository.findAllByTeacherIdDateAndLessonTimeId(currentLesson.getTeacher().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
@@ -112,7 +112,7 @@ public class LessonService {
     }
 
     private void verifyAudienceFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonDao.getAllByAudienceIdDateAndLessonTimeId(currentLesson.getAudience().getId(),
+        List<Lesson> lessons = lessonRepository.findAllByAudienceIdDateAndLessonTimeId(currentLesson.getAudience().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {

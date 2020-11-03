@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.LessonDao;
+import com.foxminded.university.repository.LessonRepository;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
 import org.springframework.stereotype.Service;
@@ -14,26 +14,26 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class DayScheduleService {
 
-    private final LessonDao lessonDao;
+    private final LessonRepository lessonRepository;
 
-    public DayScheduleService(LessonDao lessonDao) {
-        this.lessonDao = lessonDao;
+    public DayScheduleService(LessonRepository lessonRepository) {
+        this.lessonRepository = lessonRepository;
     }
 
-    public DaySchedule getByDateForStudent(int id, LocalDate day) {
-        return new DaySchedule(day, lessonDao.getByDateForStudent(id, day));
+    public DaySchedule findByDateForStudent(int id, LocalDate day) {
+        return new DaySchedule(day, lessonRepository.findByDateForStudent(id, day));
     }
 
-    public DaySchedule getByDateForTeacher(int id, LocalDate day) {
-        return new DaySchedule(day, lessonDao.getByDateForTeacher(id, day));
+    public DaySchedule findByDateForTeacher(int id, LocalDate day) {
+        return new DaySchedule(day, lessonRepository.findByDateForTeacher(id, day));
     }
 
-    public List<DaySchedule> getByMonthForStudent(int id, LocalDate startDay) {
-        return getSchedules(lessonDao.getByMonthForStudent(id, startDay));
+    public List<DaySchedule> findByMonthForStudent(int id, LocalDate startDay) {
+        return getSchedules(lessonRepository.findByMonthForStudent(id, startDay));
     }
 
-    public List<DaySchedule> getByMonthForTeacher(int id, LocalDate startDay) {
-        return getSchedules(lessonDao.getByMonthForTeacher(id, startDay));
+    public List<DaySchedule> findByMonthForTeacher(int id, LocalDate startDay) {
+        return getSchedules(lessonRepository.findByMonthForTeacher(id, startDay));
     }
 
     private List<DaySchedule> getSchedules(List<Lesson> lessons) {

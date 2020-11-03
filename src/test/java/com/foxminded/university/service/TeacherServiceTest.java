@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.repository.SubjectRepository;
+import com.foxminded.university.repository.TeacherRepository;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -26,82 +25,82 @@ import static org.mockito.Mockito.*;
 class TeacherServiceTest {
 
     @Mock
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
 
     @Mock
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
 
     @InjectMocks
     private TeacherService teacherService;
 
     @Test
     void givenNothing_whenGetAll_thenCalledTeacherDaoGetAllAndReturnedAllTeachers() {
-        given(teacherDao.getAll()).willReturn(singletonList(retrievedTeacher));
+        given(teacherRepository.findAll()).willReturn(singletonList(retrievedTeacher));
 
-        List<Teacher> actualTeachers = teacherService.getAll();
+        List<Teacher> actualTeachers = teacherService.findAll();
 
-        verify(teacherDao, times(1)).getAll();
+        verify(teacherRepository, times(1)).findAll();
         assertEquals(singletonList(retrievedTeacher), actualTeachers);
     }
 
     @Test
     void givenTeacher_whenSave_thenCalledTeacherDaoSave() {
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
 
         teacherService.save(createdTeacher);
 
-        verify(teacherDao, times(1)).save(createdTeacher);
+        verify(teacherRepository, times(1)).save(createdTeacher);
     }
 
     @Test
     void givenTeacher_whenUpdate_thenCalledTeacherDaoUpdate() {
-        given(subjectDao.getById(1)).willReturn(Optional.of(retrievedSubject));
-        given(teacherDao.getById(1)).willReturn(Optional.of(updatedTeacher));
+        given(subjectRepository.findById(1)).willReturn(Optional.of(retrievedSubject));
+        given(teacherRepository.findById(1)).willReturn(Optional.of(updatedTeacher));
 
         teacherService.update(updatedTeacher);
 
-        verify(teacherDao, times(1)).update(updatedTeacher);
+        verify(teacherRepository, times(1)).save(updatedTeacher);
     }
 
     @Test
     void givenTeacherId_whenDelete_thenCalledTeacherDaoDelete() {
         teacherService.delete(1);
 
-        verify(teacherDao, times(1)).delete(1);
+        verify(teacherRepository, times(1)).deleteById(1);
     }
 
     @Test
     void givenEmptyTable_whenGetAll_thenCalledTeacherDaoGetAllAndReturnedEmptyList() {
-        given(teacherDao.getAll()).willReturn(emptyList());
+        given(teacherRepository.findAll()).willReturn(emptyList());
 
-        List<Teacher> actualTeachers = teacherService.getAll();
+        List<Teacher> actualTeachers = teacherService.findAll();
 
-        verify(teacherDao, times(1)).getAll();
+        verify(teacherRepository, times(1)).findAll();
         assertEquals(emptyList(), actualTeachers);
     }
 
     @Test
     void givenNonExistentSubjectId_whenSave_thenEntityNotFoundExceptionThrown() {
-        given(subjectDao.getById(1)).willReturn(Optional.empty());
+        given(subjectRepository.findById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.save(createdTeacher));
         assertEquals("Subject with id 1 is not present", exception.getMessage());
-        verify(teacherDao, never()).save(createdTeacher);
+        verify(teacherRepository, never()).save(createdTeacher);
     }
 
     @Test
     void givenNonExistentTeacherId_whenUpdate_thenEntityNotFoundExceptionThrown() {
-        given(teacherDao.getById(1)).willReturn(Optional.empty());
+        given(teacherRepository.findById(1)).willReturn(Optional.empty());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher));
         assertEquals("Teacher with id 1 is not present", exception.getMessage());
-        verify(teacherDao, never()).update(updatedTeacher);
+        verify(teacherRepository, never()).save(updatedTeacher);
     }
 
     @Test
     void givenNonExistentSubjectId_whenUpdate_thenEntityNotFoundExceptionThrown() {
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> teacherService.update(updatedTeacher));
         assertEquals("Teacher with id 1 is not present", exception.getMessage());
-        verify(teacherDao, never()).update(updatedTeacher);
+        verify(teacherRepository, never()).save(updatedTeacher);
     }
 }

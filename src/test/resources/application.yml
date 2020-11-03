@@ -1,0 +1,8 @@
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    platform: h2
+  jpa:
+    hibernate:
+      ddl-auto: none

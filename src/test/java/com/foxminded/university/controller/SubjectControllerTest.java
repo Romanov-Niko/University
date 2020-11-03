@@ -1,7 +1,6 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.service.SubjectService;
-import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
-import static com.foxminded.university.TestData.updatedStudent;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +40,7 @@ class SubjectControllerTest {
 
     @Test
     void whenShowAll_thenAddedModelWithAllSubjectsAndRedirectedToFormWithListOfSubjects() throws Exception {
-        when(subjectService.getAll()).thenReturn(singletonList(retrievedSubject));
+        when(subjectService.findAll()).thenReturn(singletonList(retrievedSubject));
 
         mockMvc.perform(get("/subjects"))
                 .andExpect(status().isOk())
@@ -62,7 +57,7 @@ class SubjectControllerTest {
 
     @Test
     void whenEdit_thenAddedSubjectModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(subjectService.getById(1)).thenReturn(Optional.of(retrievedSubject));
+        when(subjectService.findById(1)).thenReturn(Optional.of(retrievedSubject));
 
         mockMvc.perform(get("/subjects/edit/1"))
                 .andExpect(status().isOk())

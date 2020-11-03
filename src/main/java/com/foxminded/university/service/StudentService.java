@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -23,20 +23,20 @@ public class StudentService {
     @Value("${maxCourse}")
     private int maxCourse;
 
-    private final StudentDao studentDao;
-    private final GroupDao groupDao;
+    private final StudentRepository studentRepository;
+    private final GroupRepository groupRepository;
 
-    public StudentService(StudentDao studentDao, GroupDao groupDao) {
-        this.studentDao = studentDao;
-        this.groupDao = groupDao;
+    public StudentService(StudentRepository studentRepository, GroupRepository groupRepository) {
+        this.studentRepository = studentRepository;
+        this.groupRepository = groupRepository;
     }
 
-    public Optional<Student> getById(int id) {
-        return studentDao.getById(id);
+    public Optional<Student> findById(int id) {
+        return studentRepository.findById(id);
     }
 
-    public List<Student> getAll() {
-        return studentDao.getAll();
+    public List<Student> findAll() {
+        return (List<Student>) studentRepository.findAll();
     }
 
     public void save(Student student) {
@@ -44,7 +44,7 @@ public class StudentService {
         verifyCourseConsistent(student.getCourse());
         verifyGroupPresent(student.getGroupId());
         verifyGraduationIsAfterAdmission(student.getAdmission(), student.getGraduation());
-        studentDao.save(student);
+        studentRepository.save(student);
     }
 
     public void update(Student student) {
@@ -53,27 +53,27 @@ public class StudentService {
         verifyCourseConsistent(student.getCourse());
         verifyGroupPresent(student.getGroupId());
         verifyGraduationIsAfterAdmission(student.getAdmission(), student.getGraduation());
-        studentDao.update(student);
+        studentRepository.save(student);
     }
 
     public void delete(int id) {
-        studentDao.delete(id);
+        studentRepository.deleteById(id);
     }
 
-    public List<Student> getAllByGroupId(int id) {
-        return studentDao.getAllByGroupId(id);
+    public List<Student> findAllByGroupId(int id) {
+        return studentRepository.findAllByGroupId(id);
     }
 
-    public List<Student> getAllByGroupName(String name) {
-        return studentDao.getAllByGroupName(name);
+    public List<Student> findAllByGroupName(String name) {
+        return studentRepository.findAllByGroupName(name);
     }
 
     private void verifyStudentPresent(int id) {
-        studentDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
+        studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
     }
 
     private void verifyGroupPresent(int id) {
-        groupDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
+        groupRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Group with id %d is not present", id)));
     }
 
     private void verifyCourseConsistent(int course) {

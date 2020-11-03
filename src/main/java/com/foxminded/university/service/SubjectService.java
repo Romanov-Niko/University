@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.repository.SubjectRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -21,48 +21,48 @@ public class SubjectService {
     @Value("${maxCourse}")
     private int maxCourse;
 
-    private final SubjectDao subjectDao;
+    private final SubjectRepository subjectRepository;
 
-    public SubjectService(SubjectDao subjectDao) {
-        this.subjectDao = subjectDao;
+    public SubjectService(SubjectRepository subjectRepository) {
+        this.subjectRepository = subjectRepository;
     }
 
-    public Optional<Subject> getById(int id) {
-        return subjectDao.getById(id);
+    public Optional<Subject> findById(int id) {
+        return subjectRepository.findById(id);
     }
 
-    public List<Subject> getAll() {
-        return subjectDao.getAll();
+    public List<Subject> findAll() {
+        return (List<Subject>) subjectRepository.findAll();
     }
 
     public void save(Subject subject) {
         logger.debug("Saving subject: {}", subject);
         verifyCourseConsistent(subject.getCourse());
         verifySubjectUnique(subject.getName());
-        subjectDao.save(subject);
+        subjectRepository.save(subject);
     }
 
     public void update(Subject subject) {
         logger.debug("Updating subject by id: {}", subject);
         verifySubjectPresent(subject.getId());
         verifyCourseConsistent(subject.getCourse());
-        subjectDao.update(subject);
+        subjectRepository.save(subject);
     }
 
     public void delete(int id) {
-        subjectDao.delete(id);
+        subjectRepository.deleteById(id);
     }
 
-    public List<Subject> getAllByTeacherId(int id) {
-        return subjectDao.getAllByTeacherId(id);
+    public List<Subject> findAllByTeacherId(int id) {
+        return subjectRepository.findAllByTeacherId(id);
     }
 
     private void verifySubjectPresent(int id) {
-        subjectDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
+        subjectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", id)));
     }
 
     private void verifySubjectUnique(String name) {
-        subjectDao.getByName(name).ifPresent(obj -> {
+        subjectRepository.findByName(name).ifPresent(obj -> {
             throw new SubjectNameNotUniqueException(String.format("Subject with name %s already exist", name));
         });
     }

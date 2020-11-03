@@ -17,7 +17,7 @@ public class TeacherEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         int parsedId = Integer.parseInt(text);
-        Optional<Teacher> teacher = teacherService.getById(parsedId);
+        Optional<Teacher> teacher = teacherService.findById(parsedId);
         teacher.ifPresent(this::setValue);
     }
 }

@@ -1,7 +1,5 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.domain.Group;
-import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.foxminded.university.TestData.*;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,7 +42,7 @@ class GroupControllerTest {
 
     @Test
     void whenShowAll_thenAddedModelWithAllGroupsAndRedirectedToFormWithListOfGroups() throws Exception {
-        when(groupService.getAll()).thenReturn(singletonList(retrievedGroup));
+        when(groupService.findAll()).thenReturn(singletonList(retrievedGroup));
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
@@ -58,7 +52,7 @@ class GroupControllerTest {
 
     @Test
     void whenRedirectToSaveForm_thenRedirectedToAddingForm() throws Exception {
-        when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
+        when(studentService.findAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/new"))
                 .andExpect(status().isOk())
@@ -67,8 +61,8 @@ class GroupControllerTest {
 
     @Test
     void whenEdit_thenAddedGroupModelWithGivenIdAndRedirectedToFilledEditingForm() throws Exception {
-        when(groupService.getById(1)).thenReturn(Optional.of(retrievedGroup));
-        when(studentService.getAll()).thenReturn(singletonList(retrievedStudent));
+        when(groupService.findById(1)).thenReturn(Optional.of(retrievedGroup));
+        when(studentService.findAll()).thenReturn(singletonList(retrievedStudent));
 
         mockMvc.perform(get("/groups/edit/1"))
                 .andExpect(status().isOk())
@@ -79,7 +73,7 @@ class GroupControllerTest {
 
     @Test
     void whenShowStudents_thenAddedModelWithStudentsListOfGroupWithGivenIdAndRedirectedToStudentsViewingPage() throws Exception {
-        when(groupService.getById(1)).thenReturn(Optional.of(retrievedGroup));
+        when(groupService.findById(1)).thenReturn(Optional.of(retrievedGroup));
 
         mockMvc.perform(get("/groups/students/1"))
                 .andExpect(status().isOk())

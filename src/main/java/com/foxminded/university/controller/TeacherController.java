@@ -27,31 +27,31 @@ public class TeacherController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("teachers", teacherService.getAll());
+        model.addAttribute("teachers", teacherService.findAll());
         return "teachers/teachers";
     }
 
     @GetMapping("/new")
     public String redirectToSaveForm(Model model, Teacher teacherModel) {
-        model.addAttribute("allSubjects", subjectService.getAll());
+        model.addAttribute("allSubjects", subjectService.findAll());
         return "teachers/new";
     }
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<Teacher> teacher = teacherService.getById(id);
+        Optional<Teacher> teacher = teacherService.findById(id);
         if (teacher.isPresent()) {
             model.addAttribute("teacher", teacher.get());
         } else {
             redirectAttributes.addFlashAttribute("error", "Teacher is not present");
         }
-        model.addAttribute("allSubjects", subjectService.getAll());
+        model.addAttribute("allSubjects", subjectService.findAll());
         return "teachers/edit";
     }
 
     @GetMapping("subjects/{teacherId}")
     public String showSubjects(@PathVariable int teacherId, Model model) {
-        Optional<Teacher> teacher = teacherService.getById(teacherId);
+        Optional<Teacher> teacher = teacherService.findById(teacherId);
         teacher.ifPresent(currentTeacher -> model.addAttribute("subjects", currentTeacher.getSubjects()));
         return "teachers/subjects";
     }
@@ -61,7 +61,7 @@ public class TeacherController {
         List<Subject> subjects = new ArrayList<>();
         if(subjectsOfTeacher != null) {
             for (int id: subjectsOfTeacher){
-                Optional<Subject> subject = subjectService.getById(id);
+                Optional<Subject> subject = subjectService.findById(id);
                 subject.ifPresent(subjects::add);
             }
             teacher.setSubjects(subjects);
@@ -87,7 +87,7 @@ public class TeacherController {
         List<Subject> subjects = new ArrayList<>();
         if(subjectsOfTeacher != null) {
             for (int id: subjectsOfTeacher){
-                Optional<Subject> subject = subjectService.getById(id);
+                Optional<Subject> subject = subjectService.findById(id);
                 subject.ifPresent(subjects::add);
             }
             teacher.setSubjects(subjects);

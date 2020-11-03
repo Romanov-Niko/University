@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.repository.SubjectRepository;
+import com.foxminded.university.repository.TeacherRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -17,45 +17,45 @@ public class TeacherService {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
-    private final TeacherDao teacherDao;
-    private final SubjectDao subjectDao;
+    private final TeacherRepository teacherRepository;
+    private final SubjectRepository subjectRepository;
 
-    public TeacherService(TeacherDao teacherDao, SubjectDao subjectDao) {
-        this.teacherDao = teacherDao;
-        this.subjectDao = subjectDao;
+    public TeacherService(TeacherRepository teacherRepository, SubjectRepository subjectRepository) {
+        this.teacherRepository = teacherRepository;
+        this.subjectRepository = subjectRepository;
     }
 
-    public Optional<Teacher> getById(int id) {
-        return teacherDao.getById(id);
+    public Optional<Teacher> findById(int id) {
+        return teacherRepository.findById(id);
     }
 
-    public List<Teacher> getAll() {
-        return teacherDao.getAll();
+    public List<Teacher> findAll() {
+        return (List<Teacher>) teacherRepository.findAll();
     }
 
     public void save(Teacher teacher) {
         logger.debug("Saving teacher: {}", teacher);
         verifySubjectsPresent(teacher.getSubjects());
-        teacherDao.save(teacher);
+        teacherRepository.save(teacher);
     }
 
     public void update(Teacher teacher) {
         logger.debug("Updating teacher by id: {}", teacher);
         verifyTeacherPresent(teacher.getId());
         verifySubjectsPresent(teacher.getSubjects());
-        teacherDao.update(teacher);
+        teacherRepository.save(teacher);
     }
 
     public void delete(int id) {
-        teacherDao.delete(id);
+        teacherRepository.deleteById(id);
     }
 
     private void verifyTeacherPresent(int id) {
-        teacherDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
+        teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", id)));
     }
 
     private void verifySubjectsPresent(List<Subject> subjects) {
-        subjects.forEach(subject -> subjectDao.getById(subject.getId())
+        subjects.forEach(subject -> subjectRepository.findById(subject.getId())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Subject with id %d is not present", subject.getId()))));
     }
 }

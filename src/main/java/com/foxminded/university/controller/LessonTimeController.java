@@ -21,7 +21,7 @@ public class LessonTimeController {
 
     @GetMapping
     public String showAll(Model model) {
-        model.addAttribute("lessonstimes", lessonTimeService.getAll());
+        model.addAttribute("lessonstimes", lessonTimeService.findAll());
         return "lessonstimes/lessonstimes";
     }
 
@@ -32,7 +32,7 @@ public class LessonTimeController {
 
     @GetMapping("edit/{id}")
     public String edit(@PathVariable int id, RedirectAttributes redirectAttributes, Model model) {
-        Optional<LessonTime> lessonTime = lessonTimeService.getById(id);
+        Optional<LessonTime> lessonTime = lessonTimeService.findById(id);
         if (lessonTime.isPresent()) {
             model.addAttribute("lessontime", lessonTime.get());
         } else {

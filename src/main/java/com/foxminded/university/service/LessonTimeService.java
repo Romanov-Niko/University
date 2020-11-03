@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.LessonTimeDao;
+import com.foxminded.university.repository.LessonTimeRepository;
 import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.LessonDurationOutOfBoundsException;
@@ -22,40 +22,40 @@ public class LessonTimeService {
     @Value("${maxLessonDuration}")
     private int maxLessonDuration;
 
-    private final LessonTimeDao lessonTimeDao;
+    private final LessonTimeRepository lessonTimeRepository;
 
-    public LessonTimeService(LessonTimeDao lessonTimeDao) {
-        this.lessonTimeDao = lessonTimeDao;
+    public LessonTimeService(LessonTimeRepository lessonTimeRepository) {
+        this.lessonTimeRepository = lessonTimeRepository;
     }
 
-    public Optional<LessonTime> getById(int id) {
-        return lessonTimeDao.getById(id);
+    public Optional<LessonTime> findById(int id) {
+        return lessonTimeRepository.findById(id);
     }
 
-    public List<LessonTime> getAll() {
-        return lessonTimeDao.getAll();
+    public List<LessonTime> findAll() {
+        return (List<LessonTime>) lessonTimeRepository.findAll();
     }
 
     public void save(LessonTime lessonTime) {
         logger.debug("Saving lesson time: {}", lessonTime);
         verifyDurationConsistent(lessonTime);
         verifyLessonTimeUnique(lessonTime);
-        lessonTimeDao.save(lessonTime);
+        lessonTimeRepository.save(lessonTime);
     }
 
     public void update(LessonTime lessonTime) {
         logger.debug("Updating lesson time by id: {}", lessonTime);
         verifyLessonTimePresent(lessonTime.getId());
         verifyDurationConsistent(lessonTime);
-        lessonTimeDao.update(lessonTime);
+        lessonTimeRepository.save(lessonTime);
     }
 
     public void delete(int id) {
-        lessonTimeDao.delete(id);
+        lessonTimeRepository.deleteById(id);
     }
 
     private void verifyLessonTimePresent(int id) {
-        lessonTimeDao.getById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
+        lessonTimeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Lesson time with id %d is not present", id)));
     }
 
     private void verifyDurationConsistent(LessonTime lessonTime) {
@@ -66,7 +66,7 @@ public class LessonTimeService {
     }
 
     private void verifyLessonTimeUnique(LessonTime lessonTime) {
-        lessonTimeDao.getByStartAndEndTime(lessonTime.getBegin(), lessonTime.getEnd()).ifPresent(obj -> {
+        lessonTimeRepository.findByBeginAndEnd(lessonTime.getBegin(), lessonTime.getEnd()).ifPresent(obj -> {
             throw new LessonTimeNotUniqueException(String.format("Lesson time with begin %s and end %s already exist", lessonTime.getBegin(), lessonTime.getEnd()));
         });
     }
