@@ -1,7 +1,6 @@
 package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.dao.LessonDao;
-import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.exception.EntityNotDeletedException;
 import com.foxminded.university.exception.EntityNotSavedException;
@@ -13,11 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Transactional
 @Repository

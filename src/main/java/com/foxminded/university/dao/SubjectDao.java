@@ -1,8 +1,6 @@
 package com.foxminded.university.dao;
 
-import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Subject;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;

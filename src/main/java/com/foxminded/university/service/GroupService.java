@@ -1,14 +1,15 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.*;
-import com.foxminded.university.domain.Audience;
+import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
-import com.foxminded.university.exception.*;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.GroupNameNotUniqueException;
+import com.foxminded.university.exception.GroupSizeTooLargeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

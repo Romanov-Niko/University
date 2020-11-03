@@ -2,7 +2,6 @@ package com.foxminded.university.domain;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;

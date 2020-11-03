@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/database_university
+    username: postgres
+    password: fhbufnj8
+
+maxGroupCapacity: 30
+maxCourse: 6
+maxLessonDuration: 90

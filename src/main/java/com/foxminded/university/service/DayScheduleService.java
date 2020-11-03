@@ -3,13 +3,11 @@ package com.foxminded.university.service;
 import com.foxminded.university.dao.LessonDao;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
-import javafx.beans.property.ObjectProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 

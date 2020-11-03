@@ -2,7 +2,6 @@ package com.foxminded.university.service;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
