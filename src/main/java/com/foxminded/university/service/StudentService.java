@@ -1,11 +1,11 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.GroupRepository;
-import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.GraduationIsAfterAdmissionException;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class StudentService {
     }
 
     public List<Student> findAll() {
-        return (List<Student>) studentRepository.findAll();
+        return studentRepository.findAll();
     }
 
     public void save(Student student) {

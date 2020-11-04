@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.SubjectRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.SubjectNameNotUniqueException;
+import com.foxminded.university.repository.SubjectRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,16 +70,6 @@ class SubjectServiceTest {
     }
 
     @Test
-    void givenTeacherId_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
-        given(subjectRepository.findAllByTeacherId(1)).willReturn(singletonList(retrievedSubject));
-
-        List<Subject> actualSubjects = subjectService.findAllByTeacherId(1);
-
-        verify(subjectRepository, times(1)).findAllByTeacherId(1);
-        assertEquals(singletonList(retrievedSubject), actualSubjects);
-    }
-
-    @Test
     void givenEmptyTable_whenGetAll_thenCalledSubjectDaoGetAllAndReturnedEmptyList() {
         given(subjectRepository.findAll()).willReturn(emptyList());
 
@@ -126,15 +116,5 @@ class SubjectServiceTest {
         Throwable exception = assertThrows(CourseNumberOutOfBoundsException.class, () -> subjectService.update(updatedSubject));
         assertEquals("Course number is out of bounds", exception.getMessage());
         verify(subjectRepository, never()).save(updatedSubject);
-    }
-
-    @Test
-    void givenDataThatProducesEmptyReturn_whenGetAllByTeacherId_thenCalledSubjectDaoGetAllByTeacherIdAndReturnedAllSubjectsOfGivenTeacher() {
-        given(subjectRepository.findAllByTeacherId(1)).willReturn(emptyList());
-
-        List<Subject> actualSubjects = subjectService.findAllByTeacherId(1);
-
-        verify(subjectRepository, times(1)).findAllByTeacherId(1);
-        assertEquals(emptyList(), actualSubjects);
     }
 }

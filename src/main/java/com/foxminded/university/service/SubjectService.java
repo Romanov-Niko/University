@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.SubjectRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.exception.CourseNumberOutOfBoundsException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.SubjectNameNotUniqueException;
+import com.foxminded.university.repository.SubjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class SubjectService {
     }
 
     public List<Subject> findAll() {
-        return (List<Subject>) subjectRepository.findAll();
+        return subjectRepository.findAll();
     }
 
     public void save(Subject subject) {
@@ -51,10 +51,6 @@ public class SubjectService {
 
     public void delete(int id) {
         subjectRepository.deleteById(id);
-    }
-
-    public List<Subject> findAllByTeacherId(int id) {
-        return subjectRepository.findAllByTeacherId(id);
     }
 
     private void verifySubjectPresent(int id) {

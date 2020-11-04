@@ -1,9 +1,9 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.AudienceRepository;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.repository.AudienceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class AudienceService {
     }
 
     public List<Audience> getAll() {
-        return (List<Audience>) audienceRepository.findAll();
+        return audienceRepository.findAll();
     }
 
     public void save(Audience audience) {

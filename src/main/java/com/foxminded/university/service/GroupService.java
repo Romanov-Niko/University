@@ -1,12 +1,12 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.GroupRepository;
-import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Student;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.GroupNameNotUniqueException;
 import com.foxminded.university.exception.GroupSizeTooLargeException;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class GroupService {
     }
 
     public List<Group> findAll() {
-        return (List<Group>) groupRepository.findAll();
+        return groupRepository.findAll();
     }
 
     public void save(Group group) {
@@ -58,10 +58,6 @@ public class GroupService {
 
     public void delete(int id) {
         groupRepository.deleteById(id);
-    }
-
-    public List<Group> findAllByLessonId(int id) {
-        return groupRepository.findAllByLessonId(id);
     }
 
     private void verifyGroupPresent(int id) {

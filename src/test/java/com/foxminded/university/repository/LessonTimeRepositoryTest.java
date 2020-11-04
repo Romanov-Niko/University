@@ -10,13 +10,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.*;
+import static com.foxminded.university.TestData.retrievedLessonTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-class HibernateLessonTimeRepositoryTest {
+class LessonTimeRepositoryTest {
 
     @Autowired
     private LessonTimeRepository lessonTimeRepository;

@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.LessonRepository;
 import com.foxminded.university.domain.DaySchedule;
+import com.foxminded.university.repository.LessonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,6 @@ import static com.foxminded.university.TestData.retrievedDaySchedule;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,21 +49,21 @@ class DayScheduleServiceTest {
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedAllSchedulesOfGivenMonth() {
-        given(lessonRepository.findByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
+        given(lessonRepository.findByMonthForStudent(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1))).willReturn(retrievedDaySchedule.getLessons());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.findByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(lessonRepository, times(1)).findByMonthForStudent(1, LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findByMonthForStudent(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1));
         assertEquals(singletonList(retrievedDaySchedule), actualDaySchedules);
     }
 
     @Test
     void givenId1AndFirstDay_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForTeacherAndReturnedAllSchedulesOfGivenMonth() {
-        given(lessonRepository.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(retrievedDaySchedule.getLessons());
+        given(lessonRepository.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1))).willReturn(retrievedDaySchedule.getLessons());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(lessonRepository, times(1)).findByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findByMonthForTeacher(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1));
         assertEquals(singletonList(retrievedDaySchedule), actualDaySchedules);
     }
 
@@ -90,21 +89,21 @@ class DayScheduleServiceTest {
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForStudent_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(lessonRepository.findByMonthForStudent(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+        given(lessonRepository.findByMonthForStudent(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.findByMonthForStudent(1, LocalDate.parse("2017-06-01"));
 
-        verify(lessonRepository, times(1)).findByMonthForStudent(1, LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findByMonthForStudent(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1));
         assertEquals(emptyList(), actualDaySchedules);
     }
 
     @Test
     void givenDataThatProducesEmptyReturn_whenGetByMonthForTeacher_thenCalledDayScheduleDaoGetByMonthForStudentAndReturnedEmptyList() {
-        given(lessonRepository.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).willReturn(emptyList());
+        given(lessonRepository.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1))).willReturn(emptyList());
 
         List<DaySchedule> actualDaySchedules = dayScheduleService.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
 
-        verify(lessonRepository, times(1)).findByMonthForTeacher(1, LocalDate.parse("2017-06-01"));
+        verify(lessonRepository, times(1)).findByMonthForTeacher(1, LocalDate.parse("2017-06-01"), LocalDate.parse("2017-06-01").plusMonths(1));
         assertEquals(emptyList(), actualDaySchedules);
     }
 }

@@ -1,11 +1,11 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.GroupRepository;
-import com.foxminded.university.repository.StudentRepository;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.GroupNameNotUniqueException;
 import com.foxminded.university.exception.GroupSizeTooLargeException;
+import com.foxminded.university.repository.GroupRepository;
+import com.foxminded.university.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -76,16 +76,6 @@ class GroupServiceTest {
     }
 
     @Test
-    void givenLessonId_whenGetAllByLessonId_thenCalledGroupDaoGetAllByLessonIdAndReturnedAllGroupsOfGivenLesson() {
-        given(groupRepository.findAllByLessonId(1)).willReturn(singletonList(retrievedGroup));
-
-        List<Group> actualGroups = groupService.findAllByLessonId(1);
-
-        verify(groupRepository, times(1)).findAllByLessonId(1);
-        assertEquals(singletonList(retrievedGroup), actualGroups);
-    }
-
-    @Test
     void givenEmptyTable_whenGetAll_thenCalledGroupDaoGetAllAndReturnedEmptyList() {
         given(groupRepository.findAll()).willReturn(emptyList());
 
@@ -142,15 +132,5 @@ class GroupServiceTest {
         Throwable exception = assertThrows(GroupSizeTooLargeException.class, () -> groupService.update(updatedGroup));
         assertEquals("Group with id 1 have too many students", exception.getMessage());
         verify(groupRepository, never()).save(updatedGroup);
-    }
-
-    @Test
-    void givenDataThatProducesEmptyResult_whenGetAllByLessonId_thenCalledGroupDaoGetAllByLessonIdAndReturnedEmptyList() {
-        given(groupRepository.findAllByLessonId(1)).willReturn(emptyList());
-
-        List<Group> actualGroups = groupService.findAllByLessonId(1);
-
-        verify(groupRepository, times(1)).findAllByLessonId(1);
-        assertEquals(emptyList(), actualGroups);
     }
 }

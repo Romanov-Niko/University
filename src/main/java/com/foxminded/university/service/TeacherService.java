@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.SubjectRepository;
-import com.foxminded.university.repository.TeacherRepository;
 import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.repository.SubjectRepository;
+import com.foxminded.university.repository.TeacherRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class TeacherService {
     }
 
     public List<Teacher> findAll() {
-        return (List<Teacher>) teacherRepository.findAll();
+        return teacherRepository.findAll();
     }
 
     public void save(Teacher teacher) {

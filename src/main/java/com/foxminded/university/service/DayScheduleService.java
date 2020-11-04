@@ -1,8 +1,8 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.LessonRepository;
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
+import com.foxminded.university.repository.LessonRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,11 +29,11 @@ public class DayScheduleService {
     }
 
     public List<DaySchedule> findByMonthForStudent(int id, LocalDate startDay) {
-        return getSchedules(lessonRepository.findByMonthForStudent(id, startDay));
+        return getSchedules(lessonRepository.findByMonthForStudent(id, startDay, startDay.plusMonths(1)));
     }
 
     public List<DaySchedule> findByMonthForTeacher(int id, LocalDate startDay) {
-        return getSchedules(lessonRepository.findByMonthForTeacher(id, startDay));
+        return getSchedules(lessonRepository.findByMonthForTeacher(id, startDay, startDay.plusMonths(1)));
     }
 
     private List<DaySchedule> getSchedules(List<Lesson> lessons) {

@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.*;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -66,8 +65,8 @@ class LessonServiceTest {
         given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
         given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonRepository.findAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
-        given(lessonRepository.findAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
 
         lessonService.save(createdLesson);
 
@@ -83,8 +82,8 @@ class LessonServiceTest {
         given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
         given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonRepository.findAllByAudienceIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
-        given(lessonRepository.findAllByTeacherIdDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
 
         lessonService.update(updatedLesson);
 

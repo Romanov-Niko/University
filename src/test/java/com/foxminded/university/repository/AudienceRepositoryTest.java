@@ -9,13 +9,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static com.foxminded.university.TestData.*;
+import static com.foxminded.university.TestData.retrievedAudience;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-class HibernateAudienceRepositoryTest {
+class AudienceRepositoryTest {
 
     @Autowired
     private AudienceRepository audienceRepository;

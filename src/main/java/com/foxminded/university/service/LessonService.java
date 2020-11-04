@@ -1,9 +1,9 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.*;
 import com.foxminded.university.domain.Group;
 import com.foxminded.university.domain.Lesson;
 import com.foxminded.university.exception.*;
+import com.foxminded.university.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class LessonService {
     }
 
     public List<Lesson> findAll() {
-        return (List<Lesson>) lessonRepository.findAll();
+        return lessonRepository.findAll();
     }
 
     public void save(Lesson lesson) {
@@ -102,7 +102,7 @@ public class LessonService {
     }
 
     private void verifyTeacherFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonRepository.findAllByTeacherIdDateAndLessonTimeId(currentLesson.getTeacher().getId(),
+        List<Lesson> lessons = lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(currentLesson.getTeacher().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
@@ -112,7 +112,7 @@ public class LessonService {
     }
 
     private void verifyAudienceFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonRepository.findAllByAudienceIdDateAndLessonTimeId(currentLesson.getAudience().getId(),
+        List<Lesson> lessons = lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(currentLesson.getAudience().getId(),
                 currentLesson.getDate(), currentLesson.getLessonTime().getId());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {

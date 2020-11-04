@@ -1,9 +1,9 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.AudienceRepository;
 import com.foxminded.university.domain.Audience;
 import com.foxminded.university.exception.AudienceRoomNumberNotUniqueException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.repository.AudienceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

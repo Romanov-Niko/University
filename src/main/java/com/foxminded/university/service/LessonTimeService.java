@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.LessonTimeRepository;
 import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.LessonDurationOutOfBoundsException;
 import com.foxminded.university.exception.LessonTimeNotUniqueException;
+import com.foxminded.university.repository.LessonTimeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class LessonTimeService {
     }
 
     public List<LessonTime> findAll() {
-        return (List<LessonTime>) lessonTimeRepository.findAll();
+        return lessonTimeRepository.findAll();
     }
 
     public void save(LessonTime lessonTime) {

@@ -11,11 +11,10 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-class HibernateStudentRepositoryTest {
+class StudentRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;

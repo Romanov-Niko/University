@@ -1,9 +1,9 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.SubjectRepository;
-import com.foxminded.university.repository.TeacherRepository;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.repository.SubjectRepository;
+import com.foxminded.university.repository.TeacherRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

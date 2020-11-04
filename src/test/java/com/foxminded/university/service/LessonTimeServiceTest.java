@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.repository.LessonTimeRepository;
 import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.LessonDurationOutOfBoundsException;
 import com.foxminded.university.exception.LessonTimeNotUniqueException;
+import com.foxminded.university.repository.LessonTimeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 

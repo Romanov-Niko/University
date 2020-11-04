@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends CrudRepository<Student, Integer> {
 
+    List<Student> findAll();
+
     List<Student> findAllByGroupId(int id);
 
     @Query(value = "SELECT * FROM students " +
