@@ -1,6 +1,7 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.service.DayScheduleService;
+import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.foxminded.university.TestData.retrievedDaySchedule;
+import static com.foxminded.university.TestData.retrievedTeacher;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -27,6 +30,9 @@ class DayScheduleControllerTest {
 
     @Mock
     private DayScheduleService dayScheduleService;
+
+    @Mock
+    private TeacherService teacherService;
 
     @InjectMocks
     private DayScheduleController dayScheduleController;
@@ -82,7 +88,8 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewDailyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.findByDateForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
+        when(dayScheduleService.findByDateForTeacher(retrievedTeacher, LocalDate.parse("2017-06-01"))).thenReturn(retrievedDaySchedule);
+        when(teacherService.findById(retrievedTeacher.getId())).thenReturn(Optional.of(retrievedTeacher));
 
         mockMvc.perform(post("/daysschedules/teacher")
                 .param("action", "day")
@@ -95,7 +102,8 @@ class DayScheduleControllerTest {
 
     @Test
     void whenViewMonthlyTeacherSchedule_thenRedirectedToScheduleViewingPageWithModelThatContainsListOfLessons() throws Exception {
-        when(dayScheduleService.findByMonthForTeacher(1, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
+        when(dayScheduleService.findByMonthForTeacher(retrievedTeacher, LocalDate.parse("2017-06-01"))).thenReturn(singletonList(retrievedDaySchedule));
+        when(teacherService.findById(retrievedTeacher.getId())).thenReturn(Optional.of(retrievedTeacher));
 
         mockMvc.perform(post("/daysschedules/teacher")
                 .param("action", "month")

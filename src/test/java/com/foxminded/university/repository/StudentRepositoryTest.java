@@ -27,22 +27,8 @@ class StudentRepositoryTest {
     }
 
     @Test
-    void givenFirstGroupName_whenFindAllByGroupName_thenReturnedAllStudentsOfFirstGroup() {
-        List<Student> actualStudents = studentRepository.findAllByGroupName("AA-11");
-
-        assertEquals(1, actualStudents.size());
-    }
-
-    @Test
     void givenNonExistentGroupId_whenFindAllByGroupId_thenReturnedEmptyList() {
         List<Student> actualStudents = studentRepository.findAllByGroupId(0);
-
-        assertEquals(emptyList(), actualStudents);
-    }
-
-    @Test
-    void givenNonExistentName_whenFindAllByGroupName_thenReturnedEmptyList() {
-        List<Student> actualStudents = studentRepository.findAllByGroupName("INCORRECT");
 
         assertEquals(emptyList(), actualStudents);
     }

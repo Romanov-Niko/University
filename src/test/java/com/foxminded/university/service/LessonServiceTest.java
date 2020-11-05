@@ -65,8 +65,8 @@ class LessonServiceTest {
         given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
         given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
-        given(lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1)).willReturn(singletonList(createdLesson));
+        given(lessonRepository.findAllByAudienceAndDateAndLessonTime(retrievedAudience, LocalDate.parse("2017-06-01"), retrievedLessonTime)).willReturn(singletonList(createdLesson));
+        given(lessonRepository.findAllByTeacherAndDateAndLessonTime(retrievedTeacher, LocalDate.parse("2017-06-01"), retrievedLessonTime)).willReturn(singletonList(createdLesson));
 
         lessonService.save(createdLesson);
 
@@ -82,8 +82,8 @@ class LessonServiceTest {
         given(audienceRepository.findById(1)).willReturn(Optional.of(new Audience(2, 102, 100)));
         given(lessonTimeRepository.findById(1)).willReturn(Optional.of(retrievedLessonTime));
         given(groupRepository.findById(1)).willReturn(Optional.of(retrievedGroup));
-        given(lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
-        given(lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(1, LocalDate.parse("3000-01-01"), 1)).willReturn(singletonList(updatedLesson));
+        given(lessonRepository.findAllByAudienceAndDateAndLessonTime(retrievedAudience, LocalDate.parse("3000-01-01"), retrievedLessonTime)).willReturn(singletonList(updatedLesson));
+        given(lessonRepository.findAllByTeacherAndDateAndLessonTime(retrievedTeacher, LocalDate.parse("3000-01-01"), retrievedLessonTime)).willReturn(singletonList(updatedLesson));
 
         lessonService.update(updatedLesson);
 

@@ -84,16 +84,6 @@ class StudentServiceTest {
     }
 
     @Test
-    void givenGroupName_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedStudentsOfGivenGroup() {
-        given(studentRepository.findAllByGroupName("AA-11")).willReturn(singletonList(retrievedStudent));
-
-        List<Student> actualStudents = studentService.findAllByGroupName("AA-11");
-
-        verify(studentRepository, times(1)).findAllByGroupName(retrievedGroup.getName());
-        assertEquals(singletonList(retrievedStudent), actualStudents);
-    }
-
-    @Test
     void givenEmptyTable_whenGetAll_thenCalledStudentDaoGetAllAndReturnedEmptyList() {
         given(studentRepository.findAll()).willReturn(emptyList());
 
@@ -139,16 +129,6 @@ class StudentServiceTest {
         List<Student> actualStudents = studentService.findAllByGroupId(1);
 
         verify(studentRepository, times(1)).findAllByGroupId(1);
-        assertEquals(emptyList(), actualStudents);
-    }
-
-    @Test
-    void givenDataThatProducesEmptyReturn_whenGetAllByGroupName_thenCalledStudentDaoAndReturnedEmptyList() {
-        given(studentRepository.findAllByGroupName("AA-11")).willReturn(emptyList());
-
-        List<Student> actualStudents = studentService.findAllByGroupName("AA-11");
-
-        verify(studentRepository, times(1)).findAllByGroupName(retrievedGroup.getName());
         assertEquals(emptyList(), actualStudents);
     }
 }

@@ -1,6 +1,9 @@
 package com.foxminded.university.repository;
 
+import com.foxminded.university.domain.Audience;
 import com.foxminded.university.domain.Lesson;
+import com.foxminded.university.domain.LessonTime;
+import com.foxminded.university.domain.Teacher;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,9 +19,9 @@ public interface LessonRepository extends CrudRepository<Lesson, Integer> {
 
     List<Lesson> findAllByDate(LocalDate date);
 
-    List<Lesson> findAllByTeacherIdAndDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
+    List<Lesson> findAllByTeacherAndDateAndLessonTime(Teacher teacher, LocalDate date, LessonTime lessonTime);
 
-    List<Lesson> findAllByAudienceIdAndDateAndLessonTimeId(int id, LocalDate date, int lessonTimeId);
+    List<Lesson> findAllByAudienceAndDateAndLessonTime(Audience audience, LocalDate date, LessonTime lessonTime);
 
     @Query(value = "SELECT * FROM lessons " +
             "LEFT JOIN lessons_groups ON lessons.id = lessons_groups.lesson_id " +
@@ -26,9 +29,7 @@ public interface LessonRepository extends CrudRepository<Lesson, Integer> {
             "WHERE students.id = :studentId AND lessons.date = :day", nativeQuery = true)
     List<Lesson> findByDateForStudent(@Param("studentId") int id, @Param("day") LocalDate date);
 
-    @Query(value = "SELECT * FROM lessons " +
-            "WHERE lessons.teacher_id = :teacherId AND lessons.date = :day", nativeQuery = true)
-    List<Lesson> findByDateForTeacher(@Param("teacherId") int id, @Param("day") LocalDate date);
+    List<Lesson> findAllByTeacherAndDate(Teacher teacher, LocalDate date);
 
     @Query(value = "SELECT * FROM lessons " +
             "LEFT JOIN lessons_groups ON lessons.id = lessons_groups.lesson_id " +
@@ -36,7 +37,5 @@ public interface LessonRepository extends CrudRepository<Lesson, Integer> {
             "WHERE students.id = :studentId AND lessons.date >= :startDay AND lessons.date < :endDay", nativeQuery = true)
     List<Lesson> findByMonthForStudent(@Param("studentId") int id, @Param("startDay") LocalDate startDate, @Param("endDay") LocalDate endDate);
 
-    @Query(value = "SELECT * FROM lessons " +
-            "WHERE lessons.teacher_id = :teacherId AND lessons.date >= :startDay AND lessons.date < :endDay", nativeQuery = true)
-    List<Lesson> findByMonthForTeacher(@Param("teacherId") int id, @Param("startDay") LocalDate startDate, @Param("endDay") LocalDate endDate);
+    List<Lesson> findAllByTeacherAndDateGreaterThanEqualAndDateLessThan(Teacher teacher, LocalDate startDate, LocalDate endDate);
 }

@@ -64,10 +64,6 @@ public class StudentService {
         return studentRepository.findAllByGroupId(id);
     }
 
-    public List<Student> findAllByGroupName(String name) {
-        return studentRepository.findAllByGroupName(name);
-    }
-
     private void verifyStudentPresent(int id) {
         studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Student with id %d is not present", id)));
     }

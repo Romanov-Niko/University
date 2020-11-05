@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 public class TestData {
@@ -14,6 +15,7 @@ public class TestData {
     public static Audience retrievedAudience = new Audience(1, 101, 100);
     public static Audience createdAudience = new Audience(104, 100);
     public static Audience updatedAudience = new Audience(1, 999, 999);
+    public static Audience nonExistentAudience = new Audience(10, 999, 999);
 
     public static LessonTime retrievedLessonTime = new LessonTime(1, LocalTime.parse("08:00:00"), LocalTime.parse("09:00:00"));
     public static LessonTime createdLessonTime = new LessonTime(LocalTime.parse("12:00:00"), LocalTime.parse("13:00:00"));
@@ -45,6 +47,9 @@ public class TestData {
     public static Teacher updatedTeacher = new Teacher(1, "UPDATED", "teacher", LocalDate.parse("1990-01-01"),
             "male", "first@gmail.com", "11111",
             singletonList(retrievedSubject));
+    public static Teacher nonExistentTeacher = new Teacher(5, "non", "existent", LocalDate.parse("1990-01-01"),
+            "male", "first@gmail.com", "11111",
+            emptyList());
 
     public static Group retrievedGroup = new Group(1, "AA-11", singletonList(retrievedStudent));
     public static Group createdGroup = new Group("DD-44", singletonList(new Student(1, "first",

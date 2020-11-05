@@ -2,7 +2,10 @@ package com.foxminded.university.controller;
 
 import com.foxminded.university.domain.DaySchedule;
 import com.foxminded.university.domain.Lesson;
+import com.foxminded.university.domain.Teacher;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.service.DayScheduleService;
+import com.foxminded.university.service.TeacherService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +20,11 @@ import java.util.List;
 public class DayScheduleController {
 
     private final DayScheduleService dayScheduleService;
+    private final TeacherService teacherService;
 
-    public DayScheduleController(DayScheduleService dayScheduleService) {
+    public DayScheduleController(DayScheduleService dayScheduleService, TeacherService teacherService) {
         this.dayScheduleService = dayScheduleService;
+        this.teacherService = teacherService;
     }
 
     @GetMapping("/search/teacher/{id}")
@@ -54,14 +59,16 @@ public class DayScheduleController {
 
     @PostMapping(value = "/teacher", params = "action=day")
     public String viewDailyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        DaySchedule daySchedule = dayScheduleService.findByDateForTeacher(teacherId, date);
+        Teacher teacher = teacherService.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", teacherId)));
+        DaySchedule daySchedule = dayScheduleService.findByDateForTeacher(teacher, date);
         model.addAttribute("lessons", daySchedule.getLessons());
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/teacher", params = "action=month")
     public String viewMonthlyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForTeacher(teacherId, date);
+        Teacher teacher = teacherService.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", teacherId)));
+        List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForTeacher(teacher, date);
         List<Lesson> lessons = new ArrayList<>();
         daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
         model.addAttribute("lessons", lessons);

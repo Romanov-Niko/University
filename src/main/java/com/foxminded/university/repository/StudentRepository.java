@@ -14,9 +14,4 @@ public interface StudentRepository extends CrudRepository<Student, Integer> {
     List<Student> findAll();
 
     List<Student> findAllByGroupId(int id);
-
-    @Query(value = "SELECT * FROM students " +
-            "LEFT JOIN groups ON students.group_id = groups.id " +
-            "WHERE groups.name = :groupName", nativeQuery = true)
-    List<Student> findAllByGroupName(@Param("groupName") String name);
 }

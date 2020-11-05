@@ -102,8 +102,8 @@ public class LessonService {
     }
 
     private void verifyTeacherFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(currentLesson.getTeacher().getId(),
-                currentLesson.getDate(), currentLesson.getLessonTime().getId());
+        List<Lesson> lessons = lessonRepository.findAllByTeacherAndDateAndLessonTime(currentLesson.getTeacher(),
+                currentLesson.getDate(), currentLesson.getLessonTime());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
                 throw new TeacherLessonOverlapException(String.format("Teacher with id %d is busy", currentLesson.getTeacher().getId()));
@@ -112,8 +112,8 @@ public class LessonService {
     }
 
     private void verifyAudienceFree(Lesson currentLesson) {
-        List<Lesson> lessons = lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(currentLesson.getAudience().getId(),
-                currentLesson.getDate(), currentLesson.getLessonTime().getId());
+        List<Lesson> lessons = lessonRepository.findAllByAudienceAndDateAndLessonTime(currentLesson.getAudience(),
+                currentLesson.getDate(), currentLesson.getLessonTime());
         for (Lesson lesson : lessons) {
             if (lesson.getId() != currentLesson.getId()) {
                 throw new AudienceLessonOverlapException(String.format("Audience with id %d is busy", currentLesson.getAudience().getId()));

@@ -10,8 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.foxminded.university.TestData.retrievedDaySchedule;
-import static com.foxminded.university.TestData.retrievedLesson;
+import static com.foxminded.university.TestData.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,14 +34,14 @@ class LessonRepositoryTest {
 
     @Test
     void givenFirstLessonData_whenFindAllByTeacherIdDateAndLessonTimeId_thenReturnedFirstLesson() {
-        List<Lesson> actualLessons = lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1);
+        List<Lesson> actualLessons = lessonRepository.findAllByTeacherAndDateAndLessonTime(retrievedTeacher, LocalDate.parse("2017-06-01"), retrievedLessonTime);
 
         assertEquals(singletonList(retrievedLesson), actualLessons);
     }
 
     @Test
     void givenFirstLessonData_whenFindAllByAudienceIdDateAndLessonTimeId_thenReturnedFirstLesson() {
-        List<Lesson> actualLessons = lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(1, LocalDate.parse("2017-06-01"), 1);
+        List<Lesson> actualLessons = lessonRepository.findAllByAudienceAndDateAndLessonTime(retrievedAudience, LocalDate.parse("2017-06-01"), retrievedLessonTime);
 
         assertEquals(singletonList(retrievedLesson), actualLessons);
     }
@@ -56,14 +55,14 @@ class LessonRepositoryTest {
 
     @Test
     void givenWrongData_whenFindAllByTeacherIdDateAndLessonTimeId_thenReturnedEmptyList() {
-        List<Lesson> actualLessons = lessonRepository.findAllByTeacherIdAndDateAndLessonTimeId(5, LocalDate.parse("2017-06-01"), 1);
+        List<Lesson> actualLessons = lessonRepository.findAllByTeacherAndDateAndLessonTime(nonExistentTeacher, LocalDate.parse("2017-06-01"), retrievedLessonTime);
 
         assertEquals(emptyList(), actualLessons);
     }
 
     @Test
     void givenWrongData_whenFindAllByAudienceIdDateAndLessonTimeId_thenReturnedEmptyList() {
-        List<Lesson> actualLessons = lessonRepository.findAllByAudienceIdAndDateAndLessonTimeId(5, LocalDate.parse("2017-06-01"), 1);
+        List<Lesson> actualLessons = lessonRepository.findAllByAudienceAndDateAndLessonTime(nonExistentAudience, LocalDate.parse("2017-06-01"), retrievedLessonTime);
 
         assertEquals(emptyList(), actualLessons);
     }
@@ -76,8 +75,8 @@ class LessonRepositoryTest {
     }
 
     @Test
-    void givenId1AndFirstDay_whenFindByDayForTeacher_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
-        List<Lesson> actualLessons = lessonRepository.findByDateForTeacher(1, LocalDate.parse("2017-06-01"));
+    void givenTeacherWithId1AndFirstDay_whenFindByDayForTeacher_thenReturnedDayScheduleWithFirstDayAndFirstLesson() {
+        List<Lesson> actualLessons = lessonRepository.findAllByTeacherAndDate(retrievedTeacher, LocalDate.parse("2017-06-01"));
 
         assertEquals(retrievedDaySchedule.getLessons(), actualLessons);
     }
@@ -105,7 +104,7 @@ class LessonRepositoryTest {
 
     @Test
     void givenWrongData_whenFindByDayForTeacher_thenReturnedOptionalEmpty() {
-        List<Lesson> actualLessons = lessonRepository.findByDateForTeacher(5, LocalDate.parse("2017-06-01"));
+        List<Lesson> actualLessons = lessonRepository.findAllByTeacherAndDate(nonExistentTeacher, LocalDate.parse("2017-06-01"));
 
         assertTrue(actualLessons.isEmpty());
     }
