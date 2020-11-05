@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/daysschedules")
@@ -59,19 +60,23 @@ public class DayScheduleController {
 
     @PostMapping(value = "/teacher", params = "action=day")
     public String viewDailyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        Teacher teacher = teacherService.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", teacherId)));
-        DaySchedule daySchedule = dayScheduleService.findByDateForTeacher(teacher, date);
-        model.addAttribute("lessons", daySchedule.getLessons());
+        Optional<Teacher> teacher = teacherService.findById(teacherId);
+        if (teacher.isPresent()) {
+            DaySchedule daySchedule = dayScheduleService.findByDateForTeacher(teacher.get(), date);
+            model.addAttribute("lessons", daySchedule.getLessons());
+        }
         return "daysschedules/daysschedules";
     }
 
     @PostMapping(value = "/teacher", params = "action=month")
     public String viewMonthlyTeacherSchedule(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(value = "id") int teacherId, Model model) {
-        Teacher teacher = teacherService.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(String.format("Teacher with id %d is not present", teacherId)));
-        List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForTeacher(teacher, date);
-        List<Lesson> lessons = new ArrayList<>();
-        daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
-        model.addAttribute("lessons", lessons);
+        Optional<Teacher> teacher = teacherService.findById(teacherId);
+        if (teacher.isPresent()) {
+            List<DaySchedule> daysSchedules = dayScheduleService.findByMonthForTeacher(teacher.get(), date);
+            List<Lesson> lessons = new ArrayList<>();
+            daysSchedules.forEach(daySchedule -> lessons.addAll(daySchedule.getLessons()));
+            model.addAttribute("lessons", lessons);
+        }
         return "daysschedules/daysschedules";
     }
 }
