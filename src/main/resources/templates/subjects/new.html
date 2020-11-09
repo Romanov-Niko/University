@@ -50,16 +50,24 @@
                 <form action="#" th:action="@{/subjects/save}" th:object="${subject}" method="post">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="name" class="col-form-label">NAME</label> <input type="text" th:field="*{name}" class="form-control" id="name">
+                            <label for="name" class="col-form-label">NAME</label>
+                            <input type="text" th:field="*{name}" class="form-control" id="name">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="creditHours" class="col-form-label">CREDIT HOURS</label> <input type="number" th:field="*{creditHours}" class="form-control" id="creditHours">
+                            <label for="creditHours" class="col-form-label">CREDIT HOURS</label>
+                            <input type="number" th:field="*{creditHours}" class="form-control" id="creditHours">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('creditHours')}" th:errors="*{creditHours}"></span>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="course" class="col-form-label">COURSE</label> <input type="number" th:field="*{course}" class="form-control" id="course">
+                            <label for="course" class="col-form-label">COURSE</label>
+                            <input type="number" th:field="*{course}" class="form-control" id="course">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('course')}" th:errors="*{course}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="specialty" class="col-form-label">SPECIALTY</label> <input type="text" th:field="*{specialty}" class="form-control" id="specialty">
+                            <label for="specialty" class="col-form-label">SPECIALTY</label>
+                            <input type="text" th:field="*{specialty}" class="form-control" id="specialty">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('specialty')}" th:errors="*{specialty}"></span>
                         </div>
                         <div class="col-md-6">
                             <input type="submit" class="btn btn-primary" value="ADD SUBJECT">

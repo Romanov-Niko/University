@@ -57,6 +57,7 @@
                                 <label class="custom-control-label" th:for="${#ids.prev('subject')}" th:text="${currSubject.name}"></label>
                             </div>
                         </div>
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">TEACHER:</label>
@@ -66,6 +67,7 @@
                                 <label class="custom-control-label" th:for="${#ids.prev('teacher')}" th:text="${currTeacher.surname}"></label>
                             </div>
                         </div>
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">AUDIENCE:</label>
@@ -75,6 +77,7 @@
                                 <label class="custom-control-label" th:for="${#ids.prev('audience')}" th:text="${currAudience.roomNumber}"></label>
                             </div>
                         </div>
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('audience')}" th:errors="*{audience}"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">BEGIN TIME:</label>
@@ -84,9 +87,12 @@
                                 <label class="custom-control-label" th:for="${#ids.prev('lessonTime')}" th:text="${currLessonTime.begin}"></label>
                             </div>
                         </div>
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('lessonTime')}" th:errors="*{lessonTime}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="date" class="col-form-label">DATE</label> <input type="date" th:field="*{date}" class="form-control" id="date">
+                            <label for="date" class="col-form-label">DATE</label>
+                            <input type="date" th:field="*{date}" class="form-control" id="date">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">GROUPS:</label>

@@ -3,6 +3,9 @@ package com.foxminded.university.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -14,11 +17,17 @@ public class Student extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "group_id")
+    @Min(value = 1, message = "Group id may not be less than 1")
     private Integer groupId;
+    @NotBlank(message = "Specialty may not be blank")
     private String specialty;
+    @NotNull(message = "Course may not be blank")
+    @Min(value = 1, message = "Course may not be less than 1")
     private Integer course;
+    @NotNull(message = "Admission date may not be blank")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate admission;
+    @NotNull(message = "Graduation date may not be blank")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate graduation;
 

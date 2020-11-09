@@ -4,9 +4,11 @@ import com.foxminded.university.domain.Subject;
 import com.foxminded.university.service.SubjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +44,10 @@ public class SubjectController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/subjects/new";
+        }
         try {
             subjectService.save(subject);
         } catch (Exception exception) {
@@ -59,7 +64,10 @@ public class SubjectController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("subject") Subject subject, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/subjects/edit";
+        }
         try {
             subjectService.update(subject);
         } catch (Exception exception) {

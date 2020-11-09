@@ -4,9 +4,11 @@ import com.foxminded.university.domain.Student;
 import com.foxminded.university.service.StudentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +44,10 @@ public class StudentController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("student") Student student, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/students/new";
+        }
         try {
             studentService.save(student);
         } catch (Exception exception) {
@@ -59,7 +64,10 @@ public class StudentController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("student") Student student, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/students/edit";
+        }
         try {
             studentService.update(student);
         } catch (Exception exception) {

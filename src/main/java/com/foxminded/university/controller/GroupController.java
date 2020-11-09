@@ -6,9 +6,11 @@ import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,15 +59,14 @@ public class GroupController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
-        List<Student> students = new ArrayList<>();
-        if(studentsOfGroup != null) {
-            for (int id: studentsOfGroup){
-                Optional<Student> student = studentService.findById(id);
-                student.ifPresent(students::add);
-            }
-            group.setStudents(students);
+    public String save(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
+                       @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup,
+                       RedirectAttributes redirectAttributes, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allStudents", studentService.findAll());
+            return "/groups/new";
         }
+        setStudentsToGroup(group, studentsOfGroup);
         try {
             groupService.save(group);
         } catch (Exception exception) {
@@ -82,22 +83,33 @@ public class GroupController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("group") Group group, @RequestParam(value = "studentsOfGroup" , required = false) int[] studentsOfGroup, RedirectAttributes redirectAttributes) {
-        List<Student> students = new ArrayList<>();
-        if(studentsOfGroup != null) {
-            for (int id: studentsOfGroup){
-                Optional<Student> student = studentService.findById(id);
-                student.ifPresent(students::add);
-            }
-            group.setStudents(students);
+    public String update(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
+                         @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup,
+                         RedirectAttributes redirectAttributes, Model model) {
+        setStudentsToGroup(group, studentsOfGroup);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allStudents", studentService.findAll());
+            model.addAttribute("group", group);
+            return "/groups/edit";
         }
         try {
             groupService.update(group);
         } catch (Exception exception) {
             redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/groups/edit/"+group.getId();
+            return "redirect:/groups/edit/" + group.getId();
         }
         return "redirect:/groups";
+    }
+
+    private void setStudentsToGroup(@ModelAttribute("group") @Valid Group group, @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup) {
+        List<Student> students = new ArrayList<>();
+        if (studentsOfGroup != null) {
+            for (int id : studentsOfGroup) {
+                Optional<Student> student = studentService.findById(id);
+                student.ifPresent(students::add);
+            }
+            group.setStudents(students);
+        }
     }
 
 }

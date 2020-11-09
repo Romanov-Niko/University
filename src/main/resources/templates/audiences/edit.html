@@ -50,12 +50,15 @@
                 <form action="#" th:action="@{/audiences/update/{id}(id=${audience.getId()})}" th:object="${audience}" method="post">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="roomNumber" class="col-form-label">ROOM NUMBER</label> <input type="text" th:field="*{roomNumber}" class="form-control" id="roomNumber">
+                            <label for="roomNumber" class="col-form-label">ROOM NUMBER</label>
+                            <input type="number" th:field="*{roomNumber}" class="form-control" id="roomNumber">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('roomNumber')}" th:errors="*{roomNumber}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="capacity" class="col-form-label">CAPACITY</label> <input type="text" th:field="*{capacity}" class="form-control" id="capacity">
+                            <label for="capacity" class="col-form-label">CAPACITY</label>
+                            <input type="number" th:field="*{capacity}" class="form-control" id="capacity">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></span>
                         </div>
-
                         <div class="form-group col-md-8">
                             <input type="submit" class="btn btn-primary" value="UPDATE AUDIENCE">
                         </div>

@@ -4,9 +4,11 @@ import com.foxminded.university.domain.Audience;
 import com.foxminded.university.service.AudienceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +44,10 @@ public class AudienceController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/audiences/new";
+        }
         try {
             audienceService.save(audience);
         } catch (Exception exception) {
@@ -59,7 +64,10 @@ public class AudienceController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("audience") Audience audience, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/audiences/edit";
+        }
         try {
             audienceService.update(audience);
         } catch (Exception exception) {

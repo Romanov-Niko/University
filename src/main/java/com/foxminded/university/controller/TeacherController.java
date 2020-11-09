@@ -6,9 +6,11 @@ import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,16 +59,14 @@ public class TeacherController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher , RedirectAttributes redirectAttributes) {
-        List<Subject> subjects = new ArrayList<>();
-        if(subjectsOfTeacher != null) {
-            for (int id: subjectsOfTeacher){
-                Optional<Subject> subject = subjectService.findById(id);
-                subject.ifPresent(subjects::add);
-            }
-            teacher.setSubjects(subjects);
+    public String save(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult,
+                       @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher,
+                       RedirectAttributes redirectAttributes, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allSubjects", subjectService.findAll());
+            return "/teachers/new";
         }
-
+        setSubjectsToTeacher(teacher, subjectsOfTeacher);
         try {
             teacherService.save(teacher);
         } catch (Exception exception) {
@@ -83,14 +83,14 @@ public class TeacherController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher, RedirectAttributes redirectAttributes) {
-        List<Subject> subjects = new ArrayList<>();
-        if(subjectsOfTeacher != null) {
-            for (int id: subjectsOfTeacher){
-                Optional<Subject> subject = subjectService.findById(id);
-                subject.ifPresent(subjects::add);
-            }
-            teacher.setSubjects(subjects);
+    public String update(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult,
+                         @RequestParam(value = "subjectsOfTeacher" , required = false) int[] subjectsOfTeacher,
+                         RedirectAttributes redirectAttributes, Model model) {
+        setSubjectsToTeacher(teacher, subjectsOfTeacher);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allSubjects", subjectService.findAll());
+            model.addAttribute("teacher", teacher);
+            return "/teachers/edit";
         }
         try {
             teacherService.update(teacher);
@@ -101,4 +101,14 @@ public class TeacherController {
         return "redirect:/teachers";
     }
 
+    private void setSubjectsToTeacher(@ModelAttribute("teacher") Teacher teacher, @RequestParam(value = "subjectsOfTeacher", required = false) int[] subjectsOfTeacher) {
+        List<Subject> subjects = new ArrayList<>();
+        if(subjectsOfTeacher != null) {
+            for (int id: subjectsOfTeacher){
+                Optional<Subject> subject = subjectService.findById(id);
+                subject.ifPresent(subjects::add);
+            }
+            teacher.setSubjects(subjects);
+        }
+    }
 }

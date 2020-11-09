@@ -1,6 +1,8 @@
 package com.foxminded.university.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -11,8 +13,10 @@ public class LessonTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull(message = "Begin time may not be blank")
     @Column(name = "begin_time")
     private LocalTime begin;
+    @NotNull(message = "End time may not be blank")
     @Column(name = "end_time")
     private LocalTime end;
 

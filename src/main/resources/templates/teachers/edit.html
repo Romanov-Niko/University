@@ -50,22 +50,34 @@
                 <form action="#" th:action="@{/teachers/update/{id}(id=${teacher.getId()})}" th:object="${teacher}" method="post">
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="name" class="col-form-label">NAME</label> <input type="text" th:field="*{name}" class="form-control" id="name">
+                            <label for="name" class="col-form-label">NAME</label>
+                            <input type="text" th:field="*{name}" class="form-control" id="name">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="surname" class="col-form-label">SURNAME</label> <input type="text" th:field="*{surname}" class="form-control" id="surname">
+                            <label for="surname" class="col-form-label">SURNAME</label>
+                            <input type="text" th:field="*{surname}" class="form-control" id="surname">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="dateOfBirth" class="col-form-label">DATE OF BIRTH</label> <input type="date" th:field="*{dateOfBirth}" class="form-control" id="dateOfBirth">
+                            <label for="dateOfBirth" class="col-form-label">DATE OF BIRTH</label>
+                            <input type="date" th:field="*{dateOfBirth}" class="form-control" id="dateOfBirth">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></span>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="gender" class="col-form-label">GENDER</label> <input type="text" th:field="*{gender}" class="form-control" id="gender">
+                            <label for="gender" class="col-form-label">GENDER</label>
+                            <input type="text" th:field="*{gender}" class="form-control" id="gender">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="email" class="col-form-label">EMAIL</label> <input type="text" th:field="*{email}" class="form-control" id="email">
+                            <label for="email" class="col-form-label">EMAIL</label>
+                            <input type="text" th:field="*{email}" class="form-control" id="email">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="phoneNumber" class="col-form-label">PHONE NUMBER</label> <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumber">
+                            <label for="phoneNumber" class="col-form-label">PHONE NUMBER</label>
+                            <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumber">
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="col-form-label">SUBJECTS:</label>

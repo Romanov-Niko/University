@@ -51,6 +51,12 @@
                             <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>NAME</th>
+                                <th>SURNAME</th>
+                                <th>DATE OF BIRTH</th>
+                                <th>GENDER</th>
+                                <th>EMAIL</th>
+                                <th>PHONE NUMBER</th>
                                 <th>GROUP ID</th>
                                 <th>SPECIALTY</th>
                                 <th>COURSE</th>
@@ -64,6 +70,12 @@
                             <tbody>
                             <tr th:each="student : ${students}">
                                 <td th:text="${student.getId()}"></td>
+                                <td th:text="${student.getName()}"></td>
+                                <td th:text="${student.getSurname()}"></td>
+                                <td th:text="${student.getDateOfBirth()}"></td>
+                                <td th:text="${student.getGender()}"></td>
+                                <td th:text="${student.getEmail()}"></td>
+                                <td th:text="${student.getPhoneNumber()}"></td>
                                 <td th:text="${student.getGroupId()}"></td>
                                 <td th:text="${student.getSpecialty()}"></td>
                                 <td th:text="${student.getCourse()}"></td>

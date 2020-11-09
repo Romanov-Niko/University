@@ -9,10 +9,12 @@ import com.foxminded.university.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,16 +89,19 @@ public class LessonController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
-        List<Group> groups = new ArrayList<>();
-        if (groupsOfLesson != null) {
-            for (int id : groupsOfLesson) {
-                Optional<Group> group = groupService.findById(id);
-                group.ifPresent(groups::add);
-            }
-            lesson.setGroups(groups);
+    public String save(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
+                       @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson,
+                       RedirectAttributes redirectAttributes, Model model) {
+        setGroupToLesson(lesson, groupsOfLesson);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("allGroups", groupService.findAll());
+            model.addAttribute("allTeachers", teacherService.findAll());
+            model.addAttribute("allAudiences", audienceService.getAll());
+            model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
+            model.addAttribute("allSubjects", subjectService.findAll());
+            return "/lessons/new";
         }
-
         try {
             lessonService.save(lesson);
         } catch (Exception exception) {
@@ -113,14 +118,18 @@ public class LessonController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson, RedirectAttributes redirectAttributes) {
-        List<Group> groups = new ArrayList<>();
-        if (groupsOfLesson != null) {
-            for (int id : groupsOfLesson) {
-                Optional<Group> group = groupService.findById(id);
-                group.ifPresent(groups::add);
-            }
-            lesson.setGroups(groups);
+    public String update(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
+                         @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson,
+                         RedirectAttributes redirectAttributes, Model model) {
+        setGroupToLesson(lesson, groupsOfLesson);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("lesson", lesson);
+            model.addAttribute("allGroups", groupService.findAll());
+            model.addAttribute("allTeachers", teacherService.findAll());
+            model.addAttribute("allAudiences", audienceService.getAll());
+            model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
+            model.addAttribute("allSubjects", subjectService.findAll());
+            return "/lessons/edit";
         }
         try {
             lessonService.update(lesson);
@@ -131,4 +140,14 @@ public class LessonController {
         return "redirect:/lessons";
     }
 
+    private void setGroupToLesson(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson) {
+        List<Group> groups = new ArrayList<>();
+        if (groupsOfLesson != null) {
+            for (int id : groupsOfLesson) {
+                Optional<Group> group = groupService.findById(id);
+                group.ifPresent(groups::add);
+            }
+            lesson.setGroups(groups);
+        }
+    }
 }

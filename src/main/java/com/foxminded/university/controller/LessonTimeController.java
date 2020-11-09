@@ -4,9 +4,12 @@ import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.service.LessonTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+import java.net.BindException;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +45,10 @@ public class LessonTimeController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("lessontime") LessonTime lessonTime, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/lessonstimes/new";
+        }
         try {
             lessonTimeService.save(lessonTime);
         } catch (Exception exception) {
@@ -59,7 +65,10 @@ public class LessonTimeController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lessontime") LessonTime lessonTime, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "/lessonstimes/edit";
+        }
         try {
             lessonTimeService.update(lessonTime);
         } catch (Exception exception) {

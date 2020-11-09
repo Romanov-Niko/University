@@ -4,19 +4,29 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @MappedSuperclass
 public class Person {
 
+    @NotBlank(message = "Name may not be blank")
     private String name;
+    @NotBlank(message = "Surname may not be blank")
     private String surname;
+    @NotNull(message = "Date of birth may not be blank")
     @Column(name = "date_of_birth")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+    @NotBlank(message = "Gender may not be blank")
     private String gender;
+    @NotBlank(message = "Email may not be blank")
+    @Email
     private String email;
+    @NotBlank(message = "Phone number may not be blank")
     @Column(name = "phone_number")
     private String phoneNumber;
 

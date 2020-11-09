@@ -5,6 +5,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -16,10 +19,13 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotNull(message = "Lesson should have subject")
     @OneToOne
     private Subject subject;
+    @NotNull(message = "Lesson should have teacher")
     @OneToOne
     private Teacher teacher;
+    @Size(min = 1, message = "Lesson should have at least 1 group")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
@@ -27,11 +33,14 @@ public class Lesson {
             joinColumns = @JoinColumn(name = "lesson_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups;
+    @NotNull(message = "Lesson should have audience")
     @OneToOne
     private Audience audience;
+    @NotNull(message = "Lesson time may not be blank")
     @OneToOne
     @JoinColumn(name = "lesson_time_id")
     private LessonTime lessonTime;
+    @NotNull(message = "Lesson date may not be blank")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
