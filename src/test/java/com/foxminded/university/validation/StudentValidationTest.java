@@ -1,6 +1,7 @@
 package com.foxminded.university.validation;
 
 import com.foxminded.university.domain.Audience;
+import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Student;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,6 +12,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 import static com.foxminded.university.TestData.retrievedAudience;
@@ -110,5 +112,27 @@ class StudentValidationTest {
         assertEquals("Graduation date must not be blank", violation.getMessage());
         assertEquals("graduation", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
+    }
+
+    @Test
+    void givenIncorrectGraduationWhichIsBeforeAdmission_whenStudentIsCreated_thenShouldDetectInvalidDateOrder() {
+        Student studentWithWrongDateOrder = new Student(1, "first",
+                "student", LocalDate.parse("1990-01-01"), "male", "first@gmail.com", "0123456789",
+                1, "math", 4,LocalDate.parse("2020-06-02"), LocalDate.parse("2020-06-01"));
+        Set<ConstraintViolation<Student>> violations = validator.validate(studentWithWrongDateOrder);
+
+        assertEquals(2, violations.size());
+
+        ConstraintViolation<Student> beginViolation = violations.iterator().next();
+        assertEquals("Graduation can not be before admission", beginViolation.getMessage());
+        assertEquals("graduation", beginViolation.getPropertyPath().toString());
+        assertEquals(studentWithWrongDateOrder, beginViolation.getInvalidValue());
+
+        violations.remove(beginViolation);
+
+        ConstraintViolation<Student> endViolation = violations.iterator().next();
+        assertEquals("Admission can not be after graduation", endViolation.getMessage());
+        assertEquals("admission", endViolation.getPropertyPath().toString());
+        assertEquals(studentWithWrongDateOrder, endViolation.getInvalidValue());
     }
 }

@@ -1,5 +1,6 @@
 package com.foxminded.university.domain;
 
+import com.foxminded.university.validator.DateOrder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@DateOrder
 @Entity
 @Table(name = "students")
 public class Student extends Person {
