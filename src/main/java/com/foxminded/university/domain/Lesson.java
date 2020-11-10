@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -19,13 +20,13 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull(message = "Lesson should have subject")
+    @NotNull(message = "Lesson must have subject")
     @OneToOne
     private Subject subject;
-    @NotNull(message = "Lesson should have teacher")
+    @NotNull(message = "Lesson must have teacher")
     @OneToOne
     private Teacher teacher;
-    @Size(min = 1, message = "Lesson should have at least 1 group")
+    @NotEmpty(message = "Lesson must have groups")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
@@ -33,15 +34,15 @@ public class Lesson {
             joinColumns = @JoinColumn(name = "lesson_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups;
-    @NotNull(message = "Lesson should have audience")
+    @NotNull(message = "Lesson must have audience")
     @OneToOne
     private Audience audience;
-    @NotNull(message = "Lesson time may not be blank")
+    @NotNull(message = "Lesson time must not be blank")
     @OneToOne
     @JoinColumn(name = "lesson_time_id")
     private LessonTime lessonTime;
-    @NotNull(message = "Lesson date may not be blank")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Lesson date must not be blank")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
     public Lesson() {

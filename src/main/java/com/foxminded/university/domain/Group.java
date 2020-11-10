@@ -17,8 +17,9 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Group name may not be blank")
+    @NotBlank(message = "Group name must not be blank")
     private String name;
+    @NotEmpty(message = "Group must have students")
     @OneToMany
     @JoinColumn(name = "group_id")
     @LazyCollection(LazyCollectionOption.FALSE)

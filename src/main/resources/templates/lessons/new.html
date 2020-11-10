@@ -98,10 +98,11 @@
                             <label class="col-form-label">GROUPS:</label>
                             <div th:each="group : ${allGroups}">
                                 <label>
-                                    <input type="checkbox" name="groupsOfLesson" th:value="${group.id}"/>
+                                    <input th:value="${group.id}" th:field="*{groups}" type="checkbox"/>
+                                    <span th:text="${group.name}" th:remove="tag"> </span>
                                 </label>
-                                <label class="checkbox-inline" th:text="${group.name}"></label>
                             </div>
+                            <span class="font-italic text-danger" th:if="${#fields.hasErrors('groups')}" th:errors="*{groups}"></span>
                         </div>
                         <div class="col-md-6">
                             <input type="submit" class="btn btn-primary" value="ADD LESSON">

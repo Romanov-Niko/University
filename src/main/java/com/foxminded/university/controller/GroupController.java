@@ -60,13 +60,11 @@ public class GroupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
-                       @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup,
                        RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allStudents", studentService.findAll());
             return "/groups/new";
         }
-        setStudentsToGroup(group, studentsOfGroup);
         try {
             groupService.save(group);
         } catch (Exception exception) {
@@ -84,9 +82,7 @@ public class GroupController {
 
     @PostMapping("update/{id}")
     public String update(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
-                         @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup,
                          RedirectAttributes redirectAttributes, Model model) {
-        setStudentsToGroup(group, studentsOfGroup);
         if (bindingResult.hasErrors()) {
             model.addAttribute("allStudents", studentService.findAll());
             model.addAttribute("group", group);
@@ -100,16 +96,4 @@ public class GroupController {
         }
         return "redirect:/groups";
     }
-
-    private void setStudentsToGroup(@ModelAttribute("group") @Valid Group group, @RequestParam(value = "studentsOfGroup", required = false) int[] studentsOfGroup) {
-        List<Student> students = new ArrayList<>();
-        if (studentsOfGroup != null) {
-            for (int id : studentsOfGroup) {
-                Optional<Student> student = studentService.findById(id);
-                student.ifPresent(students::add);
-            }
-            group.setStudents(students);
-        }
-    }
-
 }

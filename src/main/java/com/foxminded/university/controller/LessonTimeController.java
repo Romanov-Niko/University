@@ -5,11 +5,12 @@ import com.foxminded.university.service.LessonTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.net.BindException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller

@@ -1,11 +1,16 @@
 package com.foxminded.university.domain;
 
+import com.foxminded.university.validator.TimeOrder;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@TimeOrder
 @Entity
 @Table(name = "lessons_times")
 public class LessonTime {
@@ -13,11 +18,13 @@ public class LessonTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull(message = "Begin time may not be blank")
+    @NotNull(message = "Begin time must not be blank")
     @Column(name = "begin_time")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime begin;
-    @NotNull(message = "End time may not be blank")
+    @NotNull(message = "End time must not be blank")
     @Column(name = "end_time")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime end;
 
     public LessonTime() {

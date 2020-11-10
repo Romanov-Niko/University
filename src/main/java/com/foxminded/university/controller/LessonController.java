@@ -90,9 +90,7 @@ public class LessonController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
-                       @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson,
                        RedirectAttributes redirectAttributes, Model model) {
-        setGroupToLesson(lesson, groupsOfLesson);
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
             model.addAttribute("allGroups", groupService.findAll());
@@ -119,9 +117,7 @@ public class LessonController {
 
     @PostMapping("update/{id}")
     public String update(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
-                         @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson,
                          RedirectAttributes redirectAttributes, Model model) {
-        setGroupToLesson(lesson, groupsOfLesson);
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
             model.addAttribute("allGroups", groupService.findAll());
@@ -138,16 +134,5 @@ public class LessonController {
             return "redirect:/lessons/edit/" + lesson.getId();
         }
         return "redirect:/lessons";
-    }
-
-    private void setGroupToLesson(@ModelAttribute("lesson") Lesson lesson, @RequestParam(value = "groupsOfLesson", required = false) int[] groupsOfLesson) {
-        List<Group> groups = new ArrayList<>();
-        if (groupsOfLesson != null) {
-            for (int id : groupsOfLesson) {
-                Optional<Group> group = groupService.findById(id);
-                group.ifPresent(groups::add);
-            }
-            lesson.setGroups(groups);
-        }
     }
 }

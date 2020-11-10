@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 @Entity
@@ -13,16 +14,16 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Subject name may not be blank")
+    @NotBlank(message = "Subject name must not be blank")
     private String name;
-    @NotNull(message = "Credit hours may not be blank")
-    @Min(value = 1, message = "Credit hours amount may not be less than 1")
+    @NotNull(message = "Credit hours must not be blank")
+    @Positive(message = "Credit hours amount must be positive")
     @Column(name = "credit_hours")
     private Integer creditHours;
-    @NotNull(message = "Course may not be blank")
-    @Min(value = 1, message = "Course may not be less than 1")
+    @NotNull(message = "Course must not be blank")
+    @Positive(message = "Course number must be positive")
     private Integer course;
-    @NotBlank(message = "Specialty may not be blank")
+    @NotBlank(message = "Specialty must not be blank")
     private String specialty;
 
     public Subject() {

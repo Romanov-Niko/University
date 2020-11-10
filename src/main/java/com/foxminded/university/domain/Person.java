@@ -4,29 +4,30 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @MappedSuperclass
 public class Person {
 
-    @NotBlank(message = "Name may not be blank")
+    @NotBlank(message = "Name must not be blank")
     private String name;
-    @NotBlank(message = "Surname may not be blank")
+    @NotBlank(message = "Surname must not be blank")
     private String surname;
-    @NotNull(message = "Date of birth may not be blank")
+    @Past(message = "Date of birth must be in the past")
+    @NotNull(message = "Date of birth must not be blank")
     @Column(name = "date_of_birth")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirth;
-    @NotBlank(message = "Gender may not be blank")
+    @NotBlank(message = "Gender must not be blank")
+    @Pattern(regexp = "(([Ff]e)?[Mm]ale)?", message = "Gender must be male or female")
     private String gender;
-    @NotBlank(message = "Email may not be blank")
-    @Email
+    @NotBlank(message = "Email must not be blank")
+    @Email(message = "Email must be valid")
     private String email;
-    @NotBlank(message = "Phone number may not be blank")
+    @NotBlank(message = "Phone number must not be blank")
+    @Pattern(regexp="(^$|[0-9]{10})", message = "The phone number must be ten digits long")
     @Column(name = "phone_number")
     private String phoneNumber;
 

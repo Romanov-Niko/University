@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -17,18 +18,18 @@ public class Student extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "group_id")
-    @Min(value = 1, message = "Group id may not be less than 1")
+    @Positive(message = "Group id must be positive")
     private Integer groupId;
-    @NotBlank(message = "Specialty may not be blank")
+    @NotBlank(message = "Specialty must not be blank")
     private String specialty;
-    @NotNull(message = "Course may not be blank")
-    @Min(value = 1, message = "Course may not be less than 1")
+    @NotNull(message = "Course must not be blank")
+    @Positive(message = "Course number must be positive")
     private Integer course;
-    @NotNull(message = "Admission date may not be blank")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Admission date must not be blank")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate admission;
-    @NotNull(message = "Graduation date may not be blank")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Graduation date must not be blank")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate graduation;
 
     public Student() {

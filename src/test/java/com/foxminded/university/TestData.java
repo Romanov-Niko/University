@@ -23,13 +23,13 @@ public class TestData {
     public static LessonTime lessonTimeWithWrongTime = new LessonTime(LocalTime.parse("13:00:00"), LocalTime.parse("12:00:00"));
 
     public static Student retrievedStudent = new Student(1, "first", "student", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111", 1, "math", 1,
+            "male", "first@gmail.com", "0123456789", 1, "math", 1,
             LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"));
     public static Student createdStudent = new Student("new", "student", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111", 1, "math", 1,
+            "male", "first@gmail.com", "0123456789", 1, "math", 1,
             LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"));
     public static Student updatedStudent = new Student(1, "UPDATED", "STUDENT", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111", 1, "math", 1,
+            "male", "first@gmail.com", "0123456789", 1, "math", 1,
             LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-01"));
 
     public static Subject retrievedSubject = new Subject(1, "Calculus", 120, 1, "math");
@@ -39,16 +39,16 @@ public class TestData {
             new Subject(3,"The world history", 120, 3, "history"));
 
     public static Teacher retrievedTeacher = new Teacher(1, "first", "teacher", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111",
+            "male", "first@gmail.com", "0123456789",
             singletonList(retrievedSubject));
     public static Teacher createdTeacher = new Teacher("first", "teacher", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111",
+            "male", "first@gmail.com", "0123456789",
             singletonList(retrievedSubject));
     public static Teacher updatedTeacher = new Teacher(1, "UPDATED", "teacher", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111",
+            "male", "first@gmail.com", "0123456789",
             singletonList(retrievedSubject));
     public static Teacher nonExistentTeacher = new Teacher(5, "non", "existent", LocalDate.parse("1990-01-01"),
-            "male", "first@gmail.com", "11111",
+            "male", "first@gmail.com", "0123456789",
             emptyList());
 
     public static Group retrievedGroup = new Group(1, "AA-11", singletonList(retrievedStudent));

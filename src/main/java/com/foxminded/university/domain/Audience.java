@@ -3,6 +3,7 @@ package com.foxminded.university.domain;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 @Entity
@@ -12,10 +13,10 @@ public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Min(value = 1, message = "Room number can not be less than 1")
+    @Positive(message = "Room number must be positive")
     @Column(name = "room_number")
     private int roomNumber;
-    @Min(value = 1, message = "Capacity can not be less than 1")
+    @Positive(message = "Capacity must be positive")
     private int capacity;
 
     public Audience() {
