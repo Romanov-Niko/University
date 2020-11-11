@@ -7,10 +7,10 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {DateOrderConstraintValidator.class})
-public @interface DateOrder {
+@Constraint(validatedBy = {LessonTimeConstraintValidator.class})
+public @interface ValidLessonTime {
 
-    String message() default "The date must be in the correct order";
+    String message() default "The time must be in the correct order";
 
     Class<?>[] groups() default {};
 

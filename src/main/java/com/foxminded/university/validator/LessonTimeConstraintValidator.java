@@ -6,10 +6,10 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.Duration;
 
-public class TimeOrderConstraintValidator implements ConstraintValidator<TimeOrder, LessonTime> {
+public class LessonTimeConstraintValidator implements ConstraintValidator<ValidLessonTime, LessonTime> {
 
     @Override
-    public void initialize(TimeOrder constraintAnnotation) {
+    public void initialize(ValidLessonTime constraintAnnotation) {
 
     }
 

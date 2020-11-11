@@ -13,10 +13,10 @@ public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Positive(message = "Room number must be positive")
+    @Positive(message = "Must be positive")
     @Column(name = "room_number")
     private int roomNumber;
-    @Positive(message = "Capacity must be positive")
+    @Positive(message = "Must be positive")
     private int capacity;
 
     public Audience() {

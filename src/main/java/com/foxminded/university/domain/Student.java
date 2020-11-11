@@ -1,17 +1,16 @@
 package com.foxminded.university.domain;
 
-import com.foxminded.university.validator.DateOrder;
+import com.foxminded.university.validator.ValidGraduationAndAdmission;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@DateOrder
+@ValidGraduationAndAdmission
 @Entity
 @Table(name = "students")
 public class Student extends Person {
@@ -20,12 +19,12 @@ public class Student extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "group_id")
-    @Positive(message = "Group id must be positive")
+    @Positive(message = "Must be positive")
     private Integer groupId;
     @NotBlank(message = "Specialty must not be blank")
     private String specialty;
     @NotNull(message = "Course must not be blank")
-    @Positive(message = "Course number must be positive")
+    @Positive(message = "Must be positive")
     private Integer course;
     @NotNull(message = "Admission date must not be blank")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -48,7 +47,7 @@ public class Student extends Person {
     }
 
     public Student(int id, String name, String surname, LocalDate dateOfBirth, String gender, String email, String phoneNumber,
-                   int groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
+                   Integer groupId, String specialty, Integer course, LocalDate admission, LocalDate graduation) {
         this(name, surname, dateOfBirth, gender, email, phoneNumber, groupId, specialty, course, admission, graduation);
         this.id = id;
     }

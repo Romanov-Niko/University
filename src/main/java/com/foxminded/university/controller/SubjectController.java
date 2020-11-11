@@ -44,16 +44,11 @@ public class SubjectController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/subjects/new";
         }
-        try {
-            subjectService.save(subject);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/subjects/new";
-        }
+        subjectService.save(subject);
         return "redirect:/subjects";
     }
 
@@ -64,16 +59,11 @@ public class SubjectController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("subject") @Valid Subject subject, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/subjects/edit";
         }
-        try {
-            subjectService.update(subject);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/subjects/edit/"+subject.getId();
-        }
+        subjectService.update(subject);
         return "redirect:/subjects";
     }
 

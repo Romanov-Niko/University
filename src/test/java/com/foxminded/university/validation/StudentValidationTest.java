@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-import static com.foxminded.university.TestData.retrievedAudience;
-import static com.foxminded.university.TestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StudentValidationTest {
@@ -53,7 +51,7 @@ class StudentValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Student> violation = violations.iterator().next();
-        assertEquals("Group id must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("groupId", violation.getPropertyPath().toString());
         assertEquals(-5, violation.getInvalidValue());
     }
@@ -81,7 +79,7 @@ class StudentValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Student> violation = violations.iterator().next();
-        assertEquals("Course number must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("course", violation.getPropertyPath().toString());
         assertEquals(-3, violation.getInvalidValue());
     }
@@ -134,5 +132,23 @@ class StudentValidationTest {
         assertEquals("Admission can not be after graduation", endViolation.getMessage());
         assertEquals("admission", endViolation.getPropertyPath().toString());
         assertEquals(studentWithWrongDateOrder, endViolation.getInvalidValue());
+    }
+
+    @Test
+    void givenEmptyPhoneNumber_whenStudentIsCreated_thenShouldHaveNoViolations() {
+        Set<ConstraintViolation<Student>> violations = validator.validate(new Student(1, "first",
+                "student", LocalDate.parse("1990-01-01"), "male", "first@gmail.com", "",
+                1, "math", 4, LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-05")));
+
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    void givenNullPhoneNumber_whenStudentIsCreated_thenShouldHaveNoViolations() {
+        Set<ConstraintViolation<Student>> violations = validator.validate(new Student(1, "first",
+                "student", LocalDate.parse("1990-01-01"), "male", "first@gmail.com", null,
+                1, "math", 4, LocalDate.parse("2015-06-01"), LocalDate.parse("2020-06-05")));
+
+        assertTrue(violations.isEmpty());
     }
 }

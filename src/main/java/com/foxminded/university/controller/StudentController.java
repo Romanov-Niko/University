@@ -44,16 +44,11 @@ public class StudentController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/students/new";
         }
-        try {
-            studentService.save(student);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/students/new";
-        }
+        studentService.save(student);
         return "redirect:/students";
     }
 
@@ -64,16 +59,11 @@ public class StudentController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("student") @Valid Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/students/edit";
         }
-        try {
-            studentService.update(student);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/students/edit/"+student.getId();
-        }
+        studentService.update(student);
         return "redirect:/students";
     }
 

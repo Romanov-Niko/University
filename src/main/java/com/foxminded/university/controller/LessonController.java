@@ -89,8 +89,7 @@ public class LessonController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
-                       RedirectAttributes redirectAttributes, Model model) {
+    public String save(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
             model.addAttribute("allGroups", groupService.findAll());
@@ -100,12 +99,7 @@ public class LessonController {
             model.addAttribute("allSubjects", subjectService.findAll());
             return "/lessons/new";
         }
-        try {
-            lessonService.save(lesson);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessons/new";
-        }
+        lessonService.save(lesson);
         return "redirect:/lessons";
     }
 
@@ -116,8 +110,7 @@ public class LessonController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes, Model model) {
+    public String update(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
             model.addAttribute("allGroups", groupService.findAll());
@@ -127,12 +120,7 @@ public class LessonController {
             model.addAttribute("allSubjects", subjectService.findAll());
             return "/lessons/edit";
         }
-        try {
-            lessonService.update(lesson);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessons/edit/" + lesson.getId();
-        }
+        lessonService.update(lesson);
         return "redirect:/lessons";
     }
 }

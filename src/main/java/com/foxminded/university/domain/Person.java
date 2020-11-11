@@ -1,5 +1,6 @@
 package com.foxminded.university.domain;
 
+import com.foxminded.university.validator.ValidPhoneNumber;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -8,6 +9,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@ValidPhoneNumber
 @MappedSuperclass
 public class Person {
 
@@ -26,8 +28,8 @@ public class Person {
     @NotBlank(message = "Email must not be blank")
     @Email(message = "Email must be valid")
     private String email;
-    @NotBlank(message = "Phone number must not be blank")
-    @Pattern(regexp="(^$|[0-9]{10})", message = "The phone number must be ten digits long")
+    /*@NotBlank(message = "Phone number must not be blank")
+    @Pattern(regexp="(^$|[0-9]{10})", message = "The phone number must be ten digits long")*/
     @Column(name = "phone_number")
     private String phoneNumber;
 

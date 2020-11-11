@@ -43,7 +43,7 @@ class AudienceValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Audience> violation = violations.iterator().next();
-        assertEquals("Room number must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("roomNumber", violation.getPropertyPath().toString());
         assertEquals(-3, violation.getInvalidValue());
     }
@@ -55,7 +55,7 @@ class AudienceValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Audience> violation = violations.iterator().next();
-        assertEquals("Capacity must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("capacity", violation.getPropertyPath().toString());
         assertEquals(-8, violation.getInvalidValue());
     }

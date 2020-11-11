@@ -46,16 +46,11 @@ public class LessonTimeController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/lessonstimes/new";
         }
-        try {
-            lessonTimeService.save(lessonTime);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessonstimes/new";
-        }
+        lessonTimeService.save(lessonTime);
         return "redirect:/lessonstimes";
     }
 
@@ -66,16 +61,11 @@ public class LessonTimeController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("lessontime") @Valid LessonTime lessonTime, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/lessonstimes/edit";
         }
-        try {
-            lessonTimeService.update(lessonTime);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/lessonstimes/edit/"+lessonTime.getId();
-        }
+        lessonTimeService.update(lessonTime);
         return "redirect:/lessonstimes";
     }
 

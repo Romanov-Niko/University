@@ -59,18 +59,12 @@ public class TeacherController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult,
-                       RedirectAttributes redirectAttributes, Model model) {
+    public String save(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allSubjects", subjectService.findAll());
             return "/teachers/new";
         }
-        try {
-            teacherService.save(teacher);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/teachers/new";
-        }
+        teacherService.save(teacher);
         return "redirect:/teachers";
     }
 
@@ -81,19 +75,13 @@ public class TeacherController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes, Model model) {
+    public String update(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allSubjects", subjectService.findAll());
             model.addAttribute("teacher", teacher);
             return "/teachers/edit";
         }
-        try {
-            teacherService.update(teacher);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/teachers/edit/"+teacher.getId();
-        }
+        teacherService.update(teacher);
         return "redirect:/teachers";
     }
 }

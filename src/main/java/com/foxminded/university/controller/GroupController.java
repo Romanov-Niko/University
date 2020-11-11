@@ -59,18 +59,12 @@ public class GroupController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
-                       RedirectAttributes redirectAttributes, Model model) {
+    public String save(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allStudents", studentService.findAll());
             return "/groups/new";
         }
-        try {
-            groupService.save(group);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/groups/new";
-        }
+        groupService.save(group);
         return "redirect:/groups";
     }
 
@@ -81,19 +75,13 @@ public class GroupController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes, Model model) {
+    public String update(@ModelAttribute("group") @Valid Group group, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allStudents", studentService.findAll());
             model.addAttribute("group", group);
             return "/groups/edit";
         }
-        try {
-            groupService.update(group);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/groups/edit/" + group.getId();
-        }
+        groupService.update(group);
         return "redirect:/groups";
     }
 }

@@ -44,16 +44,11 @@ public class AudienceController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/audiences/new";
         }
-        try {
-            audienceService.save(audience);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/new";
-        }
+        audienceService.save(audience);
         return "redirect:/audiences";
     }
 
@@ -64,16 +59,11 @@ public class AudienceController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute("audience") @Valid Audience audience, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/audiences/edit";
         }
-        try {
-            audienceService.update(audience);
-        } catch (Exception exception) {
-            redirectAttributes.addFlashAttribute("error", exception.getMessage());
-            return "redirect:/audiences/edit/"+audience.getId();
-        }
+        audienceService.update(audience);
         return "redirect:/audiences";
     }
 

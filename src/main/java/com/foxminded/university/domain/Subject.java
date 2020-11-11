@@ -17,11 +17,11 @@ public class Subject {
     @NotBlank(message = "Subject name must not be blank")
     private String name;
     @NotNull(message = "Credit hours must not be blank")
-    @Positive(message = "Credit hours amount must be positive")
+    @Positive(message = "Must be positive")
     @Column(name = "credit_hours")
     private Integer creditHours;
     @NotNull(message = "Course must not be blank")
-    @Positive(message = "Course number must be positive")
+    @Positive(message = "Must be positive")
     private Integer course;
     @NotBlank(message = "Specialty must not be blank")
     private String specialty;

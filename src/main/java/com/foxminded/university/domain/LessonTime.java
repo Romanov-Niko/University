@@ -1,16 +1,14 @@
 package com.foxminded.university.domain;
 
-import com.foxminded.university.validator.TimeOrder;
+import com.foxminded.university.validator.ValidLessonTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.Objects;
 
-@TimeOrder
+@ValidLessonTime
 @Entity
 @Table(name = "lessons_times")
 public class LessonTime {

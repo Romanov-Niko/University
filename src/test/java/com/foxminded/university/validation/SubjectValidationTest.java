@@ -60,7 +60,7 @@ class SubjectValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Subject> violation = violations.iterator().next();
-        assertEquals("Credit hours amount must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("creditHours", violation.getPropertyPath().toString());
         assertEquals(-20, violation.getInvalidValue());
     }
@@ -72,7 +72,7 @@ class SubjectValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Subject> violation = violations.iterator().next();
-        assertEquals("Course number must be positive", violation.getMessage());
+        assertEquals("Must be positive", violation.getMessage());
         assertEquals("course", violation.getPropertyPath().toString());
         assertEquals(-8, violation.getInvalidValue());
     }

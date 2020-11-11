@@ -1,16 +1,15 @@
 package com.foxminded.university.validator;
 
-import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Student;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.Duration;
 
-public class DateOrderConstraintValidator implements ConstraintValidator<DateOrder, Student> {
+public class GraduationAndAdmissionConstraintValidator implements ConstraintValidator<ValidGraduationAndAdmission, Student> {
 
     @Override
-    public void initialize(DateOrder constraintAnnotation) {
+    public void initialize(ValidGraduationAndAdmission constraintAnnotation) {
 
     }
 

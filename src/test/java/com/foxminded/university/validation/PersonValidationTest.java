@@ -111,14 +111,39 @@ class PersonValidationTest {
 
     @Test
     void givenInvalidPhoneNumber_whenPersonIsCreated_thenShouldDetectInvalidPhoneNumber() {
-        Set<ConstraintViolation<Person>> violations = validator.validate(new Person("some", "person",
-                LocalDate.parse("2000-08-02"), "male", "great@gmail.com", "55555"));
+        Person personWithWrongPhoneNumber = new Person("some", "person",
+                LocalDate.parse("2000-08-02"), "male", "great@gmail.com", "55555");
+        Set<ConstraintViolation<Person>> violations = validator.validate(personWithWrongPhoneNumber);
 
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("The phone number must be ten digits long", violation.getMessage());
+        assertEquals("Phone number must be valid", violation.getMessage());
         assertEquals("phoneNumber", violation.getPropertyPath().toString());
-        assertEquals("55555", violation.getInvalidValue());
+        assertEquals(personWithWrongPhoneNumber, violation.getInvalidValue());
+    }
+
+    @Test
+    void givenPhoneNumberWithBracketsAndDashes_whenPersonIsCreated_thenShouldHaveNoViolations() {
+        Set<ConstraintViolation<Person>> violations = validator.validate(new Person("some", "person",
+                LocalDate.parse("2000-08-02"), "male", "great@gmai.com", "(202) 555-0125"));
+
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    void givenPhoneNumberWithPlus_whenPersonIsCreated_thenShouldHaveNoViolations() {
+        Set<ConstraintViolation<Person>> violations = validator.validate(new Person("some", "person",
+                LocalDate.parse("2000-08-02"), "male", "great@gmai.com", "+111 636 85 67 89"));
+
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    void givenPhoneNumberWithPlusDashesAndBrackets_whenPersonIsCreated_thenShouldHaveNoViolations() {
+        Set<ConstraintViolation<Person>> violations = validator.validate(new Person("some", "person",
+                LocalDate.parse("2000-08-02"), "male", "great@gmai.com", "+111 (202) 555-0125"));
+
+        assertTrue(violations.isEmpty());
     }
 }
