@@ -1,12 +1,10 @@
 package com.foxminded.university.validator;
 
-import com.foxminded.university.domain.LessonTime;
 import com.foxminded.university.domain.Person;
 import com.foxminded.university.domain.Teacher;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.regex.Pattern;
 
 public class PhoneNumberConstraintValidator implements ConstraintValidator<ValidPhoneNumber, Person> {
 

@@ -56,11 +56,7 @@ public class LessonController {
 
     @GetMapping("/new")
     public String redirectToSaveForm(Model model, Lesson lessonModel) {
-        model.addAttribute("allGroups", groupService.findAll());
-        model.addAttribute("allTeachers", teacherService.findAll());
-        model.addAttribute("allAudiences", audienceService.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
-        model.addAttribute("allSubjects", subjectService.findAll());
+        addAttributesToRedirection(model);
         return "lessons/new";
     }
 
@@ -73,11 +69,7 @@ public class LessonController {
         } else {
             redirectAttributes.addFlashAttribute("error", "Lesson is not present");
         }
-        model.addAttribute("allGroups", groupService.findAll());
-        model.addAttribute("allTeachers", teacherService.findAll());
-        model.addAttribute("allAudiences", audienceService.getAll());
-        model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
-        model.addAttribute("allSubjects", subjectService.findAll());
+        addAttributesToRedirection(model);
         return "lessons/edit";
     }
 
@@ -92,11 +84,7 @@ public class LessonController {
     public String save(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
-            model.addAttribute("allGroups", groupService.findAll());
-            model.addAttribute("allTeachers", teacherService.findAll());
-            model.addAttribute("allAudiences", audienceService.getAll());
-            model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
-            model.addAttribute("allSubjects", subjectService.findAll());
+            addAttributesToRedirection(model);
             return "/lessons/new";
         }
         lessonService.save(lesson);
@@ -113,14 +101,18 @@ public class LessonController {
     public String update(@ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("lesson", lesson);
-            model.addAttribute("allGroups", groupService.findAll());
-            model.addAttribute("allTeachers", teacherService.findAll());
-            model.addAttribute("allAudiences", audienceService.getAll());
-            model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
-            model.addAttribute("allSubjects", subjectService.findAll());
+            addAttributesToRedirection(model);
             return "/lessons/edit";
         }
         lessonService.update(lesson);
         return "redirect:/lessons";
+    }
+
+    private void addAttributesToRedirection(Model model) {
+        model.addAttribute("allGroups", groupService.findAll());
+        model.addAttribute("allTeachers", teacherService.findAll());
+        model.addAttribute("allAudiences", audienceService.getAll());
+        model.addAttribute("allLessonsTimes", lessonTimeService.findAll());
+        model.addAttribute("allSubjects", subjectService.findAll());
     }
 }

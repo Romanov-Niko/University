@@ -28,8 +28,6 @@ public class Person {
     @NotBlank(message = "Email must not be blank")
     @Email(message = "Email must be valid")
     private String email;
-    /*@NotBlank(message = "Phone number must not be blank")
-    @Pattern(regexp="(^$|[0-9]{10})", message = "The phone number must be ten digits long")*/
     @Column(name = "phone_number")
     private String phoneNumber;
 

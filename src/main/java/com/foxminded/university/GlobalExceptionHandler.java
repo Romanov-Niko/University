@@ -19,6 +19,6 @@ public class GlobalExceptionHandler {
             redirectRequest = currentRequest.replace("update", "edit");
         }
         redirectAttributes.addFlashAttribute("error", exception.getMessage());
-        return "redirect:"+redirectRequest;
+        return "redirect:" + redirectRequest;
     }
 }
