@@ -50,7 +50,7 @@ class LessonTimeValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<LessonTime> violation = violations.iterator().next();
-        assertEquals("Begin time must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("begin", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -62,7 +62,7 @@ class LessonTimeValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<LessonTime> violation = violations.iterator().next();
-        assertEquals("End time must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("end", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }

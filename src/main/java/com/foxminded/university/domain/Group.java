@@ -17,7 +17,7 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Group name must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String name;
     @NotEmpty(message = "Group must have students")
     @OneToMany

@@ -48,7 +48,7 @@ class GroupValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Group> violation = violations.iterator().next();
-        assertEquals("Group name must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("name", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }

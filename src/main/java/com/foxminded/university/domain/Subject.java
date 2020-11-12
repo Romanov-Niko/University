@@ -14,16 +14,16 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "Subject name must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String name;
-    @NotNull(message = "Credit hours must not be blank")
+    @NotNull(message = "Must not be blank")
     @Positive(message = "Must be positive")
     @Column(name = "credit_hours")
     private Integer creditHours;
-    @NotNull(message = "Course must not be blank")
+    @NotNull(message = "Must not be blank")
     @Positive(message = "Must be positive")
     private Integer course;
-    @NotBlank(message = "Specialty must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String specialty;
 
     public Subject() {

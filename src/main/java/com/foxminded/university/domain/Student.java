@@ -21,15 +21,15 @@ public class Student extends Person {
     @Column(name = "group_id")
     @Positive(message = "Must be positive")
     private Integer groupId;
-    @NotBlank(message = "Specialty must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String specialty;
-    @NotNull(message = "Course must not be blank")
+    @NotNull(message = "Must not be blank")
     @Positive(message = "Must be positive")
     private Integer course;
-    @NotNull(message = "Admission date must not be blank")
+    @NotNull(message = "Must not be blank")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate admission;
-    @NotNull(message = "Graduation date must not be blank")
+    @NotNull(message = "Must not be blank")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate graduation;
 

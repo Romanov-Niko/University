@@ -52,7 +52,7 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Name must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("name", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }
@@ -65,7 +65,7 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Surname must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("surname", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }
@@ -78,7 +78,7 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Date of birth must be in the past", violation.getMessage());
+        assertEquals("Must be in the past", violation.getMessage());
         assertEquals("dateOfBirth", violation.getPropertyPath().toString());
         assertEquals(LocalDate.parse("2022-08-02"), violation.getInvalidValue());
     }
@@ -91,7 +91,7 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Gender must be male or female", violation.getMessage());
+        assertEquals("Must be male or female", violation.getMessage());
         assertEquals("gender", violation.getPropertyPath().toString());
         assertEquals("wrong", violation.getInvalidValue());
     }
@@ -104,7 +104,7 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Email must be valid", violation.getMessage());
+        assertEquals("Must be valid", violation.getMessage());
         assertEquals("email", violation.getPropertyPath().toString());
         assertEquals("wrong@.com", violation.getInvalidValue());
     }
@@ -118,9 +118,9 @@ class PersonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Person> violation = violations.iterator().next();
-        assertEquals("Phone number must be valid", violation.getMessage());
+        assertEquals("Must be valid", violation.getMessage());
         assertEquals("phoneNumber", violation.getPropertyPath().toString());
-        assertEquals(personWithWrongPhoneNumber, violation.getInvalidValue());
+        assertEquals(personWithWrongPhoneNumber.getPhoneNumber(), violation.getInvalidValue());
     }
 
     @Test

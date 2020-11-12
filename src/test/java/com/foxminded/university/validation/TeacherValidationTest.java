@@ -52,36 +52,8 @@ class TeacherValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Teacher> violation = violations.iterator().next();
-        assertEquals("Teacher must have subjects", violation.getMessage());
+        assertEquals("Must have subjects", violation.getMessage());
         assertEquals("subjects", violation.getPropertyPath().toString());
         assertEquals( emptyList(), violation.getInvalidValue());
-    }
-
-    @Test
-    void givenEmptyPhoneNumber_whenTeacherIsCreated_thenShouldDetectInvalidPhoneNumber() {
-        Teacher teacherWithWrongPhoneNumber = new Teacher(1, "first", "teacher",
-                LocalDate.parse("1990-01-01"), "male", "first@gmail.com", null, singletonList(retrievedSubject));
-        Set<ConstraintViolation<Teacher>> violations = validator.validate(teacherWithWrongPhoneNumber);
-
-        assertEquals(1, violations.size());
-
-        ConstraintViolation<Teacher> violation = violations.iterator().next();
-        assertEquals("Teacher must have phone number", violation.getMessage());
-        assertEquals("phoneNumber", violation.getPropertyPath().toString());
-        assertEquals(teacherWithWrongPhoneNumber, violation.getInvalidValue());
-    }
-
-    @Test
-    void givenNullPhoneNumber_whenTeacherIsCreated_thenShouldDetectInvalidPhoneNumber() {
-        Teacher teacherWithWrongPhoneNumber = new Teacher(1, "first", "teacher",
-                LocalDate.parse("1990-01-01"), "male", "first@gmail.com", null, singletonList(retrievedSubject));
-        Set<ConstraintViolation<Teacher>> violations = validator.validate(teacherWithWrongPhoneNumber);
-
-        assertEquals(1, violations.size());
-
-        ConstraintViolation<Teacher> violation = violations.iterator().next();
-        assertEquals("Teacher must have phone number", violation.getMessage());
-        assertEquals("phoneNumber", violation.getPropertyPath().toString());
-        assertEquals(teacherWithWrongPhoneNumber, violation.getInvalidValue());
     }
 }

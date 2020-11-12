@@ -1,5 +1,6 @@
 package com.foxminded.university.domain;
 
+import com.foxminded.university.validator.TeacherValidationGroup;
 import com.foxminded.university.validator.ValidPhoneNumber;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,25 +10,27 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@ValidPhoneNumber
+
 @MappedSuperclass
 public class Person {
 
-    @NotBlank(message = "Name must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String name;
-    @NotBlank(message = "Surname must not be blank")
+    @NotBlank(message = "Must not be blank")
     private String surname;
-    @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "Date of birth must not be blank")
+    @Past(message = "Must be in the past")
+    @NotNull(message = "Must not be blank")
     @Column(name = "date_of_birth")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirth;
-    @NotBlank(message = "Gender must not be blank")
-    @Pattern(regexp = "(([Ff]e)?[Mm]ale)?", message = "Gender must be male or female")
+    @NotBlank(message = "Must not be blank")
+    @Pattern(regexp = "(([Ff]e)?[Mm]ale)?", message = "Must be male or female")
     private String gender;
-    @NotBlank(message = "Email must not be blank")
-    @Email(message = "Email must be valid")
+    @NotBlank(message = "Must not be blank")
+    @Email(message = "Must be valid")
     private String email;
+    @NotBlank(message = "Must not be blank", groups = TeacherValidationGroup.class)
+    @ValidPhoneNumber
     @Column(name = "phone_number")
     private String phoneNumber;
 

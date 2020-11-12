@@ -49,7 +49,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson must have subject", violation.getMessage());
+        assertEquals("Must have subject", violation.getMessage());
         assertEquals("subject", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -62,7 +62,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson must have teacher", violation.getMessage());
+        assertEquals("Must have teacher", violation.getMessage());
         assertEquals("teacher", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -75,7 +75,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson must have groups", violation.getMessage());
+        assertEquals("Must have groups", violation.getMessage());
         assertEquals("groups", violation.getPropertyPath().toString());
         assertEquals(emptyList(), violation.getInvalidValue());
     }
@@ -88,7 +88,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson must have audience", violation.getMessage());
+        assertEquals("Must have audience", violation.getMessage());
         assertEquals("audience", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -101,7 +101,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson time must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("lessonTime", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -114,7 +114,7 @@ class LessonValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Lesson> violation = violations.iterator().next();
-        assertEquals("Lesson date must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("date", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }

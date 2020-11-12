@@ -16,11 +16,11 @@ public class LessonTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull(message = "Begin time must not be blank")
+    @NotNull(message = "Must not be blank")
     @Column(name = "begin_time")
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime begin;
-    @NotNull(message = "End time must not be blank")
+    @NotNull(message = "Must not be blank")
     @Column(name = "end_time")
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime end;

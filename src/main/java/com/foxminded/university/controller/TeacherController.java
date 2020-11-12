@@ -1,20 +1,20 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.domain.Subject;
 import com.foxminded.university.domain.Teacher;
 import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
+import com.foxminded.university.validator.TeacherValidationGroup;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+@Validated
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -58,6 +58,7 @@ public class TeacherController {
         return "teachers/subjects";
     }
 
+    @Validated(TeacherValidationGroup.class)
     @PostMapping("/save")
     public String save(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -74,6 +75,7 @@ public class TeacherController {
         return "redirect:/teachers";
     }
 
+    @Validated(TeacherValidationGroup.class)
     @PostMapping("update/{id}")
     public String update(@ModelAttribute("teacher") @Valid Teacher teacher, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {

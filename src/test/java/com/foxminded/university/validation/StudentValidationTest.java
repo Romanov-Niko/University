@@ -65,7 +65,7 @@ class StudentValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Student> violation = violations.iterator().next();
-        assertEquals("Specialty must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("specialty", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }
@@ -93,7 +93,7 @@ class StudentValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Student> violation = violations.iterator().next();
-        assertEquals("Admission date must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("admission", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }
@@ -107,7 +107,7 @@ class StudentValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Student> violation = violations.iterator().next();
-        assertEquals("Graduation date must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("graduation", violation.getPropertyPath().toString());
         assertNull(violation.getInvalidValue());
     }

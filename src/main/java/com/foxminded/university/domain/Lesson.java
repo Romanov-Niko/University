@@ -20,13 +20,13 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull(message = "Lesson must have subject")
+    @NotNull(message = "Must have subject")
     @OneToOne
     private Subject subject;
-    @NotNull(message = "Lesson must have teacher")
+    @NotNull(message = "Must have teacher")
     @OneToOne
     private Teacher teacher;
-    @NotEmpty(message = "Lesson must have groups")
+    @NotEmpty(message = "Must have groups")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
@@ -34,14 +34,14 @@ public class Lesson {
             joinColumns = @JoinColumn(name = "lesson_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups;
-    @NotNull(message = "Lesson must have audience")
+    @NotNull(message = "Must have audience")
     @OneToOne
     private Audience audience;
-    @NotNull(message = "Lesson time must not be blank")
+    @NotNull(message = "Must not be blank")
     @OneToOne
     @JoinColumn(name = "lesson_time_id")
     private LessonTime lessonTime;
-    @NotNull(message = "Lesson date must not be blank")
+    @NotNull(message = "Must not be blank")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 

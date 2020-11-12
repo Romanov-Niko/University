@@ -5,7 +5,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,7 @@ public class Teacher extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotEmpty(message = "Teacher must have subjects")
+    @NotEmpty(message = "Must have subjects")
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(

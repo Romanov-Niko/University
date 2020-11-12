@@ -48,7 +48,7 @@ class SubjectValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Subject> violation = violations.iterator().next();
-        assertEquals("Subject name must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("name", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }
@@ -84,7 +84,7 @@ class SubjectValidationTest {
         assertEquals(1, violations.size());
 
         ConstraintViolation<Subject> violation = violations.iterator().next();
-        assertEquals("Specialty must not be blank", violation.getMessage());
+        assertEquals("Must not be blank", violation.getMessage());
         assertEquals("specialty", violation.getPropertyPath().toString());
         assertEquals("", violation.getInvalidValue());
     }
